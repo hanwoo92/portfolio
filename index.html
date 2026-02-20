@@ -906,6 +906,20 @@
 }
 .comment-submit:hover { background: var(--accent); color: var(--bg); }
 
+  /* 저작권 보호 — 이미지 선택/드래그/터치저장 금지 */
+  img, .photo-bg-img, .lightbox-img {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none; /* iOS 길게 눌러서 저장 금지 */
+    pointer-events: auto;
+    -webkit-user-drag: none;
+  }
+  .photo-card, .lightbox-content {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
 </style>
 </head>
 <body>
@@ -1334,6 +1348,36 @@ async function deleteComment(docId) {
   if (!confirm('댓글을 삭제할까요?')) return;
   await deleteDoc(doc(db, 'comments_' + currentPhotoId, docId));
 }
+
+// ── 저작권 보호 ───────────────────────────────────────────────────────────
+// 이미지 우클릭 금지
+document.addEventListener('contextmenu', function(e) {
+  if (e.target.tagName === 'IMG' || e.target.closest('.photo-card') || e.target.closest('.lightbox')) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// 이미지 드래그 금지
+document.addEventListener('dragstart', function(e) {
+  if (e.target.tagName === 'IMG') {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// 키보드 단축키 차단 (Ctrl+S, Ctrl+U, F12 등)
+document.addEventListener('keydown', function(e) {
+  // Ctrl+S (저장), Ctrl+U (소스보기), Ctrl+Shift+I (개발자도구), F12
+  if (
+    (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) ||
+    (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I')) ||
+    e.key === 'F12'
+  ) {
+    e.preventDefault();
+    return false;
+  }
+});
 
 // ── window 등록 ───────────────────────────────────────────────────────────
 window.openComments = openComments;
