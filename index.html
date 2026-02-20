@@ -31,6 +31,12 @@
     cursor: none;
   }
 
+  /* 모바일에서 커서 숨기기 */
+  @media (hover: none) and (pointer: coarse) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none !important; }
+  }
+
   /* CURSOR */
   .cursor {
     position: fixed;
@@ -410,7 +416,18 @@
     inset: 0;
     transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
+  .photo-card .photo-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: block;
+  }
   .photo-card:hover .photo-bg { transform: scale(1.05); }
+  .photo-card:hover .photo-bg-img { transform: scale(1.05); }
 
   .photo-bg.p1 { background: linear-gradient(180deg, #0d1830 0%, #1a2a45 30%, #2a3a55 50%, #1a2535 70%, #0a0f1a 100%); }
   .photo-bg.p2 { background: linear-gradient(180deg, #1a0a05 0%, #3d1a0a 20%, #6b3015 35%, #8b5520 45%, #2a1805 70%, #0a0805 100%); }
@@ -614,26 +631,38 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0,0,0,0.97);
     z-index: 1000;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
   }
   .lightbox.open { display: flex; }
   .lightbox-content {
     position: relative;
-    max-width: 90vw;
-    max-height: 90vh;
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
   }
   .lightbox-img {
-    width: 600px;
-    max-width: 90vw;
-    aspect-ratio: 4/3;
+    width: 100%;
+    max-width: 900px;
+    max-height: 80vh;
+    object-fit: contain;
     display: block;
+  }
+  .lightbox-info {
+    width: 100%;
+    padding: 16px 4px 8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
   }
   .lightbox-close {
     position: absolute;
-    top: -40px; right: 0;
+    top: -44px; right: 0;
     background: none;
     border: none;
     color: var(--text);
@@ -641,6 +670,11 @@
     cursor: pointer;
     font-family: 'Josefin Sans', sans-serif;
     letter-spacing: 0.2em;
+  }
+  @media (max-width: 768px) {
+    .lightbox { padding: 56px 12px 20px; align-items: flex-start; }
+    .lightbox-close { top: -44px; }
+    .lightbox-img { max-height: 70vh; }
   }
 
   /* REVEAL ANIMATION */
@@ -668,6 +702,36 @@
     .about-stats { grid-template-columns: repeat(3, 1fr); }
     footer { flex-direction: column; gap: 16px; text-align: center; }
     .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
+
+    /* 모바일: 댓글 버튼 항상 보이게 */
+    .comment-btn { opacity: 1 !important; }
+
+    /* 모바일: photo-overlay 항상 살짝 보이게 */
+    .photo-overlay { opacity: 0.85; }
+
+    /* 모바일: 느린 애니메이션 단축 */
+    .reveal {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* 모바일: aurora/moon 애니메이션 비활성화 (성능) */
+    .aurora { animation: none; opacity: 0.6; }
+    .moon { animation: none; }
+    .stars { animation: none; }
+  }
+
+  /* 모바일 성능 최적화 — 터치 기기 전용 */
+  @media (hover: none) and (pointer: coarse) {
+    /* 패럴랙스 효과 제거 */
+    .hero-landscape { background-attachment: scroll !important; }
+
+    /* GPU 가속 힌트 */
+    .photo-bg { will-change: auto; }
+
+    /* 호버 효과 제거 (모바일에서 불필요) */
+    .photo-card:hover .photo-bg { transform: none; }
+    .filter-btn:hover { border-color: var(--border); color: var(--text-dim); background: none; }
+    .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
   }
 
   @media (max-width: 480px) {
@@ -878,7 +942,9 @@
   background-image: url('photos/WS_08635-2.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  background-attachment: scroll;
+  image-rendering: auto;
+  will-change: auto;
 ">
 </div>
   <div class="hero-content">
@@ -908,8 +974,8 @@
 
     <!-- NEWYORK — tall (왼쪽 세로) -->
     <div class="photo-card tall reveal" data-category="newyork" data-photoid="p1"
-      onclick="openLightbox('p1','Central Park','새벽 공기','photos/WS_09585.jpg')">
-      <div class="photo-bg p1" style="background-image: url('photos/WS_09585.jpg'); background-size: cover; background-position: center;"></div>
+      onclick="openLightbox('p1','NEWYORK','2023.9','photos/WS_09585.jpg')">
+      <img class="photo-bg-img" src="photos/WS_09585.jpg" alt="NEWYORK" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
         <div class="photo-meta">2023.9</div>
@@ -919,8 +985,8 @@
 
     <!-- PARIS — 일반 (오른쪽 상단) -->
     <div class="photo-card reveal" data-category="paris" data-photoid="p2"
-      onclick="openLightbox('p2','Paris','Eiffel Tower','photos/WS_09061.jpg')">
-      <div class="photo-bg p2" style="background-image: url('photos/WS_09061.jpg'); background-size: cover; background-position: center;"></div>
+      onclick="openLightbox('p2','PARIS','2024.10','photos/WS_09061.jpg')">
+      <img class="photo-bg-img" src="photos/WS_09061.jpg" alt="PARIS" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
         <div class="photo-meta">2024.10</div>
@@ -930,8 +996,8 @@
 
     <!-- ITALY — 일반 (오른쪽 하단) -->
     <div class="photo-card reveal" data-category="italy" data-photoid="p3"
-      onclick="openLightbox('p3','Italy','전망대','photos/WS_00932.jpg')">
-      <div class="photo-bg p3" style="background-image: url('photos/WS_00932.jpg'); background-size: cover; background-position: center;"></div>
+      onclick="openLightbox('p3','ITALY','2025.10','photos/WS_00932.jpg')">
+      <img class="photo-bg-img" src="photos/WS_00932.jpg" alt="ITALY" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
         <div class="photo-meta">2025.10</div>
@@ -941,8 +1007,8 @@
 
     <!-- SEOUL — wide (하단 가로) -->
     <div class="photo-card wide reveal" data-category="seoul" data-photoid="p4"
-      onclick="openLightbox('p4','Bridge','Sunset','photos/WS_08620.jpg')">
-      <div class="photo-bg p4" style="background-image: url('photos/WS_08620.jpg'); background-size: cover; background-position: center;"></div>
+      onclick="openLightbox('p4','SEOUL','24/7','photos/WS_08620.jpg')">
+      <img class="photo-bg-img" src="photos/WS_08620.jpg" alt="SEOUL" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">SEOUL</div>
         <div class="photo-meta">24/7</div>
@@ -998,17 +1064,13 @@
     <p class="contact-desc reveal">
       모든 인사, 감상평, 엽서 제작 문의 환영합니다.<br>
       </p>
-    <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+    <form class="contact-form reveal" action="https://formspree.io/f/xgollren" method="POST">
       <div class="form-group">
-        <input type="text" id="name" placeholder=" ">
+        <input type="text" name="이름" id="name" placeholder=" " required>
         <label for="name">이름</label>
       </div>
       <div class="form-group">
-        <input type="email" id="email" placeholder=" ">
-        <label for="email">이메일</label>
-      </div>
-      <div class="form-group">
-        <textarea id="msg" placeholder=" "></textarea>
+        <textarea name="메시지" id="msg" placeholder=" " required></textarea>
         <label for="msg">메시지</label>
       </div>
       <button type="submit" class="submit-btn">보내기</button>
@@ -1030,10 +1092,10 @@
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lightbox-content" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="closeLightbox()">✕ Close</button>
-    <img id="lightboxImg" class="lightbox-img" src="" alt="" style="border-radius:0; object-fit:cover; display:block;"></div>
-    <div style="padding:8px 0;">
-      <p id="lightboxTitle" style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;margin-bottom:4px;"></p>
-      <p id="lightboxMeta" style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);"></p>
+    <img id="lightboxImg" class="lightbox-img" src="" alt="" style="border-radius:0;">
+    <div class="lightbox-info">
+      <p id="lightboxTitle" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;margin-bottom:6px;color:var(--text);"></p>
+      <p id="lightboxMeta" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);"></p>
     </div>
   </div>
 </div>
@@ -1055,21 +1117,25 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
-// ── Cursor ────────────────────────────────────────────────────────────────
+// ── Cursor (데스크탑만) ───────────────────────────────────────────────────
+const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
-  setTimeout(() => {
-    ring.style.left = e.clientX + 'px';
-    ring.style.top = e.clientY + 'px';
-  }, 80);
-});
-document.querySelectorAll('a,button,.photo-card,.filter-btn').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.style.width='14px'; cursor.style.height='14px'; ring.style.width='50px'; ring.style.height='50px'; });
-  el.addEventListener('mouseleave', () => { cursor.style.width='8px'; cursor.style.height='8px'; ring.style.width='36px'; ring.style.height='36px'; });
-});
+
+if (!isMobile) {
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+  document.querySelectorAll('a,button,.photo-card,.filter-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.width='14px'; cursor.style.height='14px'; ring.style.width='50px'; ring.style.height='50px'; });
+    el.addEventListener('mouseleave', () => { cursor.style.width='8px'; cursor.style.height='8px'; ring.style.width='36px'; ring.style.height='36px'; });
+  });
+}
 
 // Nav scroll
 window.addEventListener('scroll', () => {
@@ -1142,16 +1208,6 @@ function openLightbox(bg, title, meta, imgSrc) {
 }
 
 function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-
-// ── Contact ───────────────────────────────────────────────────────────────
-function handleSubmit(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('.submit-btn');
-  btn.textContent = '✓ 전송되었습니다';
-  btn.style.background = 'var(--accent)';
-  btn.style.color = 'var(--bg)';
-  setTimeout(() => { btn.textContent = '보내기'; btn.style.background = ''; btn.style.color = ''; e.target.reset(); }, 3000);
-}
 
 // ── Firebase Comments ─────────────────────────────────────────────────────
 let currentPhotoId = null;
@@ -1238,7 +1294,6 @@ window.deleteComment = deleteComment;
 window.openLightbox = openLightbox;
 window.closeLightbox = closeLightbox;
 window.closeMenu = closeMenu;
-window.handleSubmit = handleSubmit;
 </script>
 
 <!-- COMMENT PANEL -->
