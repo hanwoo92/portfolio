@@ -973,7 +973,7 @@
   <div class="gallery-grid">
 
     <!-- NEWYORK — tall (왼쪽 세로) -->
-    <div class="photo-card tall reveal" data-category="newyork" data-photoid="p1"
+    <div id="section-newyork" class="photo-card tall reveal" data-category="newyork" data-photoid="p1"
       onclick="openLightbox('p1','NEWYORK','2023.9','photos/WS_09585.jpg')">
       <img class="photo-bg-img" src="photos/WS_09585.jpg" alt="NEWYORK" loading="lazy">
       <div class="photo-overlay">
@@ -984,7 +984,7 @@
     </div>
 
     <!-- PARIS — 일반 (오른쪽 상단) -->
-    <div class="photo-card reveal" data-category="paris" data-photoid="p2"
+    <div id="section-paris" class="photo-card reveal" data-category="paris" data-photoid="p2"
       onclick="openLightbox('p2','PARIS','2024.10','photos/WS_09061.jpg')">
       <img class="photo-bg-img" src="photos/WS_09061.jpg" alt="PARIS" loading="lazy">
       <div class="photo-overlay">
@@ -995,7 +995,7 @@
     </div>
 
     <!-- ITALY — 일반 (오른쪽 하단) -->
-    <div class="photo-card reveal" data-category="italy" data-photoid="p3"
+    <div id="section-italy" class="photo-card reveal" data-category="italy" data-photoid="p3"
       onclick="openLightbox('p3','ITALY','2025.10','photos/WS_00932.jpg')">
       <img class="photo-bg-img" src="photos/WS_00932.jpg" alt="ITALY" loading="lazy">
       <div class="photo-overlay">
@@ -1006,7 +1006,7 @@
     </div>
 
     <!-- SEOUL — wide (하단 가로) -->
-    <div class="photo-card wide reveal" data-category="seoul" data-photoid="p4"
+    <div id="section-seoul" class="photo-card wide reveal" data-category="seoul" data-photoid="p4"
       onclick="openLightbox('p4','SEOUL','24/7','photos/WS_08620.jpg')">
       <img class="photo-bg-img" src="photos/WS_08620.jpg" alt="SEOUL" loading="lazy">
       <div class="photo-overlay">
@@ -1065,6 +1065,8 @@
       모든 인사, 감상평, 엽서 제작 문의 환영합니다.<br>
       </p>
     <form class="contact-form reveal" action="https://formspree.io/f/xgollren" method="POST">
+      <input type="hidden" name="_next" value="javascript:history.back()">
+      <input type="hidden" name="_subject" value="[Fill This Way] 새 메시지 도착">
       <div class="form-group">
         <input type="text" name="이름" id="name" placeholder=" " required>
         <label for="name">이름</label>
@@ -1160,20 +1162,24 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// Gallery filter
+// Gallery 스크롤 네비게이션
+const scrollTargets = {
+  all:     'gallery',
+  newyork: 'section-newyork',
+  paris:   'section-paris',
+  italy:   'section-italy',
+  seoul:   'section-seoul',
+};
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
-    const filter = this.dataset.filter;
-    document.querySelectorAll('.photo-card').forEach(card => {
-      if(filter === 'all' || card.dataset.category === filter) {
-        card.style.opacity = '1'; card.style.transform = '';
-      } else {
-        card.style.opacity = '0.15'; card.style.transform = 'scale(0.97)';
-      }
-      card.style.transition = 'opacity 0.4s, transform 0.4s';
-    });
+    const target = document.getElementById(scrollTargets[this.dataset.filter]);
+    if (target) {
+      const offset = 100; // 상단 nav 높이만큼 여백
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   });
 });
 
@@ -1194,20 +1200,22 @@ function openLightbox(bg, title, meta, imgSrc) {
   const img = document.getElementById('lightboxImg');
 
   if (imgSrc) {
-    // 실제 사진이 있을 때
     img.src = imgSrc;
     img.style.background = '';
   } else {
-    // 사진 없을 때는 기존 그라디언트 배경 유지
     img.src = '';
     img.style.background = lbBgs[bg];
   }
   document.getElementById('lightboxTitle').textContent = title;
   document.getElementById('lightboxMeta').textContent = meta;
   lb.classList.add('open');
+  document.body.style.overflow = 'hidden'; // 스크롤 잠금
 }
 
-function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = ''; // 스크롤 복구
+}
 
 // ── Firebase Comments ─────────────────────────────────────────────────────
 let currentPhotoId = null;
