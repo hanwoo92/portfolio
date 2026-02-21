@@ -551,14 +551,13 @@
 
   /* ABOUT — 섹션 소제목 통일 스타일 (ALBUM, ABOUT, CONTACT 공통) */
   .about-introduce-label {
-    font-size: 2rem;
+    font-size: 2.4rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 12px;
     font-family: 'Josefin Sans', sans-serif;
-    font-weight: 100;
-    /* section-title 스타일 덮어쓰기 */
+    font-weight: 700; /* bold */
     font-style: normal;
     line-height: 1.2;
   }
@@ -645,7 +644,7 @@
   .social-link {
     color: var(--text-dim);
     text-decoration: none;
-    font-size: 0.65rem;
+    font-size: 1rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     transition: color 0.3s;
@@ -660,7 +659,7 @@
     justify-content: space-between;
     align-items: center;
     color: var(--text-dim);
-    font-size: 0.6rem;
+    font-size: 0.85rem;
     letter-spacing: 0.15em;
   }
 
@@ -737,11 +736,36 @@
     #about { grid-template-columns: 1fr; gap: 48px; }
     .about-content { order: 1; }
     .about-visual { order: 2; }
-    .about-introduce-label { font-size: 1.4rem; }
-    .about-visual { aspect-ratio: 4/3; }
+    .about-introduce-label { font-size: 1.6rem; }
     .about-deco { display: none; }
     .about-stats { grid-template-columns: repeat(3, 1fr); }
-    footer { flex-direction: column; gap: 16px; text-align: center; }
+
+  }
+
+  /* 모바일 ABOUT — 글+사진 나란히 (480px 이상) */
+  @media (min-width: 480px) and (max-width: 768px) {
+    #about {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .about-content { order: 1; }
+    .about-visual {
+      order: 2;
+      aspect-ratio: 3/4;
+    }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-num { font-size: 1.8rem; }
+  }
+
+  @media (max-width: 480px) {
+    #about { grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .about-visual { aspect-ratio: 3/4; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .stat-num { font-size: 1.5rem; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .photo-card.wide { grid-column: span 1; }
+    .about-stats { gap: 12px; }
     .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
 
     /* 모바일: 댓글 버튼 항상 보이게 */
@@ -759,6 +783,7 @@
     .aurora { animation: none; opacity: 0.6; }
     .moon { animation: none; }
     .stars { animation: none; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
   }
 
   /* 모바일 성능 최적화 — 터치 기기 전용 */
@@ -1251,6 +1276,7 @@
     <p class="section-label about-introduce-label reveal">CONTACT</p>
     <p class="contact-desc reveal">
       사진별 Comment 작성 가능하며
+    </p>
       웹사이트 관련 피드백 환영합니다.<br>
       </p>
     <form class="contact-form reveal" id="contactForm">
@@ -1663,6 +1689,14 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault();
     return false;
   }
+});
+
+// ── 새로고침 시 맨 위(HOME)로 이동 ──────────────────────────────────────
+if (history.scrollRestoration) {
+  history.scrollRestoration = 'manual'; // 브라우저 자동 스크롤 복원 비활성화
+}
+window.addEventListener('load', () => {
+  window.scrollTo({ top: 0, behavior: 'instant' });
 });
 
 // ── window 등록 ───────────────────────────────────────────────────────────
