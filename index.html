@@ -978,7 +978,7 @@
     padding: 32px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 24px;
     align-content: start;
   }
 
@@ -997,48 +997,66 @@
     display: block;
   }
   .album-photo-card:hover img { transform: scale(1.04); }
+
+  /* 오버레이: 좌하단=제목+날짜, 우하단=댓글버튼 */
   .album-photo-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 14px;
+    pointer-events: none;
+  }
+  .album-photo-info {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 16px;
+    gap: 2px;
+    pointer-events: none;
   }
   .album-photo-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-style: italic;
     color: var(--text);
-    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .album-photo-date {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(201,169,110,0.8);
   }
   .album-comment-btn {
-    align-self: flex-start;
-    background: rgba(201,169,110,0.15);
-    border: 1px solid rgba(201,169,110,0.4);
+    pointer-events: all;
+    flex-shrink: 0;
+    background: rgba(10,10,11,0.55);
+    border: 1px solid rgba(201,169,110,0.45);
     color: var(--accent);
-    padding: 5px 12px;
+    padding: 4px 10px;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.3s;
+    white-space: nowrap;
   }
-  .album-comment-btn:hover { background: rgba(201,169,110,0.3); }
+  .album-comment-btn:hover { background: rgba(201,169,110,0.25); }
 
   @media (max-width: 768px) {
     .album-modal-grid {
       padding: 16px;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
     .album-modal-header { padding: 16px 20px; }
-    .album-comment-btn { opacity: 1; }
+    .album-comment-btn { opacity: 1; font-size: 0.6rem; padding: 5px 12px; }
   }
   @media (max-width: 480px) {
-    .album-modal-grid { grid-template-columns: 1fr; }
+    .album-modal-grid { grid-template-columns: 1fr; gap: 14px; }
   }
 
 </style>
@@ -1477,33 +1495,32 @@ const albums = {
   newyork: {
     title: 'NEWYORK',
     photos: [
-      { id: 'ny_1', src: 'photos/WS_09061.jpg', name: 'Central Park' },
-      { id: 'ny_2', src: 'photos/WS_08620.jpg', name: 'Central Park' },
-      { id: 'ny_3', src: 'photos/WS_08635-2.jpg', name: 'Central Park' },
-      { id: 'ny_4', src: 'photos/WS_09585.jpg', name: 'Central Park' },
-      // 사진 추가 시: { id: 'ny_2', src: 'photos/파일명.jpg', name: '사진 제목' },
+      { id: 'ny_1', src: 'photos/WS_09061.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_2', src: 'photos/WS_08620.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_3', src: 'photos/WS_08635-2.jpg',  name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_4', src: 'photos/WS_09585.jpg',    name: 'Central Park',  date: '2023.09' },
     ]
   },
   paris: {
     title: 'PARIS',
     photos: [
-      { id: 'pa_1', src: 'photos/Paris-84.jpg', name: 'Eiffel Tower' },
-      { id: 'pa_2', src: 'photos/Paris-83.jpg', name: 'Eiffel Tower' },
+      { id: 'pa_1', src: 'photos/Paris-84.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_2', src: 'photos/Paris-83.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
     ]
   },
   italy: {
     title: 'ITALY',
     photos: [
-      { id: 'it_1', src: 'photos/Firenze.jpg', name: 'Panorama' },
-      { id: 'it_2', src: 'photos/Italy.jpg', name: 'Panorama' },
-      { id: 'it_3', src: 'photos/Italy-8.jpg', name: 'Panorama' },
+      { id: 'it_1', src: 'photos/Firenze.jpg',  name: 'Firenze',   date: '2025.10' },
+      { id: 'it_2', src: 'photos/Italy.jpg',    name: 'Panorama',  date: '2025.10' },
+      { id: 'it_3', src: 'photos/Italy-8.jpg',  name: 'Panorama',  date: '2025.10' },
     ]
   },
   seoul: {
     title: 'SEOUL',
     photos: [
-      { id: 'se_1', src: 'photos/WS_09765.jpg', name: 'Bridge' },
-      { id: 'se_2', src: 'photos/WS_04102.jpg', name: 'Bridge' },
+      { id: 'se_1', src: 'photos/WS_09765.jpg',  name: 'Bridge',  date: '24/7' },
+      { id: 'se_2', src: 'photos/WS_04102.jpg',  name: 'Bridge',  date: '24/7' },
     ]
   },
 };
@@ -1513,15 +1530,17 @@ function openAlbum(category) {
   if (!album) return;
   document.getElementById('albumModalTitle').textContent = album.title;
 
-  // 사진 그리드 생성
   const grid = document.getElementById('albumModalGrid');
   grid.innerHTML = album.photos.map(photo => `
     <div class="album-photo-card" onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
       <img src="${photo.src}" alt="${photo.name}" loading="lazy">
       <div class="album-photo-overlay">
-        <div class="album-photo-name">${photo.name}</div>
+        <div class="album-photo-info">
+          <div class="album-photo-name">${photo.name}</div>
+          ${photo.date ? `<div class="album-photo-date">${photo.date}</div>` : ''}
+        </div>
         <button class="album-comment-btn"
-          onclick="event.stopPropagation(); openComments('${photo.id}', '${photo.name}')">
+          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${photo.name}')">
           💬 Comment
         </button>
       </div>
@@ -1604,7 +1623,7 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
       <div class="album-modal-label">Album</div>
       <div class="album-modal-title" id="albumModalTitle"></div>
     </div>
-   <button class="album-modal-close" onclick="closeAlbum()">Back to Main</button>
+   <button type="button" class="album-modal-close" onclick="closeAlbum()">← Back to Main</button>
   </div>
   <div class="album-modal-grid" id="albumModalGrid"></div>
 </div>
