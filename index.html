@@ -1124,7 +1124,7 @@
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="#home" onclick="closeMenu()">HOME</a>
-  <a href="#gallery" onclick="closeMenu()">ALBUN</a>
+  <a href="#gallery" onclick="closeMenu()">ALBUM</a>
   <a href="#about" onclick="closeMenu()">ABOUT</a>
   <a href="#contact" onclick="closeMenu()">CONTACT</a>
 </div>
@@ -1250,18 +1250,18 @@
   <div class="contact-inner">
     <p class="section-label about-introduce-label reveal">CONTACT</p>
     <p class="contact-desc reveal">
-      모든 인사, 감상평, 엽서 제작 문의 환영합니다.<br>
+      사진별 Comment 작성 가능하며 여러 피드백 환영합니다.<br>
       </p>
     <form class="contact-form reveal" id="contactForm">
       <div class="form-group">
         <input type="text" name="이름" id="name" placeholder=" " required>
-        <label for="name">이름</label>
+        <label for="name">보내는 이</label>
       </div>
       <div class="form-group">
         <textarea name="메시지" id="msg" placeholder=" " required></textarea>
         <label for="msg">메시지</label>
       </div>
-      <button type="submit" class="submit-btn" id="submitBtn">보내기</button>
+      <button type="submit" class="submit-btn" id="submitBtn">SEND</button>
     </form>
     <div class="contact-socials reveal">
       <a href="https://www.instagram.com/han_woo95" class="social-link" target="_blank">Instagram @han_woo95</a>
@@ -1433,7 +1433,7 @@ contactForm.addEventListener('submit', async function(e) {
       submitBtn.style.color = 'var(--bg)';
       contactForm.reset();
       setTimeout(() => {
-        submitBtn.textContent = '보내기';
+        submitBtn.textContent = 'SEND';
         submitBtn.style.background = '';
         submitBtn.style.color = '';
         submitBtn.disabled = false;
@@ -1445,7 +1445,7 @@ contactForm.addEventListener('submit', async function(e) {
     submitBtn.textContent = '전송 실패. 다시 시도해주세요';
     submitBtn.style.color = '#e07070';
     setTimeout(() => {
-      submitBtn.textContent = '보내기';
+      submitBtn.textContent = 'SEND';
       submitBtn.style.color = '';
       submitBtn.disabled = false;
     }, 3000);
