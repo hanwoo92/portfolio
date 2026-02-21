@@ -496,7 +496,21 @@
   }
 
   /* ABOUT */
-  #about { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  #about {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .about-label-row {
+    width: 100%;
+  }
+  .about-top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-text-block {}
   .about-visual {
     position: relative;
     aspect-ratio: 3/4;
@@ -508,7 +522,7 @@
     inset: 0;
     background: linear-gradient(200deg, #0d1830 0%, #1a2840 30%, #0a1520 60%, #050a12 100%);
   }
-    .about-deco {
+  .about-deco {
     position: absolute;
     top: -20px; left: -20px;
     width: 80%; height: 80%;
@@ -525,11 +539,20 @@
     font-size: 1.1rem;
     font-style: italic;
   }
+  .about-bottom-row {
+    width: 100%;
+    text-align: center;
+  }
+  .about-desc-text {
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    line-height: 2;
+    margin-bottom: 32px;
+  }
   .about-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    margin: 48px 0;
     padding: 32px 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -733,39 +756,34 @@
     .gallery-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     .photo-card.wide { grid-column: span 2; }
     .photo-card.tall { grid-row: span 1; aspect-ratio: 4/3; }
-    #about { grid-template-columns: 1fr; gap: 48px; }
-    .about-content { order: 1; }
-    .about-visual { order: 2; }
-    .about-introduce-label { font-size: 1.6rem; }
+    #about { gap: 24px; }
+    .about-top-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .about-visual { aspect-ratio: 3/4; }
     .about-deco { display: none; }
+    .about-bottom-row { text-align: center; }
     .about-stats { grid-template-columns: repeat(3, 1fr); }
+    .about-introduce-label { font-size: 1.6rem; }
 
   }
 
-  /* 모바일 ABOUT — 글+사진 나란히 (480px 이상) */
+  /* 모바일 ABOUT — 480px 이상 동일 구조 유지 */
   @media (min-width: 480px) and (max-width: 768px) {
-    #about {
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-    .about-content { order: 1; }
-    .about-visual {
-      order: 2;
-      aspect-ratio: 3/4;
-    }
-    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .about-top-row { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .about-stats { gap: 8px; }
     .stat-num { font-size: 1.8rem; }
   }
 
   @media (max-width: 480px) {
-    #about { grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .about-top-row { grid-template-columns: 1fr 1fr; gap: 12px; }
     .about-visual { aspect-ratio: 3/4; }
-    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .about-stats { gap: 8px; }
     .stat-num { font-size: 1.5rem; }
     .gallery-grid { grid-template-columns: 1fr; }
     .photo-card.wide { grid-column: span 1; }
-    .about-stats { gap: 12px; }
     .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
 
     /* 모바일: 댓글 버튼 항상 보이게 */
@@ -1236,13 +1254,32 @@
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="about-content reveal">
+  <!-- 상단: 소제목 (전체 너비) -->
+  <div class="about-label-row reveal">
     <p class="section-label about-introduce-label">ABOUT</p>
-    <h2 class="about-name-title">안녕하세요<br>한우석입니닼</h2>
-    <p class="about-text">
-      "여지껏 묵혀오던 지난 날들을 기억합니다."
-    </p>
-    <p style="color: var(--text-dim); font-size: 0.82rem; line-height: 2;">
+  </div>
+
+  <!-- 중단: 글+사진 나란히 -->
+  <div class="about-top-row">
+    <div class="about-text-block reveal">
+      <h2 class="about-name-title">안녕하세요<br>한우석입니닼</h2>
+      <p class="about-text">
+        "여지껏 묵혀오던 지난 날들을 기억합니다."
+      </p>
+    </div>
+    <div class="about-visual reveal">
+      <img 
+      src="photos/selfie.jpg" 
+      alt="about" 
+      style="width:100%; height:100%; object-fit:cover; display:block;"
+    >
+      <div class="about-deco"></div>
+    </div>
+  </div>
+
+  <!-- 하단: 설명+스탯 (전체 너비, 중앙정렬) -->
+  <div class="about-bottom-row reveal">
+    <p class="about-desc-text">
       지난 10여년동안 사진을 취미로만 즐겨오다 너무나도 많은 사진들을 올립니다
     </p>
     <div class="about-stats">
@@ -1260,14 +1297,6 @@
       </div>
     </div>
   </div>
-  <div class="about-visual reveal">
-    <img 
-    src="photos/selfie.jpg" 
-    alt="about" 
-    style="width:100%; height:100%; object-fit:cover; display:block;"
-  >
-    <div class="about-deco"></div>
-  </div>
 </section>
 
 <!-- CONTACT -->
@@ -1276,8 +1305,8 @@
     <p class="section-label about-introduce-label reveal">CONTACT</p>
     <p class="contact-desc reveal">
       사진별 Comment 작성 가능하며<br>
-      웹사이트 관련 피드백(버그) 환영합니다.<br>
-      </p>
+      웹사이트 관련 피드백 환영합니다.
+    </p>
     <form class="contact-form reveal" id="contactForm">
       <div class="form-group">
         <input type="text" name="이름" id="name" placeholder=" " required>
