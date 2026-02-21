@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HAN_WOO95 — My Gallery</title>
+<title>HAN_WOO95</title>
 <!-- 히어로 사진 미리 로드 (LCP 최적화) -->
 <link rel="preload" as="image" href="photos/WS_08635-2.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
@@ -327,7 +327,7 @@
     align-items: center;
     gap: 8px;
     color: var(--text-dim);
-    font-size: 0.6rem;
+    font-size: 1.2rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     animation: scrollBounce 2s ease-in-out infinite;
@@ -1153,7 +1153,7 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#home" class="logo">HAN_<span>WOO</span>95</a>
+  <a href="#home" class="logo">HAN<span>WOO</span>95</a>
   <ul class="nav-links">
     <li><a href="#home">HOME</a></li>
     <li><a href="#gallery">ALBUM</a></li>
@@ -1203,7 +1203,7 @@
       <button class="filter-btn" data-filter="newyork">NEWYORK</button>
       <button class="filter-btn" data-filter="paris">PARIS</button>
       <button class="filter-btn" data-filter="italy">ITALY</button>
-      <button class="filter-btn" data-filter="seoul">SEOUL</button>
+      <button class="filter-btn" data-filter="korea">KOREA</button>
     </div>
   </div>
 
@@ -1239,12 +1239,12 @@
       </div>
     </div>
 
-    <!-- SEOUL -->
-    <div id="section-seoul" class="photo-card wide reveal" data-category="seoul"
-      onclick="openAlbum('seoul')">
-      <img class="photo-bg-img" src="photos/WS_09765.jpg" alt="SEOUL" loading="lazy" decoding="async">
+    <!-- KOREA -->
+    <div id="section-korea" class="photo-card wide reveal" data-category="korea"
+      onclick="openAlbum('korea')">
+      <img class="photo-bg-img" src="photos/WS_09765.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
-        <div class="photo-title">SEOUL</div>
+        <div class="photo-title">KOREA</div>
         <div class="photo-count">1장</div>
       </div>
     </div>
@@ -1262,9 +1262,9 @@
   <!-- 중단: 글+사진 나란히 -->
   <div class="about-top-row">
     <div class="about-text-block reveal">
-      <h2 class="about-name-title">안녕하세요<br>한우석입니닼</h2>
+      <h2 class="about-name-title">안녕하세요. 한우석입니다</h2>
       <p class="about-text">
-        "여지껏 묵혀오던 지난 날들을 기억합니다."
+        "뭐라고 써 놓을지 모르겠습니다"
       </p>
     </div>
     <div class="about-visual reveal">
@@ -1280,20 +1280,20 @@
   <!-- 하단: 설명+스탯 (전체 너비, 중앙정렬) -->
   <div class="about-bottom-row reveal">
     <p class="about-desc-text">
-      지난 10여년동안 사진을 취미로만 즐겨오다 너무나도 많은 사진들을 올립니다
+      10여 년 동안 찍은 사진들을 정리 중이고, 이제 자랑 좀 하겠습니다.
     </p>
     <div class="about-stats">
       <div>
-        <div class="stat-num">2016</div>
-        <div class="stat-label">Since</div>
-      </div>
-      <div>
-        <div class="stat-num">7</div>
+        <div class="stat-num">13+</div>
         <div class="stat-label">Countries</div>
       </div>
       <div>
-        <div class="stat-num">12</div>
-        <div class="stat-label">City</div>
+        <div class="stat-num">ITALY</div>
+        <div class="stat-label">Recently Visited</div>
+      </div>
+      <div>
+        <div class="stat-num">Australia</div>
+        <div class="stat-label">Next Stop</div>
       </div>
     </div>
   </div>
@@ -1304,8 +1304,8 @@
   <div class="contact-inner">
     <p class="section-label about-introduce-label reveal">CONTACT</p>
     <p class="contact-desc reveal">
-      사진별 Comment 작성 가능하며<br>
-      웹사이트 관련 피드백 환영합니다.
+      사진마다 Comment 작성 가능하며<br>
+      웹사이트 관련 피드백(버그) 환영합니다.
     </p>
     <form class="contact-form reveal" id="contactForm">
       <div class="form-group">
@@ -1326,9 +1326,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <span>© 2026 HAN_WOO95</span>
-  <span style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--accent);">HAN_WOO95</span>
-  <span>사진 모음</span>
+  <span>©2026 HAN_WOO95. All rights reserved.</span>
 </footer>
 
 <!-- LIGHTBOX -->
@@ -1409,7 +1407,7 @@ const scrollTargets = {
   newyork: 'section-newyork',
   paris:   'section-paris',
   italy:   'section-italy',
-  seoul:   'section-seoul',
+  korea:   'section-korea',
 };
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', function() {
@@ -1610,11 +1608,11 @@ const albums = {
       { id: 'it_3', src: 'photos/Italy-8.jpg',  name: 'Panorama',  date: '2025.10' },
     ]
   },
-  seoul: {
-    title: 'SEOUL',
+  korea: {
+    title: 'KOREA',
     photos: [
-      { id: 'se_1', src: 'photos/WS_09765.jpg',  name: 'Bridge',  date: '24/7' },
-      { id: 'se_2', src: 'photos/WS_04102.jpg',  name: 'Bridge',  date: '24/7' },
+      { id: 'kr_1', src: 'photos/WS_09765.jpg',  name: 'Bridge',  date: '24/7' },
+      { id: 'kr_2', src: 'photos/WS_04102.jpg',  name: 'Bridge',  date: '24/7' },
     ]
   },
 };
