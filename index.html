@@ -549,7 +549,7 @@
     color: var(--text-dim);
   }
 
-  /* ABOUT — INTRODUCE 크게, 이름 소제목보다 작게 */
+  /* ABOUT — 섹션 소제목 통일 스타일 (ALBUM, ABOUT, CONTACT 공통) */
   .about-introduce-label {
     font-size: 2rem;
     letter-spacing: 0.25em;
@@ -558,6 +558,9 @@
     margin-bottom: 12px;
     font-family: 'Josefin Sans', sans-serif;
     font-weight: 100;
+    /* section-title 스타일 덮어쓰기 */
+    font-style: normal;
+    line-height: 1.2;
   }
   .about-name-title {
     font-family: 'Cormorant Garamond', serif;
@@ -1148,11 +1151,10 @@
   <div class="scroll-hint">사진 보러가기</div>
 </section>
 
-<!-- GALLERY -->
+<!-- ALBUM -->
 <div id="gallery">
   <div class="gallery-header reveal">
-    <p class="section-label"></p>
-    <h2 class="section-title">Gallery</h2>
+    <h2 class="section-title about-introduce-label">ALBUM</h2>
     <div class="gallery-filters">
       <button class="filter-btn active" data-filter="all">모아보기</button>
       <button class="filter-btn" data-filter="newyork">NEWYORK</button>
@@ -1210,7 +1212,7 @@
 <!-- ABOUT -->
 <section id="about">
   <div class="about-content reveal">
-    <p class="section-label about-introduce-label">Introduce</p>
+    <p class="section-label about-introduce-label">ABOUT</p>
     <h2 class="about-name-title">안녕하세요<br>한우석입니닼</h2>
     <p class="about-text">
       "여지껏 묵혀오던 지난 날들을 기억합니다."
@@ -1232,7 +1234,6 @@
         <div class="stat-label">City</div>
       </div>
     </div>
-    <a href="#contact" class="hero-btn" style="display:inline-block;">CONTACT ME</a>
   </div>
   <div class="about-visual reveal">
     <img 
@@ -1247,8 +1248,7 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <p class="section-label reveal">CONTACT ME</p>
-    <h2 class="section-title reveal">소통</h2>
+    <p class="section-label about-introduce-label reveal">CONTACT</p>
     <p class="contact-desc reveal">
       모든 인사, 감상평, 엽서 제작 문의 환영합니다.<br>
       </p>
