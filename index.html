@@ -966,7 +966,7 @@
     background: rgba(0,0,0,0.97);
     z-index: 2000;
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; /* 헤더 고정을 위해 모달 자체는 hidden */
   }
   .album-modal.open { display: flex; }
 
@@ -976,7 +976,10 @@
     justify-content: space-between;
     padding: 20px 32px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    flex-shrink: 0;
+    flex-shrink: 0; /* 헤더는 줄어들지 않음 */
+    background: rgba(0,0,0,0.97);
+    position: relative;
+    z-index: 1;
   }
   .album-modal-title {
     font-family: 'Cormorant Garamond', serif;
@@ -1000,32 +1003,47 @@
     font-family: 'Josefin Sans', sans-serif;
     letter-spacing: 0.15em;
     transition: color 0.2s;
+    padding: 8px 0 8px 16px; /* 터치 영역 확보 */
   }
   .album-modal-close:hover { color: var(--text); }
 
+  /* 그리드: flex:1 + overflow-y:auto 로 헤더 아래 영역만 스크롤 */
   .album-modal-grid {
     flex: 1;
-    overflow-y: auto;
-    padding: 32px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-    align-content: start;
+    overflow-y: scroll;   /* scroll 강제 — auto보다 확실 */
+    -webkit-overflow-scrolling: touch; /* iOS 모멘텀 스크롤 */
+    overscroll-behavior: contain;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column; /* 1열 세로 나열 — 잘림 완전 방지 */
+    gap: 20px;
+    min-height: 0; /* flex 자식의 overflow 동작을 위해 필수 */
   }
 
   .album-photo-card {
     position: relative;
-    overflow: hidden;
+    width: 100%;
     cursor: pointer;
     background: var(--surface);
+    flex-shrink: 0;
   }
   .album-photo-card img {
     width: 100%;
     height: auto;
     display: block;
-    transition: none; /* 확대 없애서 잘림 방지 */
   }
   .album-photo-card:hover img { transform: none; }
+
+  /* PC에서만 2열 그리드 */
+  @media (min-width: 900px) {
+    .album-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      padding: 32px;
+      align-content: start;
+    }
+  }
 
   /* 오버레이: 사진 위에 반투명으로 좌하단=제목+날짜, 우하단=댓글버튼 */
   .album-photo-overlay {
@@ -1061,12 +1079,12 @@
   .album-comment-btn {
     pointer-events: all;
     flex-shrink: 0;
-    background: rgba(10,10,11,0.55);
+    background: rgba(10,10,11,0.6);
     border: 1px solid rgba(201,169,110,0.45);
     color: var(--accent);
-    padding: 4px 10px;
+    padding: 6px 12px;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.52rem;
+    font-size: 0.58rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     cursor: pointer;
@@ -1076,16 +1094,8 @@
   .album-comment-btn:hover { background: rgba(201,169,110,0.25); }
 
   @media (max-width: 768px) {
-    .album-modal-grid {
-      padding: 16px;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
     .album-modal-header { padding: 16px 20px; }
-    .album-comment-btn { opacity: 1; font-size: 0.6rem; padding: 5px 12px; }
-  }
-  @media (max-width: 480px) {
-    .album-modal-grid { grid-template-columns: 1fr; gap: 14px; }
+    .album-comment-btn { font-size: 0.6rem; }
   }
 
 </style>
