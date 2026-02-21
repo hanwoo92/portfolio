@@ -455,15 +455,22 @@
   .photo-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 24px;
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.4s;
   }
   .photo-card:hover .photo-overlay { opacity: 1; }
+  .photo-count {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(201,169,110,0.85);
+    margin-top: 4px;
+  }
   .photo-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.9rem;
@@ -906,128 +913,6 @@
 }
 .comment-submit:hover { background: var(--accent); color: var(--bg); }
 
-  /* 앨범 힌트 */
-  .album-hint {
-    position: absolute;
-    bottom: 14px; left: 50%; transform: translateX(-50%);
-    background: rgba(10,10,11,0.7);
-    border: 1px solid rgba(201,169,110,0.4);
-    color: var(--accent);
-    padding: 6px 16px;
-    font-size: 0.62rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 0.3s;
-    white-space: nowrap;
-    pointer-events: none;
-  }
-  .photo-card:hover .album-hint { opacity: 1; }
-  @media (hover: none) and (pointer: coarse) {
-    .album-hint { opacity: 1; }
-  }
-
-  /* 앨범 페이지 */
-  .album-page {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    z-index: 500;
-    overflow-y: auto;
-    padding-top: 80px;
-  }
-  .album-page.open { display: block; }
-  .album-header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 510;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 20px 32px;
-    background: rgba(10,10,11,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .album-back {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    padding: 8px 18px;
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    cursor: pointer;
-    transition: all 0.3s;
-    white-space: nowrap;
-  }
-  .album-back:hover { border-color: var(--accent); color: var(--accent); }
-  .album-label {
-    font-size: 0.55rem;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    margin-bottom: 3px;
-  }
-  .album-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-style: italic;
-    color: var(--text);
-  }
-  .album-grid {
-    padding: 24px 24px 60px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  @media (max-width: 600px) {
-    .album-grid { grid-template-columns: 1fr; gap: 20px; }
-  }
-
-  /* 앨범 내 사진 카드 */
-  .album-photo {
-    position: relative;
-    border-radius: 0;
-    overflow: hidden;
-    background: var(--surface);
-    cursor: pointer;
-  }
-  .album-photo img {
-    width: 100%;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-  }
-  .album-photo:hover img { transform: scale(1.03); }
-  .album-photo-footer {
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--border);
-  }
-  .album-photo-name {
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    color: var(--text-dim);
-  }
-  .album-comment-btn {
-    background: none;
-    border: 1px solid rgba(201,169,110,0.35);
-    color: var(--accent);
-    padding: 5px 12px;
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  .album-comment-btn:hover { background: var(--accent-dim); }
-
   /* 저작권 보호 — 이미지 선택/드래그/터치저장 금지 */
   img, .photo-bg-img, .lightbox-img {
     -webkit-user-select: none;
@@ -1040,6 +925,120 @@
   .photo-card, .lightbox-content {
     -webkit-user-select: none;
     user-select: none;
+  }
+
+  /* ALBUM MODAL */
+  .album-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.97);
+    z-index: 2000;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .album-modal.open { display: flex; }
+
+  .album-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+  .album-modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--text);
+  }
+  .album-modal-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .album-modal-close {
+    background: none;
+    border: none;
+    color: rgba(232,228,221,0.5);
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-family: 'Josefin Sans', sans-serif;
+    letter-spacing: 0.15em;
+    transition: color 0.2s;
+  }
+  .album-modal-close:hover { color: var(--text); }
+
+  .album-modal-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    align-content: start;
+  }
+
+  .album-photo-card {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface);
+  }
+  .album-photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    display: block;
+  }
+  .album-photo-card:hover img { transform: scale(1.04); }
+  .album-photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+  .album-photo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .album-comment-btn {
+    align-self: flex-start;
+    background: rgba(201,169,110,0.15);
+    border: 1px solid rgba(201,169,110,0.4);
+    color: var(--accent);
+    padding: 5px 12px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .album-comment-btn:hover { background: rgba(201,169,110,0.3); }
+
+  @media (max-width: 768px) {
+    .album-modal-grid {
+      padding: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .album-modal-header { padding: 16px 20px; }
+    .album-comment-btn { opacity: 1; }
+  }
+  @media (max-width: 480px) {
+    .album-modal-grid { grid-template-columns: 1fr; }
   }
 
 </style>
@@ -1092,7 +1091,7 @@
   <div class="scroll-hint">사진 보러가기</div>
 </section>
 
-<!-- GALLERY (메인 - 대표사진 4장) -->
+<!-- GALLERY -->
 <div id="gallery">
   <div class="gallery-header reveal">
     <p class="section-label"></p>
@@ -1108,67 +1107,47 @@
 
   <div class="gallery-grid">
 
-    <!-- NEWYORK 대표사진 -->
+    <!-- NEWYORK -->
     <div id="section-newyork" class="photo-card tall reveal" data-category="newyork"
       onclick="openAlbum('newyork')">
-      <img class="photo-bg-img" src="photos/WS_090601.jpg" alt="NEWYORK"
-        loading="lazy" width="800" height="1067">
+      <img class="photo-bg-img" src="photos/WS_09585.jpg" alt="NEWYORK" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
-        <div class="photo-meta">2023.9 · 2장</div>
+        <div class="photo-count">1장</div>
       </div>
-      <div class="album-hint">📁 앨범 보기</div>
     </div>
 
-    <!-- PARIS 대표사진 -->
+    <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
       onclick="openAlbum('paris')">
-      <img class="photo-bg-img" src="photos/Paris-84.jpg" alt="PARIS"
-        loading="lazy" width="800" height="600">
+      <img class="photo-bg-img" src="photos/WS_09061.jpg" alt="PARIS" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
-        <div class="photo-meta">2024.10 · 2장</div>
+        <div class="photo-count">1장</div>
       </div>
-      <div class="album-hint">📁 앨범 보기</div>
     </div>
 
-    <!-- ITALY 대표사진 -->
+    <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
       onclick="openAlbum('italy')">
-      <img class="photo-bg-img" src="photos/Italy.jpg" alt="ITALY"
-        loading="lazy" width="800" height="600">
+      <img class="photo-bg-img" src="photos/WS_00932.jpg" alt="ITALY" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
-        <div class="photo-meta">2025.10 · 3장</div>
+        <div class="photo-count">1장</div>
       </div>
-      <div class="album-hint">📁 앨범 보기</div>
     </div>
 
-    <!-- SEOUL 대표사진 -->
+    <!-- SEOUL -->
     <div id="section-seoul" class="photo-card wide reveal" data-category="seoul"
       onclick="openAlbum('seoul')">
-      <img class="photo-bg-img" src="photos/WS_09765.jpg" alt="SEOUL"
-        loading="lazy" width="800" height="534">
+      <img class="photo-bg-img" src="photos/WS_08620.jpg" alt="SEOUL" loading="lazy">
       <div class="photo-overlay">
         <div class="photo-title">SEOUL</div>
-        <div class="photo-meta">24/7 · 2장</div>
+        <div class="photo-count">1장</div>
       </div>
-      <div class="album-hint">📁 앨범 보기</div>
     </div>
 
   </div>
-</div>
-
-<!-- ALBUM 페이지 (오버레이) -->
-<div class="album-page" id="albumPage">
-  <div class="album-header">
-    <button class="album-back" onclick="closeAlbum()">← 돌아가기</button>
-    <div class="album-title-wrap">
-      <div class="album-label">ALBUM</div>
-      <div class="album-title" id="albumTitle"></div>
-    </div>
-  </div>
-  <div class="album-grid" id="albumGrid"></div>
 </div>
 
 <!-- ABOUT -->
@@ -1326,93 +1305,51 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     this.classList.add('active');
     const target = document.getElementById(scrollTargets[this.dataset.filter]);
     if (target) {
-      const offset = 100;
+      const offset = 100; // 상단 nav 높이만큼 여백
       const top = target.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
   });
 });
 
-// ── 앨범 데이터 ───────────────────────────────────────────────────────────
-const albumData = {
-  newyork: {
-    title: 'NEWYORK',
-    photos: [
-      { id: 'ny_1', src: 'photos/WS_090601.jpg', name: 'New York · 2023.9' },
-      { id: 'ny_2', src: 'photos/WS_08635-2.jpg', name: 'New York · 2023.9' },
-    ]
-  },
-  paris: {
-    title: 'PARIS',
-    photos: [
-      { id: 'pa_1', src: 'photos/Paris-84.jpg', name: 'Paris · 2024.10' },
-      { id: 'pa_2', src: 'photos/Paris-83.jpg', name: 'Paris · 2024.10' },
-    ]
-  },
-  italy: {
-    title: 'ITALY',
-    photos: [
-      { id: 'it_1', src: 'photos/Italy.jpg',    name: 'Italy · 2025.10' },
-      { id: 'it_2', src: 'photos/Italy-8.jpg',  name: 'Italy · 2025.10' },
-      { id: 'it_3', src: 'photos/Firenze.jpg',  name: 'Firenze · 2025.10' },
-    ]
-  },
-  seoul: {
-    title: 'SEOUL',
-    photos: [
-      { id: 'se_1', src: 'photos/WS_09765.jpg', name: 'Seoul · 24/7' },
-      { id: 'se_2', src: 'photos/WS_04102.jpg', name: 'Seoul · 24/7' },
-    ]
-  }
+// Lightbox
+const lbBgs = {
+  p1: 'linear-gradient(180deg, #0d1830 0%, #1a2a45 50%, #0a0f1a 100%)',
+  p2: 'linear-gradient(180deg, #1a0a05 0%, #6b3015 40%, #0a0805 100%)',
+  p3: 'linear-gradient(180deg, #050d1a 0%, #152a5a 50%, #050a15 100%)',
+  p4: 'linear-gradient(160deg, #0a150a 0%, #0a3a2a 50%, #050a05 100%)',
+  p5: 'linear-gradient(180deg, #1a1005 0%, #7a5a20 40%, #150a05 100%)',
+  p6: 'linear-gradient(180deg, #050a15 0%, #152545 50%, #050a15 100%)',
+  p7: 'linear-gradient(160deg, #100508 0%, #450f20 50%, #100508 100%)',
+  p8: 'linear-gradient(180deg, #0a0a10 0%, #25253a 50%, #0a0a18 100%)',
+  p9: 'linear-gradient(160deg, #051010 0%, #154040 50%, #051515 100%)',
 };
-
-// ── 앨범 열기/닫기 ────────────────────────────────────────────────────────
-function openAlbum(category) {
-  const data = albumData[category];
-  if (!data) return;
-
-  document.getElementById('albumTitle').textContent = data.title;
-
-  const grid = document.getElementById('albumGrid');
-  grid.innerHTML = data.photos.map(p => `
-    <div class="album-photo" data-photoid="${p.id}">
-      <img src="${p.src}" alt="${p.name}" loading="lazy"
-        onclick="openLightbox('','${p.name}','','${p.src}')"
-        style="cursor:pointer;">
-      <div class="album-photo-footer">
-        <span class="album-photo-name">${p.name}</span>
-        <button class="album-comment-btn" onclick="openComments('${p.id}','${p.name}')">
-          💬 Comment
-        </button>
-      </div>
-    </div>
-  `).join('');
-
-  document.getElementById('albumPage').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  window.scrollTo(0, 0);
-}
-
-function closeAlbum() {
-  document.getElementById('albumPage').classList.remove('open');
-  document.body.style.overflow = '';
-  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-}
-
-// ── Lightbox ──────────────────────────────────────────────────────────────
 function openLightbox(bg, title, meta, imgSrc) {
   const lb = document.getElementById('lightbox');
   const img = document.getElementById('lightboxImg');
-  img.src = imgSrc;
+
+  if (imgSrc) {
+    img.src = imgSrc;
+    img.style.background = '';
+  } else {
+    img.src = '';
+    img.style.background = lbBgs[bg];
+  }
   document.getElementById('lightboxTitle').textContent = title;
   document.getElementById('lightboxMeta').textContent = meta;
   lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden'; // 스크롤 잠금
 }
 
 function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  // 앨범에서 열었으면 앨범 스크롤 유지, 아니면 완전 복구
+  if (document.getElementById('albumModal').classList.contains('open')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
 }
 
 // ── Contact 폼 AJAX 전송 (페이지 이동 없음) ──────────────────────────────
@@ -1535,6 +1472,81 @@ async function deleteComment(docId) {
   await deleteDoc(doc(db, 'comments_' + currentPhotoId, docId));
 }
 
+// ── 앨범 데이터 (사진 추가 시 여기만 수정) ───────────────────────────────
+const albums = {
+  newyork: {
+    title: 'NEWYORK',
+    photos: [
+      { id: 'ny_1', src: 'photos/WS_09585.jpg', name: 'Central Park' },
+      // 사진 추가 시: { id: 'ny_2', src: 'photos/파일명.jpg', name: '사진 제목' },
+    ]
+  },
+  paris: {
+    title: 'PARIS',
+    photos: [
+      { id: 'pa_1', src: 'photos/WS_09061.jpg', name: 'Eiffel Tower' },
+    ]
+  },
+  italy: {
+    title: 'ITALY',
+    photos: [
+      { id: 'it_1', src: 'photos/WS_00932.jpg', name: 'Panorama' },
+    ]
+  },
+  seoul: {
+    title: 'SEOUL',
+    photos: [
+      { id: 'se_1', src: 'photos/WS_08620.jpg', name: 'Bridge' },
+    ]
+  },
+};
+
+function openAlbum(category) {
+  const album = albums[category];
+  if (!album) return;
+  document.getElementById('albumModalTitle').textContent = album.title;
+
+  // 사진 그리드 생성
+  const grid = document.getElementById('albumModalGrid');
+  grid.innerHTML = album.photos.map(photo => `
+    <div class="album-photo-card" onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
+      <img src="${photo.src}" alt="${photo.name}" loading="lazy">
+      <div class="album-photo-overlay">
+        <div class="album-photo-name">${photo.name}</div>
+        <button class="album-comment-btn"
+          onclick="event.stopPropagation(); openComments('${photo.id}', '${photo.name}')">
+          💬 Comment
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('albumModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAlbum() {
+  document.getElementById('albumModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openLightboxFromAlbum(src, title, id) {
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightboxImg');
+  img.src = src;
+  document.getElementById('lightboxTitle').textContent = title;
+  document.getElementById('lightboxMeta').textContent = '';
+  lb.classList.add('open');
+  // 라이트박스 닫을 때 앨범으로 복귀
+  lb.dataset.fromAlbum = 'true';
+}
+
+// ── 앨범 카드 장수 업데이트 ───────────────────────────────────────────────
+Object.entries(albums).forEach(([key, album]) => {
+  const card = document.querySelector(`#section-${key} .photo-count`);
+  if (card) card.textContent = `${album.photos.length}장`;
+});
+
 // ── 저작권 보호 ───────────────────────────────────────────────────────────
 // 이미지 우클릭 금지
 document.addEventListener('contextmenu', function(e) {
@@ -1575,7 +1587,20 @@ window.closeLightbox = closeLightbox;
 window.closeMenu = closeMenu;
 window.openAlbum = openAlbum;
 window.closeAlbum = closeAlbum;
+window.openLightboxFromAlbum = openLightboxFromAlbum;
 </script>
+
+<!-- ALBUM MODAL -->
+<div class="album-modal" id="albumModal">
+  <div class="album-modal-header">
+    <div>
+      <div class="album-modal-label">Album</div>
+      <div class="album-modal-title" id="albumModalTitle"></div>
+    </div>
+    <button class="album-modal-close" onclick="closeAlbum()">✕ 닫기</button>
+  </div>
+  <div class="album-modal-grid" id="albumModalGrid"></div>
+</div>
 
 <!-- COMMENT PANEL -->
 <div class="comment-panel" id="commentPanel" onclick="closeComments()">
