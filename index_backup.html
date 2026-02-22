@@ -39,34 +39,27 @@
     .cursor, .cursor-ring { display: none !important; }
   }
 
-  /* CURSOR — 뷰파인더 스타일 (L자 모서리 4개 + 중앙 흰 사각형) */
+  /* CURSOR */
   .cursor {
     position: fixed;
-    width: 5px; height: 5px;
-    background: #fff;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s;
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
   }
   .cursor-ring {
     position: fixed;
-    width: 30px; height: 30px;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,169,110,0.5);
+    border-radius: 50%;
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s;
+    transition: transform 0.18s ease-out, width 0.3s, height 0.3s;
   }
-  .cursor-corner {
-    position: absolute;
-    width: 8px; height: 8px;
-    border-color: var(--accent);
-    border-style: solid;
-  }
-  .cursor-corner.tl { top: 0; left: 0;    border-width: 2px 0 0 2px; }
-  .cursor-corner.tr { top: 0; right: 0;   border-width: 2px 2px 0 0; }
-  .cursor-corner.bl { bottom: 0; left: 0;   border-width: 0 0 2px 2px; }
-  .cursor-corner.br { bottom: 0; right: 0;  border-width: 0 2px 2px 0; }
   body:hover .cursor { opacity: 1; }
 
   /* NAV */
@@ -611,39 +604,45 @@
     line-height: 1.8;
     margin-bottom: 64px;
   }
-  .contact-form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
+  .contact-form { display: flex; flex-direction: column; gap: 20px; text-align: left; }
   .form-group { position: relative; }
   .form-group input, .form-group textarea {
     width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
     color: var(--text);
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     letter-spacing: 0.05em;
     font-weight: 300;
     outline: none;
-    transition: border-color 0.3s, background 0.3s;
+    transition: border-color 0.3s;
     resize: none;
   }
-  .form-group input:focus, .form-group textarea:focus {
-    border-color: var(--accent);
-    background: rgba(201,169,110,0.04);
-  }
-  .form-group textarea { height: 130px; }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+  .form-group textarea { height: 120px; }
   .form-group label {
-    display: block;
-    font-size: 0.58rem;
+    position: absolute;
+    top: 16px; left: 0;
+    font-size: 0.65rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--text-dim);
-    margin-bottom: 6px;
+    transition: all 0.3s;
     pointer-events: none;
   }
+  .form-group input:focus + label,
+  .form-group input:not(:placeholder-shown) + label,
+  .form-group textarea:focus + label,
+  .form-group textarea:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 0.55rem;
+    color: var(--accent);
+  }
   .submit-btn {
-    align-self: center;
+    align-self: flex-start;
     background: none;
     border: 1px solid var(--accent);
     color: var(--accent);
@@ -654,7 +653,7 @@
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.3s;
-    margin-top: 8px;
+    margin-top: 16px;
   }
   .submit-btn:hover { background: var(--accent); color: var(--bg); }
   .contact-socials {
@@ -692,39 +691,38 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.98);
-    z-index: 3000;
+    background: rgba(0,0,0,0.97);
+    z-index: 3000; /* album-modal(2000) 위 */
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow-y: auto;
+    padding: 20px;
   }
   .lightbox.open { display: flex; }
   .lightbox-content {
     position: relative;
     width: 100%;
-    height: 100%;
+    max-width: 900px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 0;
   }
   .lightbox-img {
-    max-width: 100vw;
-    max-height: 100vh;
-    width: auto;
-    height: auto;
+    width: 100%;
+    max-width: 900px;
+    max-height: 80vh;
     object-fit: contain;
     display: block;
   }
   .lightbox-info {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 16px 24px;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    width: 100%;
+    padding: 16px 4px 8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
   }
   .lightbox-close {
     position: absolute;
-    top: 20px; right: 24px;
+    top: -44px; right: 0;
     background: none;
     border: none;
     color: var(--text);
@@ -732,10 +730,11 @@
     cursor: pointer;
     font-family: 'Josefin Sans', sans-serif;
     letter-spacing: 0.2em;
-    z-index: 1;
   }
   @media (max-width: 768px) {
-    .lightbox-close { top: 16px; right: 16px; }
+    .lightbox { padding: 56px 12px 20px; align-items: flex-start; }
+    .lightbox-close { top: -44px; }
+    .lightbox-img { max-height: 70vh; }
   }
 
   /* REVEAL ANIMATION */
@@ -1081,53 +1080,15 @@
   }
   .album-photo-card:hover img { transform: none; }
 
-  /* 앨범 뷰 토글 버튼 */
-  .view-toggle {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .view-toggle-btn {
-    background: none;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(232,228,221,0.4);
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-    padding: 0;
-  }
-  .view-toggle-btn.active {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .view-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* 그리드형 (기본) */
-  .album-modal-grid.view-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    padding: 24px 16px;
-    align-content: start;
-  }
+  /* PC에서만 2열 그리드 */
   @media (min-width: 900px) {
-    .album-modal-grid.view-grid {
+    .album-modal-grid {
+      display: grid;
       grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
       padding: 32px;
+      align-content: start;
     }
-  }
-
-  /* 스크롤형 (1열 세로) */
-  .album-modal-grid.view-scroll {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding: 0;
-  }
-  .album-modal-grid.view-scroll .album-photo-card {
-    border-bottom: 1px solid rgba(255,255,255,0.05);
   }
 
   /* 오버레이: 사진 위에 반투명으로 좌하단=제목+날짜, 우하단=댓글버튼 */
@@ -1188,12 +1149,7 @@
 <body>
 
 <div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing">
-  <span class="cursor-corner tl"></span>
-  <span class="cursor-corner tr"></span>
-  <span class="cursor-corner bl"></span>
-  <span class="cursor-corner br"></span>
-</div>
+<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- NAV -->
 <nav id="nav">
@@ -1353,12 +1309,12 @@
     </p>
     <form class="contact-form reveal" id="contactForm">
       <div class="form-group">
+        <input type="text" name="이름" id="name" placeholder=" " required>
         <label for="name">보내는 이</label>
-        <input type="text" name="이름" id="name" placeholder="이름을 입력해주세요" required>
       </div>
       <div class="form-group">
+        <textarea name="메시지" id="msg" placeholder=" " required></textarea>
         <label for="msg">메시지</label>
-        <textarea name="메시지" id="msg" placeholder="메시지를 입력해주세요" required></textarea>
       </div>
       <button type="submit" class="submit-btn" id="submitBtn">SEND</button>
     </form>
@@ -1414,17 +1370,11 @@ if (!isMobile) {
     setTimeout(() => {
       ring.style.left = e.clientX + 'px';
       ring.style.top = e.clientY + 'px';
-    }, 60);
+    }, 80);
   });
-  document.querySelectorAll('a,button,.photo-card,.filter-btn,.album-photo-card').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.width = '7px'; cursor.style.height = '7px';
-      ring.style.width = '42px'; ring.style.height = '42px';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.width = '5px'; cursor.style.height = '5px';
-      ring.style.width = '30px'; ring.style.height = '30px';
-    });
+  document.querySelectorAll('a,button,.photo-card,.filter-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.width='14px'; cursor.style.height='14px'; ring.style.width='50px'; ring.style.height='50px'; });
+    el.addEventListener('mouseleave', () => { cursor.style.width='8px'; cursor.style.height='8px'; ring.style.width='36px'; ring.style.height='36px'; });
   });
 }
 
@@ -1704,9 +1654,6 @@ function openAlbum(category) {
   }, { rootMargin: '200px' });
   lazyImages.forEach(img => imgObserver.observe(img));
 
-  // 뷰 토글 그리드로 초기화
-  setView('grid');
-
   document.getElementById('albumModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1786,26 +1733,8 @@ window.deleteComment = deleteComment;
 window.openLightbox = openLightbox;
 window.closeLightbox = closeLightbox;
 window.closeMenu = closeMenu;
-function setView(type) {
-  const grid = document.getElementById('albumModalGrid');
-  const btnGrid = document.getElementById('btnGrid');
-  const btnScroll = document.getElementById('btnScroll');
-  if (type === 'grid') {
-    grid.classList.remove('view-scroll');
-    grid.classList.add('view-grid');
-    btnGrid.classList.add('active');
-    btnScroll.classList.remove('active');
-  } else {
-    grid.classList.remove('view-grid');
-    grid.classList.add('view-scroll');
-    btnScroll.classList.add('active');
-    btnGrid.classList.remove('active');
-  }
-}
-
 window.openAlbum = openAlbum;
 window.closeAlbum = closeAlbum;
-window.setView = setView;
 window.openLightboxFromAlbum = openLightboxFromAlbum;
 </script>
 
@@ -1816,19 +1745,9 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
       <div class="album-modal-label">Album</div>
       <div class="album-modal-title" id="albumModalTitle"></div>
     </div>
-    <div style="display:flex; align-items:center; gap:20px;">
-      <div class="view-toggle">
-        <button type="button" class="view-toggle-btn active" id="btnGrid" onclick="setView('grid')" title="그리드">
-          ⊞
-        </button>
-        <button type="button" class="view-toggle-btn" id="btnScroll" onclick="setView('scroll')" title="스크롤">
-          ☰
-        </button>
-      </div>
-      <button type="button" class="album-modal-close" onclick="closeAlbum()">← Back to Main</button>
-    </div>
+   <button type="button" class="album-modal-close" onclick="closeAlbum()">← Back to Main</button>
   </div>
-  <div class="album-modal-grid view-grid" id="albumModalGrid"></div>
+  <div class="album-modal-grid" id="albumModalGrid"></div>
 </div>
 
 <!-- COMMENT PANEL -->
