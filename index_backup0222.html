@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HAN_WOO95</title>
 <!-- 히어로 사진 미리 로드 (LCP 최적화) -->
-<link rel="preload" as="image" href="photos/NY_Main.jpg">
+<link rel="preload" as="image" href="photos/NY_Main.jpg"><!-- 슬라이드쇼 첫 장 힌트 -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -186,20 +186,41 @@
     100% { filter: hue-rotate(15deg) brightness(1.05); }
   }
 
-  /* Simulated landscape image */
-  .hero-landscape {
+  /* Hero 슬라이드쇼 */
+  .hero-slideshow {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(to bottom,
-        transparent 0%,
-        transparent 35%,
-        rgba(15,20,35,0.4) 50%,
-        rgba(8,10,15,0.85) 75%,
-        var(--bg) 100%
-      ),
-      radial-gradient(ellipse at 50% 60%, rgba(30,50,90,0.6) 0%, transparent 70%);
     overflow: hidden;
+  }
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    transform: scale(1.06);
+    animation: kenBurns 7s ease-in-out forwards;
+  }
+  .hero-slide.active {
+    opacity: 1;
+  }
+  .hero-slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.1)  0%,
+      rgba(0,0,0,0.05) 40%,
+      rgba(8,10,15,0.7) 78%,
+      var(--bg) 100%
+    );
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1.06) translate(0, 0); }
+    to   { transform: scale(1.0)  translate(-0.5%, 0.5%); }
   }
   .mountain {
     position: absolute;
@@ -282,7 +303,7 @@
     to { opacity: 1; transform: translateY(0); }
   }
   .hero-eyebrow {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.4em;
     color: var(--accent);
     text-transform: uppercase;
@@ -312,17 +333,16 @@
   .hero-btn {
     display: inline-block;
     padding: 14px 40px;
-    border: 1px solid var(--accent);
+    border: none;
     color: var(--accent);
     text-decoration: none;
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    transition: background 0.3s, color 0.3s;
+    transition: color 0.3s;
   }
   .hero-btn:hover {
-    background: var(--accent);
-    color: var(--bg);
+    color: var(--text);
   }
   .scroll-hint {
     position: absolute;
@@ -404,25 +424,21 @@
 
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 480px;
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 0;
     max-width: 1400px;
     margin: 0 auto;
   }
-  #section-newyork { grid-column: 1; grid-row: 1; }
-  #section-paris   { grid-column: 2; grid-row: 1; }
-  #section-italy   { grid-column: 3; grid-row: 1; }
-  #section-korea   { grid-column: 4; grid-row: 1; }
-
   .photo-card {
     position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
     overflow: hidden;
     cursor: pointer;
     background: var(--surface);
-    width: 100%;
-    height: 100%;
   }
+  .photo-card.tall { aspect-ratio: 16/9; }
+  .photo-card.wide { aspect-ratio: 16/9; }
 
   /* Photo placeholders with actual landscape aesthetics */
   .photo-card .photo-bg {
@@ -606,7 +622,7 @@
   }
 
   /* CONTACT */
-  #contact { text-align: center; }
+  #contact { text-align: center; padding-bottom: 40px; }
   .contact-inner { max-width: 560px; margin: 0 auto; }
   .contact-desc {
     font-family: 'Cormorant Garamond', serif;
@@ -667,8 +683,9 @@
     justify-content: center;
     gap: 32px;
     margin-top: 32px;
-    padding-top: 32px;
+    padding: 32px 0;
     border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
   .social-link {
     color: var(--text-dim);
@@ -682,13 +699,12 @@
 
   /* FOOTER */
   footer {
-    border-top: 1px solid var(--border);
     padding: 16px 48px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     color: var(--text-dim);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     letter-spacing: 0.15em;
   }
 
@@ -759,32 +775,7 @@
     section { padding: 80px 24px; }
     #gallery { padding: 80px 16px; }
     .gallery-header { padding: 0 8px; margin-bottom: 32px; }
-    .gallery-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: unset;
-      gap: 8px;
-    }
-    /* 모바일: 가로형 고정 비율, 사진 잘림 없이 */
-    #section-newyork,
-    #section-paris,
-    #section-italy,
-    #section-korea {
-      grid-column: 1;
-      grid-row: unset;
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card {
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card .photo-bg-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .gallery-grid { grid-template-columns: 1fr; gap: 0; }
     #about { gap: 24px; }
     .about-top-row {
       grid-template-columns: 1fr 1fr;
@@ -796,7 +787,6 @@
     .about-bottom-row { text-align: center; }
     .about-stats { grid-template-columns: repeat(3, 1fr); }
     .about-introduce-label { font-size: 1.6rem; }
-
   }
 
   /* 모바일 ABOUT — 480px 이상 동일 구조 유지 */
@@ -811,31 +801,6 @@
     .about-visual { aspect-ratio: 3/4; }
     .about-stats { gap: 8px; }
     .stat-num { font-size: 1.5rem; }
-    .gallery-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: unset;
-      gap: 6px;
-    }
-    #section-newyork,
-    #section-paris,
-    #section-italy,
-    #section-korea {
-      grid-column: 1;
-      grid-row: unset;
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card {
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card .photo-bg-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
     .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
     .comment-btn { opacity: 1 !important; }
     .photo-overlay { opacity: 0.85; }
@@ -844,15 +809,8 @@
     .moon { animation: none; }
     .stars { animation: none; }
     footer { flex-direction: column; gap: 12px; text-align: center; }
-  }
-
-  /* 모바일 성능 최적화 — 터치 기기 전용 */
-  @media (hover: none) and (pointer: coarse) {
-    .hero-landscape { background-attachment: scroll !important; }
-    .photo-bg { will-change: auto; }
-    .photo-card:hover .photo-bg { transform: none; }
-    .filter-btn:hover { border-color: var(--border); color: var(--text-dim); background: none; }
-    .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: px; }
+    .stat-num { font-size: 2rem; }
   }
 /* COMMENT PANEL */
 /* COMMENT */
@@ -1279,16 +1237,12 @@
 <!-- HERO -->
 <section id="home" style="padding:0; max-width:100%; margin:0;">
   <div class="hero-bg"></div>
-  <!-- 실제 사진으로 교체 -->
-<div class="hero-landscape" style="
-  background-image: url('photos/NY_Main.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: scroll;
-  image-rendering: auto;
-  will-change: auto;
-">
-</div>
+
+  <div class="hero-slideshow" id="heroSlideshow">
+    <div class="hero-slide" id="heroSlide0"></div>
+    <div class="hero-slide" id="heroSlide1"></div>
+  </div>
+
   <div class="hero-content">
     <p class="hero-eyebrow">portfolio</p>
     <h1 class="hero-title"><em>Fill This Way</em></h1>
@@ -1311,11 +1265,10 @@
     </div>
   </div>
 
-  <div class="gallery-grid" id="galleryGrid">
+  <div class="gallery-grid">
 
     <!-- NEWYORK -->
     <div id="section-newyork" class="photo-card reveal" data-category="newyork"
-      data-cover="photos/NY_1.jpg"
       onclick="openAlbum('newyork')">
       <img class="photo-bg-img" src="photos/NY_1.jpg" alt="NEWYORK" loading="lazy" decoding="async">
       <div class="photo-overlay">
@@ -1326,7 +1279,6 @@
 
     <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
-      data-cover="photos/Paris_Main.jpg"
       onclick="openAlbum('paris')">
       <img class="photo-bg-img" src="photos/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
       <div class="photo-overlay">
@@ -1337,7 +1289,6 @@
 
     <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
-      data-cover="photos/Italy_Main.jpg"
       onclick="openAlbum('italy')">
       <img class="photo-bg-img" src="photos/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
       <div class="photo-overlay">
@@ -1348,7 +1299,6 @@
 
     <!-- KOREA -->
     <div id="section-korea" class="photo-card reveal" data-category="korea"
-      data-cover="photos/KR_Main.jpg"
       onclick="openAlbum('korea')">
       <img class="photo-bg-img" src="photos/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
@@ -1356,6 +1306,8 @@
         <div class="photo-count" id="count-korea"></div>
       </div>
     </div>
+
+  </div>
 
   </div>
 </div>
@@ -1491,6 +1443,60 @@ if (!isMobile) {
     });
   });
 }
+
+// ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
+(function () {
+  const INTERVAL = 5000;
+
+  const allPhotos = [
+    'photos/NY_Main.jpg','photos/NY_1.jpg','photos/NY_2.jpg','photos/NY_3.jpg',
+    'photos/NY_4.jpg','photos/NY_5.jpg','photos/NY_6.jpg','photos/NY_7.jpg','photos/NY_8.jpg',
+    'photos/Paris_Main.jpg','photos/Paris_1.jpg','photos/Paris_2.jpg','photos/Paris_3.jpg',
+    'photos/Paris_4.jpg','photos/Paris_5.jpg','photos/Paris_6.jpg','photos/Paris_7.jpg',
+    'photos/Italy_Main.jpg','photos/Italy_1.jpg','photos/Italy_2.jpg','photos/Italy_3.jpg',
+    'photos/Italy_4.jpg','photos/Italy_5.jpg','photos/Italy_6.jpg',
+    'photos/KR_Main.jpg','photos/KR_1.jpg','photos/KR_2.jpg','photos/KR_3.jpg',
+    'photos/KR_4.jpg','photos/KR_5.jpg','photos/KR_6.jpg','photos/KR_7.jpg',
+  ];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const list = shuffle(allPhotos);
+  const slide0 = document.getElementById('heroSlide0');
+  const slide1 = document.getElementById('heroSlide1');
+  if (!slide0) return;
+
+  let cur = 0;
+  let photoIdx = 0;
+
+  // 첫 사진 즉시 표시
+  slide0.style.backgroundImage = `url('${list[0]}')`;
+  slide0.classList.add('active');
+  slide1.style.backgroundImage = `url('${list[1 % list.length]}')`;
+
+  setInterval(() => {
+    const slides = [slide0, slide1];
+    const next = 1 - cur;
+    photoIdx = (photoIdx + 1) % list.length;
+
+    slides[next].style.backgroundImage = `url('${list[photoIdx]}')`;
+    slides[next].style.animation = 'none';
+    slides[next].offsetHeight;
+    slides[next].style.animation = '';
+    slides[next].classList.add('active');
+    slides[cur].classList.remove('active');
+
+    new Image().src = list[(photoIdx + 1) % list.length];
+    cur = next;
+  }, INTERVAL);
+})();
 
 // Nav scroll
 window.addEventListener('scroll', () => {
@@ -1724,71 +1730,57 @@ async function deleteComment(docId) {
 const albums = {
   newyork: {
     title: 'NEWYORK',
-    cover: 'photos/NY_1.jpg',
     photos: [
-      { id: 'ny_main', src: 'photos/NY_Main.jpg', name: 'Pebble Beach',       date: '2023.09' },
-      { id: 'ny_1',    src: 'photos/NY_1.jpg',    name: 'Pebble Beach',       date: '2023.09' },
-      { id: 'ny_2',    src: 'photos/NY_2.jpg',    name: 'Central Park',       date: '2023.09' },
-      { id: 'ny_3',    src: 'photos/NY_3.jpg',    name: 'Top of The Rock',    date: '2023.09' },
-      { id: 'ny_4',    src: 'photos/NY_4.jpg',    name: 'Summit One',         date: '2023.09' },
-      { id: 'ny_5',    src: 'photos/NY_5.jpg',    name: 'NEW YORK',           date: '2023.09' },
-      { id: 'ny_6',    src: 'photos/NY_6.jpg',    name: 'Top of The Rock',    date: '2023.09' },
-      { id: 'ny_7',    src: 'photos/NY_7.jpg',    name: 'NEW YORK',           date: '2023.09' },
-      { id: 'ny_8',    src: 'photos/NY_8.jpg',    name: 'Fellini Coffee Soho',date: '2023.09' },
+      { id: 'ny_main', src: 'photos/NY_Main.jpg',  name: 'Pebble Beach',  date: '2023.09' },
+      { id: 'ny_1', src: 'photos/NY_1.jpg',    name: 'Pebble Beach',  date: '2023.09' },
+      { id: 'ny_2', src: 'photos/NY_2.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_3', src: 'photos/NY_3.jpg',    name: 'Top of The Rock',  date: '2023.09' },
+      { id: 'ny_4', src: 'photos/NY_4.jpg',    name: 'Summit One',  date: '2023.09' },
+      { id: 'ny_5', src: 'photos/NY_5.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_6', src: 'photos/NY_6.jpg',    name: 'Top of The Rock',  date: '2023.09' },
+      { id: 'ny_7', src: 'photos/NY_7.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_8', src: 'photos/NY_8.jpg',    name: 'Fellini Coffee Soho',  date: '2023.09' },
     ]
   },
   paris: {
     title: 'PARIS',
-    cover: 'photos/Paris_Main.jpg',
     photos: [
-      { id: 'pa_main', src: 'photos/Paris_Main.jpg', name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_1',    src: 'photos/Paris_1.jpg',    name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_2',    src: 'photos/Paris_2.jpg',    name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_3',    src: 'photos/Paris_3.jpg',    name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_4',    src: 'photos/Paris_4.jpg',    name: 'PARIS Street',  date: '2024.10' },
-      { id: 'pa_5',    src: 'photos/Paris_5.jpg',    name: 'PARIS Street',  date: '2024.10' },
-      { id: 'pa_6',    src: 'photos/Paris_6.jpg',    name: 'PARIS Street',  date: '2024.10' },
-      { id: 'pa_7',    src: 'photos/Paris_7.jpg',    name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_main', src: 'photos/Paris_Main.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_1', src: 'photos/Paris_1.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_2', src: 'photos/Paris_2.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_3', src: 'photos/Paris_3.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_4', src: 'photos/Paris_4.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_5', src: 'photos/Paris_5.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_6', src: 'photos/Paris_6.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_7', src: 'photos/Paris_7.jpg',  name: 'PARIS Street',  date: '2024.10' },
     ]
   },
   italy: {
     title: 'ITALY',
-    cover: 'photos/Italy_Main.jpg',
     photos: [
-      { id: 'it_main', src: 'photos/Italy_Main.jpg', name: 'Piazzale Michelangelo', date: '2025.10' },
-      { id: 'it_1',    src: 'photos/Italy_1.jpg',    name: 'Lago di Misurina',      date: '2025.10' },
-      { id: 'it_2',    src: 'photos/Italy_2.jpg',    name: 'Dolomiti',              date: '2025.10' },
-      { id: 'it_3',    src: 'photos/Italy_3.jpg',    name: 'Dolomiti',              date: '2025.10' },
-      { id: 'it_4',    src: 'photos/Italy_4.jpg',    name: 'Lake Braies',           date: '2025.10' },
-      { id: 'it_5',    src: 'photos/Italy_5.jpg',    name: 'Piazzale Michelangelo', date: '2025.10' },
-      { id: 'it_6',    src: 'photos/Italy_6.jpg',    name: 'Dolomiti',              date: '2025.10' },
+      { id: 'it_main', src: 'photos/Italy_Main.jpg',  name: 'Piazzale Michelangelo',   date: '2025.10' },
+      { id: 'it_1', src: 'photos/Italy_1.jpg',    name: 'Lago di Misurina',  date: '2025.10' },
+      { id: 'it_2', src: 'photos/Italy_2.jpg',  name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_3', src: 'photos/Italy_3.jpg',  name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_4', src: 'photos/Italy_4.jpg',  name: 'Lake Braies',  date: '2025.10' },
+      { id: 'it_5', src: 'photos/Italy_5.jpg',  name: 'Piazzale Michelangelo',  date: '2025.10' },
+      { id: 'it_6', src: 'photos/Italy_6.jpg',  name: 'Dolomiti',  date: '2025.10' },
     ]
   },
   korea: {
     title: 'KOREA',
-    cover: 'photos/KR_Main.jpg',
     photos: [
-      { id: 'kr_main', src: 'photos/KR_Main.jpg', name: 'Suwon',  date: '2000.00' },
-      { id: 'kr_1',    src: 'photos/KR_1.jpg',    name: 'Jeju',   date: '2000.00' },
-      { id: 'kr_2',    src: 'photos/KR_2.jpg',    name: 'Seoul',  date: '2000.00' },
-      { id: 'kr_3',    src: 'photos/KR_3.jpg',    name: 'Seoul',  date: '2000.00' },
-      { id: 'kr_4',    src: 'photos/KR_4.jpg',    name: 'Sokcho', date: '2000.00' },
-      { id: 'kr_5',    src: 'photos/KR_5.jpg',    name: 'Busan',  date: '2000.00' },
-      { id: 'kr_6',    src: 'photos/KR_6.jpg',    name: 'Seoul',  date: '2000.00' },
-      { id: 'kr_7',    src: 'photos/KR_7.jpg',    name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_main', src: 'photos/KR_Main.jpg',  name: 'Suwon',  date: '2000.00' },
+      { id: 'kr_1', src: 'photos/KR_1.jpg',  name: 'Jeju',  date: '2000.00' },
+      { id: 'kr_2', src: 'photos/KR_2.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_3', src: 'photos/KR_3.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_4', src: 'photos/KR_4.jpg',  name: 'Sokcho',  date: '2000.00' },
+      { id: 'kr_5', src: 'photos/KR_5.jpg',  name: 'Busan',  date: '2000.00' },
+      { id: 'kr_6', src: 'photos/KR_6.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_7', src: 'photos/KR_7.jpg',  name: 'Seoul',  date: '2000.00' },
     ]
   },
 };
-
-// ── 갤러리 사진 장수 표시 ────────────────────────────────────────────────
-function initGalleryOrientation() {
-  Object.keys(albums).forEach(key => {
-    const album = albums[key];
-    const countEl = document.getElementById('count-' + key);
-    if (countEl) countEl.textContent = album.photos.length + '장';
-  });
-}
-initGalleryOrientation();
 
 function openAlbum(category) {
   const album = albums[category];
@@ -1799,7 +1791,6 @@ function openAlbum(category) {
   grid.innerHTML = album.photos.map(photo => `
     <div class="album-photo-wrapper">
       <div class="album-photo-card"
-           data-fullsrc="${photo.src}"
            onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
         <img data-src="${photo.src}" alt="${photo.name}" decoding="async"
              style="width:100%;height:auto;display:block;background:var(--surface2);">
