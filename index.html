@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HAN_WOO95</title>
 <!-- 히어로 사진 미리 로드 (LCP 최적화) -->
-<link rel="preload" as="image" href="photos/WS_08635-2.jpg">
+<link rel="preload" as="image" href="photos/NY_Main.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1252,7 +1252,7 @@
   <div class="hero-bg"></div>
   <!-- 실제 사진으로 교체 -->
 <div class="hero-landscape" style="
-  background-image: url('photos/WS_08635-2.jpg');
+  background-image: url('photos/NY_Main.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
@@ -1287,7 +1287,7 @@
     <!-- NEWYORK -->
     <div id="section-newyork" class="photo-card tall reveal" data-category="newyork"
       onclick="openAlbum('newyork')">
-      <img class="photo-bg-img" src="photos/WS_09061.jpg" alt="NEWYORK" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/NY_1.jpg" alt="NEWYORK" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
         <div class="photo-count">1장</div>
@@ -1297,7 +1297,7 @@
     <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
       onclick="openAlbum('paris')">
-      <img class="photo-bg-img" src="photos/Paris-84.jpg" alt="PARIS" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
         <div class="photo-count">1장</div>
@@ -1307,7 +1307,7 @@
     <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
       onclick="openAlbum('italy')">
-      <img class="photo-bg-img" src="photos/Firenze.jpg" alt="ITALY" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
         <div class="photo-count">1장</div>
@@ -1317,7 +1317,7 @@
     <!-- KOREA -->
     <div id="section-korea" class="photo-card wide reveal" data-category="korea"
       onclick="openAlbum('korea')">
-      <img class="photo-bg-img" src="photos/WS_09765.jpg" alt="KOREA" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">KOREA</div>
         <div class="photo-count">1장</div>
@@ -1344,7 +1344,7 @@
     </div>
     <div class="about-visual reveal">
       <img 
-      src="photos/selfie.jpg" 
+      src="photos/Selfie.jpg" 
       alt="about" 
       style="width:100%; height:100%; object-fit:cover; display:block;"
     >
@@ -1355,7 +1355,7 @@
   <!-- 하단: 설명+스탯 (전체 너비, 중앙정렬) -->
   <div class="about-bottom-row reveal">
     <p class="about-desc-text">
-      10여 년 동안 찍은 사진들을 정리 중이고, 이제 자랑 좀 하겠습니다.
+      10여 년 동안 찍은 사진들을 정리 중이고, 이제 자랑 좀 하겠습니다?.
     </p>
     <div class="about-stats">
       <div>
@@ -1379,17 +1379,17 @@
   <div class="contact-inner">
     <p class="section-label about-introduce-label reveal">CONTACT</p>
     <p class="contact-desc reveal">
-      사진마다 Comment 작성 가능하며<br>
-      웹사이트 관련 피드백(버그) 환영합니다.
+      사진마다 Comment 작성해주시고<br>
+      웹사이트 관련 피드백(버그) 아래로 보내주세요.
     </p>
     <form class="contact-form reveal" id="contactForm">
       <div class="form-group">
-        <label for="name">보내는 이</label>
-        <input type="text" name="이름" id="name" placeholder="이름을 입력해주세요" required>
+        <label for="name">Your Name</label>
+        <input type="text" name="이름" id="name" placeholder="" required>
       </div>
       <div class="form-group">
-        <label for="msg">메시지</label>
-        <textarea name="메시지" id="msg" placeholder="메시지를 입력해주세요" required></textarea>
+        <label for="msg">Feedback</label>
+        <textarea name="메시지" id="msg" placeholder="" required></textarea>
       </div>
       <button type="submit" class="submit-btn" id="submitBtn">SEND</button>
     </form>
@@ -1692,32 +1692,38 @@ const albums = {
   newyork: {
     title: 'NEWYORK',
     photos: [
-      { id: 'ny_1', src: 'photos/WS_09061.jpg',    name: 'Central Park',  date: '2023.09' },
-      { id: 'ny_2', src: 'photos/WS_08620.jpg',    name: 'Central Park',  date: '2023.09' },
-      { id: 'ny_3', src: 'photos/WS_08635-2.jpg',  name: 'Central Park',  date: '2023.09' },
-      { id: 'ny_4', src: 'photos/WS_09585.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_main', src: 'photos/NY_Main.jpg',  name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_1', src: 'photos/NY_1.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_2', src: 'photos/NY_2.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_3', src: 'photos/NY_3.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_4', src: 'photos/NY_4.jpg',    name: 'Central Park',  date: '2023.09' },
     ]
   },
   paris: {
     title: 'PARIS',
     photos: [
-      { id: 'pa_1', src: 'photos/Paris-84.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_2', src: 'photos/Paris-83.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_main', src: 'photos/Paris_Main.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_1', src: 'photos/Paris_1.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
     ]
   },
   italy: {
     title: 'ITALY',
     photos: [
-      { id: 'it_1', src: 'photos/Firenze.jpg',  name: 'Firenze',   date: '2025.10' },
-      { id: 'it_2', src: 'photos/Italy.jpg',    name: 'Panorama',  date: '2025.10' },
-      { id: 'it_3', src: 'photos/Italy-8.jpg',  name: 'Panorama',  date: '2025.10' },
+      { id: 'it_main', src: 'photos/Italy_Main.jpg',  name: 'Firenze',   date: '2025.10' },
+      { id: 'it_1', src: 'photos/Italy_1.jpg',    name: 'Panorama',  date: '2025.10' },
+      { id: 'it_2', src: 'photos/Italy_2.jpg',  name: 'Panorama',  date: '2025.10' },
+      { id: 'it_3', src: 'photos/Italy_3.jpg',  name: 'Panorama',  date: '2025.10' },
     ]
   },
   korea: {
     title: 'KOREA',
     photos: [
-      { id: 'kr_1', src: 'photos/WS_09765.jpg',  name: 'Bridge',  date: '24/7' },
-      { id: 'kr_2', src: 'photos/WS_04102.jpg',  name: 'Bridge',  date: '24/7' },
+      { id: 'kr_main', src: 'photos/KR_Main.jpg',  name: 'Bridge',  date: '2000.00' },
+      { id: 'kr_1', src: 'photos/KR_1.jpg',  name: 'Bridge',  date: '2000.00' },
+      { id: 'kr_2', src: 'photos/KR_2.jpg',  name: 'Bridge',  date: '2000.00' },
+      { id: 'kr_3', src: 'photos/KR_3.jpg',  name: 'Bridge',  date: '2000.00' },
+      { id: 'kr_4', src: 'photos/KR_4.jpg',  name: 'Bridge',  date: '2000.00' },
+      { id: 'kr_5', src: 'photos/KR_5.jpg',  name: 'Bridge',  date: '2000.00' },
     ]
   },
 };
