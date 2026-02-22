@@ -1019,14 +1019,24 @@
 
   .album-modal-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 32px;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    flex-shrink: 0; /* 헤더는 줄어들지 않음 */
+    flex-shrink: 0;
     background: rgba(0,0,0,0.97);
     position: relative;
     z-index: 1;
+  }
+  .album-modal-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .album-modal-header-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .album-modal-title {
     font-family: 'Cormorant Garamond', serif;
@@ -1039,18 +1049,19 @@
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
   .album-modal-close {
     background: none;
     border: none;
     color: rgba(232,228,221,0.5);
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     cursor: pointer;
     font-family: 'Josefin Sans', sans-serif;
     letter-spacing: 0.15em;
     transition: color 0.2s;
-    padding: 8px 0 8px 16px; /* 터치 영역 확보 */
+    padding: 6px 0 6px 12px;
+    white-space: nowrap;
   }
   .album-modal-close:hover { color: var(--text); }
 
@@ -1108,14 +1119,18 @@
   .album-modal-grid.view-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    padding: 24px 16px;
+    gap: 12px;
+    padding: 16px;
     align-content: start;
+  }
+  /* 가로 긴 사진 자동으로 전체 너비 */
+  .album-modal-grid.view-grid .album-photo-card.wide-photo {
+    grid-column: span 2;
   }
   @media (min-width: 900px) {
     .album-modal-grid.view-grid {
-      grid-template-columns: repeat(2, 1fr);
-      padding: 32px;
+      gap: 20px;
+      padding: 28px;
     }
   }
 
@@ -1130,57 +1145,71 @@
     border-bottom: 1px solid rgba(255,255,255,0.05);
   }
 
-  /* 오버레이: 사진 위에 반투명으로 좌하단=제목+날짜, 우하단=댓글버튼 */
+  /* 가로 긴 사진의 footer도 전체 너비 */
+  .album-modal-grid.view-grid .album-card-footer.wide-footer {
+    grid-column: span 2;
+  }
+  /* 스크롤형에서 footer 스타일 */
+  .album-modal-grid.view-scroll .album-card-footer {
+    padding: 4px 12px 8px;
+  }
+
+  /* 오버레이: 좌하단=제목+날짜만 */
   .album-photo-overlay {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    justify-content: space-between;
-    padding: 12px 14px;
+    padding: 10px 12px;
     pointer-events: none;
   }
   .album-photo-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     pointer-events: none;
   }
   .album-photo-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-style: italic;
     color: var(--text);
     line-height: 1.2;
   }
   .album-photo-date {
-    font-size: 0.55rem;
-    letter-spacing: 0.18em;
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(201,169,110,0.8);
   }
+
+  /* COMMENT 버튼 — 사진 밖 아래 우측 */
+  .album-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 4px 0 0 0;
+  }
   .album-comment-btn {
-    pointer-events: all;
-    flex-shrink: 0;
-    background: rgba(10,10,11,0.6);
-    border: 1px solid rgba(201,169,110,0.45);
-    color: var(--accent);
-    padding: 6px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(201,169,110,0.4);
+    color: rgba(201,169,110,0.7);
+    padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
+    font-size: 0.48rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: color 0.2s, border-color 0.2s;
     white-space: nowrap;
   }
-  .album-comment-btn:hover { background: rgba(201,169,110,0.25); }
+  .album-comment-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   @media (max-width: 768px) {
-    .album-modal-header { padding: 16px 20px; }
-    .album-comment-btn { font-size: 0.6rem; }
+    .album-modal-header { padding: 14px 16px; }
+    .album-comment-btn { font-size: 0.52rem; }
   }
 
 </style>
@@ -1673,9 +1702,9 @@ function openAlbum(category) {
   document.getElementById('albumModalTitle').textContent = album.title;
 
   const grid = document.getElementById('albumModalGrid');
-  // data-src 로 지연 로드 — 실제 로딩은 스크롤 시 Intersection Observer가 처리
   grid.innerHTML = album.photos.map(photo => `
-    <div class="album-photo-card" onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
+    <div class="album-photo-card" data-src="${photo.src}"
+         onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
       <img data-src="${photo.src}" alt="${photo.name}" decoding="async"
            style="width:100%;height:auto;display:block;background:var(--surface2);">
       <div class="album-photo-overlay">
@@ -1683,21 +1712,34 @@ function openAlbum(category) {
           <div class="album-photo-name">${photo.name}</div>
           ${photo.date ? `<div class="album-photo-date">${photo.date}</div>` : ''}
         </div>
-        <button class="album-comment-btn"
-          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${photo.name}')">
-          💬 Comment
-        </button>
       </div>
+    </div>
+    <div class="album-card-footer">
+      <button class="album-comment-btn"
+        onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${photo.name}')">
+        💬 COMMENT
+      </button>
     </div>
   `).join('');
 
-  // Intersection Observer로 뷰포트 진입 시만 이미지 로드
+  // Intersection Observer로 뷰포트 진입 시만 이미지 로드 + 가로 사진 감지
   const lazyImages = grid.querySelectorAll('img[data-src]');
   const imgObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const img = entry.target;
         img.src = img.dataset.src;
+        img.onload = () => {
+          // 가로가 더 긴 사진 → wide-photo 클래스 추가
+          if (img.naturalWidth > img.naturalHeight * 1.2) {
+            img.closest('.album-photo-card').classList.add('wide-photo');
+            // footer도 span 처리
+            const footer = img.closest('.album-photo-card').nextElementSibling;
+            if (footer && footer.classList.contains('album-card-footer')) {
+              footer.classList.add('wide-footer');
+            }
+          }
+        };
         imgObserver.unobserve(img);
       }
     });
@@ -1812,18 +1854,18 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
 <!-- ALBUM MODAL -->
 <div class="album-modal" id="albumModal">
   <div class="album-modal-header">
-    <div>
-      <div class="album-modal-label">Album</div>
-      <div class="album-modal-title" id="albumModalTitle"></div>
+    <!-- 1행: ALBUM 라벨 + 제목 -->
+    <div class="album-modal-header-top">
+      <div>
+        <div class="album-modal-label">Album</div>
+        <div class="album-modal-title" id="albumModalTitle"></div>
+      </div>
     </div>
-    <div style="display:flex; align-items:center; gap:20px;">
+    <!-- 2행: 뷰 토글 + Back to Main -->
+    <div class="album-modal-header-bottom">
       <div class="view-toggle">
-        <button type="button" class="view-toggle-btn active" id="btnGrid" onclick="setView('grid')" title="그리드">
-          ⊞
-        </button>
-        <button type="button" class="view-toggle-btn" id="btnScroll" onclick="setView('scroll')" title="스크롤">
-          ☰
-        </button>
+        <button type="button" class="view-toggle-btn active" id="btnGrid" onclick="setView('grid')" title="그리드">⊞</button>
+        <button type="button" class="view-toggle-btn" id="btnScroll" onclick="setView('scroll')" title="스크롤">☰</button>
       </div>
       <button type="button" class="album-modal-close" onclick="closeAlbum()">← Back to Main</button>
     </div>
