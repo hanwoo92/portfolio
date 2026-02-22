@@ -761,14 +761,28 @@
     #gallery { padding: 80px 16px; }
     .gallery-header { padding: 0 8px; margin-bottom: 32px; }
     .gallery-grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 180px;
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
       gap: 8px;
     }
-    .photo-card.orient-wide  { grid-column: span 2; grid-row: span 1; }
-    .photo-card.orient-tall  { grid-column: span 1; grid-row: span 2; }
-    .photo-card.orient-pano  { grid-column: span 2; grid-row: span 1; }
-    .photo-card.orient-square { grid-column: span 1; grid-row: span 1; }
+    /* 모바일: 사진 자연 비율로 표시 */
+    .photo-card .photo-bg-img {
+      position: relative;
+      width: 100%;
+      height: auto;
+      inset: unset;
+    }
+    .photo-card {
+      aspect-ratio: unset;
+      min-height: unset;
+    }
+    .photo-card.orient-wide,
+    .photo-card.orient-tall,
+    .photo-card.orient-pano,
+    .photo-card.orient-square {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
     #about { gap: 24px; }
     .about-top-row {
       grid-template-columns: 1fr 1fr;
@@ -796,13 +810,24 @@
     .about-stats { gap: 8px; }
     .stat-num { font-size: 1.5rem; }
     .gallery-grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 140px;
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
       gap: 6px;
     }
-    .photo-card.orient-wide  { grid-column: span 2; }
-    .photo-card.orient-tall  { grid-column: span 1; grid-row: span 2; }
-    .photo-card.orient-pano  { grid-column: span 2; }
+    .photo-card .photo-bg-img {
+      position: relative;
+      width: 100%;
+      height: auto;
+      inset: unset;
+    }
+    .photo-card { aspect-ratio: unset; }
+    .photo-card.orient-wide,
+    .photo-card.orient-tall,
+    .photo-card.orient-pano,
+    .photo-card.orient-square {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
     .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
     .comment-btn { opacity: 1 !important; }
     .photo-overlay { opacity: 0.85; }
