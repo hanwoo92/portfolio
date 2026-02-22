@@ -404,25 +404,20 @@
 
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 480px;
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
     max-width: 1400px;
     margin: 0 auto;
   }
-  #section-newyork { grid-column: 1; grid-row: 1; }
-  #section-paris   { grid-column: 2; grid-row: 1; }
-  #section-italy   { grid-column: 3; grid-row: 1; }
-  #section-korea   { grid-column: 4; grid-row: 1; }
-
   .photo-card {
     position: relative;
+    aspect-ratio: 4/3;
     overflow: hidden;
     cursor: pointer;
     background: var(--surface);
-    width: 100%;
-    height: 100%;
   }
+  .photo-card.tall { aspect-ratio: 3/4; grid-row: span 2; }
+  .photo-card.wide { aspect-ratio: 16/9; grid-column: span 2; }
 
   /* Photo placeholders with actual landscape aesthetics */
   .photo-card .photo-bg {
@@ -759,32 +754,9 @@
     section { padding: 80px 24px; }
     #gallery { padding: 80px 16px; }
     .gallery-header { padding: 0 8px; margin-bottom: 32px; }
-    .gallery-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: unset;
-      gap: 8px;
-    }
-    /* 모바일: 가로형 고정 비율, 사진 잘림 없이 */
-    #section-newyork,
-    #section-paris,
-    #section-italy,
-    #section-korea {
-      grid-column: 1;
-      grid-row: unset;
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card {
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card .photo-bg-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .gallery-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .photo-card.wide { grid-column: span 2; }
+    .photo-card.tall { grid-row: span 1; aspect-ratio: 4/3; }
     #about { gap: 24px; }
     .about-top-row {
       grid-template-columns: 1fr 1fr;
@@ -811,35 +783,22 @@
     .about-visual { aspect-ratio: 3/4; }
     .about-stats { gap: 8px; }
     .stat-num { font-size: 1.5rem; }
-    .gallery-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: unset;
-      gap: 6px;
-    }
-    #section-newyork,
-    #section-paris,
-    #section-italy,
-    #section-korea {
-      grid-column: 1;
-      grid-row: unset;
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card {
-      aspect-ratio: 16 / 9;
-      height: unset;
-    }
-    .photo-card .photo-bg-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .photo-card.wide { grid-column: span 1; }
     .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
+
+    /* 모바일: 댓글 버튼 항상 보이게 */
     .comment-btn { opacity: 1 !important; }
+
+    /* 모바일: photo-overlay 항상 살짝 보이게 */
     .photo-overlay { opacity: 0.85; }
-    .reveal { transition: opacity 0.4s ease, transform 0.4s ease; }
+
+    /* 모바일: 느린 애니메이션 단축 */
+    .reveal {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* 모바일: aurora/moon 애니메이션 비활성화 (성능) */
     .aurora { animation: none; opacity: 0.6; }
     .moon { animation: none; }
     .stars { animation: none; }
@@ -848,11 +807,23 @@
 
   /* 모바일 성능 최적화 — 터치 기기 전용 */
   @media (hover: none) and (pointer: coarse) {
+    /* 패럴랙스 효과 제거 */
     .hero-landscape { background-attachment: scroll !important; }
+
+    /* GPU 가속 힌트 */
     .photo-bg { will-change: auto; }
+
+    /* 호버 효과 제거 (모바일에서 불필요) */
     .photo-card:hover .photo-bg { transform: none; }
     .filter-btn:hover { border-color: var(--border); color: var(--text-dim); background: none; }
     .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  }
+
+  @media (max-width: 480px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+    .photo-card.wide { grid-column: span 1; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat-num { font-size: 2rem; }
   }
 /* COMMENT PANEL */
 /* COMMENT */
@@ -1311,49 +1282,45 @@
     </div>
   </div>
 
-  <div class="gallery-grid" id="galleryGrid">
+  <div class="gallery-grid">
 
     <!-- NEWYORK -->
-    <div id="section-newyork" class="photo-card reveal" data-category="newyork"
-      data-cover="photos/NY_1.jpg"
+    <div id="section-newyork" class="photo-card tall reveal" data-category="newyork"
       onclick="openAlbum('newyork')">
       <img class="photo-bg-img" src="photos/NY_1.jpg" alt="NEWYORK" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
-        <div class="photo-count" id="count-newyork"></div>
+        <div class="photo-count">1장</div>
       </div>
     </div>
 
     <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
-      data-cover="photos/Paris_Main.jpg"
       onclick="openAlbum('paris')">
       <img class="photo-bg-img" src="photos/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
-        <div class="photo-count" id="count-paris"></div>
+        <div class="photo-count">1장</div>
       </div>
     </div>
 
     <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
-      data-cover="photos/Italy_Main.jpg"
       onclick="openAlbum('italy')">
       <img class="photo-bg-img" src="photos/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
-        <div class="photo-count" id="count-italy"></div>
+        <div class="photo-count">1장</div>
       </div>
     </div>
 
     <!-- KOREA -->
-    <div id="section-korea" class="photo-card reveal" data-category="korea"
-      data-cover="photos/KR_Main.jpg"
+    <div id="section-korea" class="photo-card wide reveal" data-category="korea"
       onclick="openAlbum('korea')">
       <img class="photo-bg-img" src="photos/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">KOREA</div>
-        <div class="photo-count" id="count-korea"></div>
+        <div class="photo-count">1장</div>
       </div>
     </div>
 
@@ -1724,71 +1691,57 @@ async function deleteComment(docId) {
 const albums = {
   newyork: {
     title: 'NEWYORK',
-    cover: 'photos/NY_1.jpg',
     photos: [
-      { id: 'ny_main', src: 'photos/NY_Main.jpg', name: 'Pebble Beach',       date: '2023.09' },
-      { id: 'ny_1',    src: 'photos/NY_1.jpg',    name: 'Pebble Beach',       date: '2023.09' },
-      { id: 'ny_2',    src: 'photos/NY_2.jpg',    name: 'Central Park',       date: '2023.09' },
-      { id: 'ny_3',    src: 'photos/NY_3.jpg',    name: 'Top of The Rock',    date: '2023.09' },
-      { id: 'ny_4',    src: 'photos/NY_4.jpg',    name: 'Summit One',         date: '2023.09' },
-      { id: 'ny_5',    src: 'photos/NY_5.jpg',    name: 'NEW YORK',           date: '2023.09' },
-      { id: 'ny_6',    src: 'photos/NY_6.jpg',    name: 'Top of The Rock',    date: '2023.09' },
-      { id: 'ny_7',    src: 'photos/NY_7.jpg',    name: 'NEW YORK',           date: '2023.09' },
-      { id: 'ny_8',    src: 'photos/NY_8.jpg',    name: 'Fellini Coffee Soho',date: '2023.09' },
+      { id: 'ny_main', src: 'photos/NY_Main.jpg',  name: 'Pebble Beach',  date: '2023.09' },
+      { id: 'ny_1', src: 'photos/NY_1.jpg',    name: 'Pebble Beach',  date: '2023.09' },
+      { id: 'ny_2', src: 'photos/NY_2.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_3', src: 'photos/NY_3.jpg',    name: 'Top of The Rock',  date: '2023.09' },
+      { id: 'ny_4', src: 'photos/NY_4.jpg',    name: 'Summit One',  date: '2023.09' },
+      { id: 'ny_5', src: 'photos/NY_5.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_6', src: 'photos/NY_6.jpg',    name: 'Top of The Rock',  date: '2023.09' },
+      { id: 'ny_7', src: 'photos/NY_7.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_8', src: 'photos/NY_8.jpg',    name: 'Fellini Coffee Soho',  date: '2023.09' },
     ]
   },
   paris: {
     title: 'PARIS',
-    cover: 'photos/Paris_Main.jpg',
     photos: [
-      { id: 'pa_main', src: 'photos/Paris_Main.jpg', name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_1',    src: 'photos/Paris_1.jpg',    name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_2',    src: 'photos/Paris_2.jpg',    name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_3',    src: 'photos/Paris_3.jpg',    name: 'Eiffel Tower',  date: '2024.10' },
-      { id: 'pa_4',    src: 'photos/Paris_4.jpg',    name: 'PARIS Street',  date: '2024.10' },
-      { id: 'pa_5',    src: 'photos/Paris_5.jpg',    name: 'PARIS Street',  date: '2024.10' },
-      { id: 'pa_6',    src: 'photos/Paris_6.jpg',    name: 'PARIS Street',  date: '2024.10' },
-      { id: 'pa_7',    src: 'photos/Paris_7.jpg',    name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_main', src: 'photos/Paris_Main.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_1', src: 'photos/Paris_1.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_2', src: 'photos/Paris_2.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_3', src: 'photos/Paris_3.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_4', src: 'photos/Paris_4.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_5', src: 'photos/Paris_5.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_6', src: 'photos/Paris_6.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_7', src: 'photos/Paris_7.jpg',  name: 'PARIS Street',  date: '2024.10' },
     ]
   },
   italy: {
     title: 'ITALY',
-    cover: 'photos/Italy_Main.jpg',
     photos: [
-      { id: 'it_main', src: 'photos/Italy_Main.jpg', name: 'Piazzale Michelangelo', date: '2025.10' },
-      { id: 'it_1',    src: 'photos/Italy_1.jpg',    name: 'Lago di Misurina',      date: '2025.10' },
-      { id: 'it_2',    src: 'photos/Italy_2.jpg',    name: 'Dolomiti',              date: '2025.10' },
-      { id: 'it_3',    src: 'photos/Italy_3.jpg',    name: 'Dolomiti',              date: '2025.10' },
-      { id: 'it_4',    src: 'photos/Italy_4.jpg',    name: 'Lake Braies',           date: '2025.10' },
-      { id: 'it_5',    src: 'photos/Italy_5.jpg',    name: 'Piazzale Michelangelo', date: '2025.10' },
-      { id: 'it_6',    src: 'photos/Italy_6.jpg',    name: 'Dolomiti',              date: '2025.10' },
+      { id: 'it_main', src: 'photos/Italy_Main.jpg',  name: 'Piazzale Michelangelo',   date: '2025.10' },
+      { id: 'it_1', src: 'photos/Italy_1.jpg',    name: 'Lago di Misurina',  date: '2025.10' },
+      { id: 'it_2', src: 'photos/Italy_2.jpg',  name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_3', src: 'photos/Italy_3.jpg',  name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_4', src: 'photos/Italy_4.jpg',  name: 'Lake Braies',  date: '2025.10' },
+      { id: 'it_5', src: 'photos/Italy_5.jpg',  name: 'Piazzale Michelangelo',  date: '2025.10' },
+      { id: 'it_6', src: 'photos/Italy_6.jpg',  name: 'Dolomiti',  date: '2025.10' },
     ]
   },
   korea: {
     title: 'KOREA',
-    cover: 'photos/KR_Main.jpg',
     photos: [
-      { id: 'kr_main', src: 'photos/KR_Main.jpg', name: 'Suwon',  date: '2000.00' },
-      { id: 'kr_1',    src: 'photos/KR_1.jpg',    name: 'Jeju',   date: '2000.00' },
-      { id: 'kr_2',    src: 'photos/KR_2.jpg',    name: 'Seoul',  date: '2000.00' },
-      { id: 'kr_3',    src: 'photos/KR_3.jpg',    name: 'Seoul',  date: '2000.00' },
-      { id: 'kr_4',    src: 'photos/KR_4.jpg',    name: 'Sokcho', date: '2000.00' },
-      { id: 'kr_5',    src: 'photos/KR_5.jpg',    name: 'Busan',  date: '2000.00' },
-      { id: 'kr_6',    src: 'photos/KR_6.jpg',    name: 'Seoul',  date: '2000.00' },
-      { id: 'kr_7',    src: 'photos/KR_7.jpg',    name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_main', src: 'photos/KR_Main.jpg',  name: 'Suwon',  date: '2000.00' },
+      { id: 'kr_1', src: 'photos/KR_1.jpg',  name: 'Jeju',  date: '2000.00' },
+      { id: 'kr_2', src: 'photos/KR_2.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_3', src: 'photos/KR_3.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_4', src: 'photos/KR_4.jpg',  name: 'Sokcho',  date: '2000.00' },
+      { id: 'kr_5', src: 'photos/KR_5.jpg',  name: 'Busan',  date: '2000.00' },
+      { id: 'kr_6', src: 'photos/KR_6.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_7', src: 'photos/KR_7.jpg',  name: 'Seoul',  date: '2000.00' },
     ]
   },
 };
-
-// ── 갤러리 사진 장수 표시 ────────────────────────────────────────────────
-function initGalleryOrientation() {
-  Object.keys(albums).forEach(key => {
-    const album = albums[key];
-    const countEl = document.getElementById('count-' + key);
-    if (countEl) countEl.textContent = album.photos.length + '장';
-  });
-}
-initGalleryOrientation();
 
 function openAlbum(category) {
   const album = albums[category];
@@ -1799,7 +1752,6 @@ function openAlbum(category) {
   grid.innerHTML = album.photos.map(photo => `
     <div class="album-photo-wrapper">
       <div class="album-photo-card"
-           data-fullsrc="${photo.src}"
            onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
         <img data-src="${photo.src}" alt="${photo.name}" decoding="async"
              style="width:100%;height:auto;display:block;background:var(--surface2);">
