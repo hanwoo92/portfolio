@@ -1771,24 +1771,35 @@ function openAlbum(category) {
     </div>
   `).join('');
 
-  // 이미지 로드 후 가로/세로 판단 + 홀수 세로 처리
+  // 이미지 로드 후 가로/세로 판단 → DOM 재정렬로 세로끼리 짝 맞추기
   const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
   const lazyImages = grid.querySelectorAll('img[data-src]');
 
   let loadedCount = 0;
-  const photoTypes = []; // 'wide' | 'portrait'
+  const photoTypes = new Array(wrappers.length).fill(null); // 'wide' | 'portrait'
 
   const applyLayout = () => {
-    // 세로 사진만 추린 인덱스
-    const portraitIndices = wrappers
-      .map((w, i) => ({ w, i, type: photoTypes[i] }))
-      .filter(x => x.type === 'portrait');
+    // 각 wrapper에 타입별 클래스 부여
+    wrappers.forEach((w, i) => {
+      w.classList.remove('wide-photo', 'portrait-last');
+      if (photoTypes[i] === 'wide') w.classList.add('wide-photo');
+    });
 
-    // 세로 홀수 → 마지막 하나 전체 너비
-    if (portraitIndices.length % 2 === 1) {
-      const last = portraitIndices[portraitIndices.length - 1];
-      last.w.classList.add('portrait-last');
+    // 가로형은 span 2로 단독 배치되므로
+    // 세로형만 추출해서 2개씩 짝 맞추고, 홀수면 마지막 하나 span 2
+    const portraitWrappers = wrappers.filter((_, i) => photoTypes[i] === 'portrait');
+
+    // 세로형 홀수개 → 마지막 하나 전체 너비
+    if (portraitWrappers.length % 2 === 1) {
+      portraitWrappers[portraitWrappers.length - 1].classList.add('portrait-last');
     }
+
+    // DOM 재정렬: wide → 전체 너비 / portrait → 순서대로 2열
+    // grid에서 가로형 사이에 세로형 홀수가 끼는 경우를 막기 위해
+    // 가로형을 맨 위로, 세로형을 그 아래로 재배치
+    const wides = wrappers.filter((_, i) => photoTypes[i] === 'wide');
+    const portraits = wrappers.filter((_, i) => photoTypes[i] === 'portrait');
+    [...wides, ...portraits].forEach(w => grid.appendChild(w));
   };
 
   const imgObserver = new IntersectionObserver((entries) => {
@@ -1801,7 +1812,11 @@ function openAlbum(category) {
         img.onload = () => {
           const isWide = img.naturalWidth > img.naturalHeight * 1.2;
           photoTypes[idx] = isWide ? 'wide' : 'portrait';
-          if (isWide) wrapperEl.classList.add('wide-photo');
+          loadedCount++;
+          if (loadedCount === lazyImages.length) applyLayout();
+        };
+        img.onerror = () => {
+          photoTypes[idx] = 'portrait'; // 로드 실패시 세로형으로 처리
           loadedCount++;
           if (loadedCount === lazyImages.length) applyLayout();
         };
