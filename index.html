@@ -405,25 +405,24 @@
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 260px;
+    grid-template-rows: 480px;
     gap: 12px;
     max-width: 1400px;
     margin: 0 auto;
   }
+  #section-newyork { grid-column: 1; grid-row: 1; }
+  #section-paris   { grid-column: 2; grid-row: 1; }
+  #section-italy   { grid-column: 3; grid-row: 1; }
+  #section-korea   { grid-column: 4; grid-row: 1; }
+
   .photo-card {
     position: relative;
     overflow: hidden;
     cursor: pointer;
     background: var(--surface);
+    width: 100%;
+    height: 100%;
   }
-  /* 가로형: 2열 × 1행 */
-  .photo-card.orient-wide  { grid-column: span 2; grid-row: span 1; }
-  /* 세로형: 1열 × 2행 */
-  .photo-card.orient-tall  { grid-column: span 1; grid-row: span 2; }
-  /* 정사각/기본: 1열 × 1행 */
-  .photo-card.orient-square { grid-column: span 1; grid-row: span 1; }
-  /* 파노라마형: 4열 × 1행 */
-  .photo-card.orient-pano  { grid-column: span 4; grid-row: span 1; }
 
   /* Photo placeholders with actual landscape aesthetics */
   .photo-card .photo-bg {
@@ -1772,31 +1771,12 @@ const albums = {
   },
 };
 
-// ── 갤러리 대표사진 orientation 자동 감지 + 사진 장수 ──────────────────
+// ── 갤러리 사진 장수 표시 ────────────────────────────────────────────────
 function initGalleryOrientation() {
   Object.keys(albums).forEach(key => {
     const album = albums[key];
-    const card = document.getElementById('section-' + key);
     const countEl = document.getElementById('count-' + key);
-    if (!card) return;
-
-    // 사진 장수 표시
     if (countEl) countEl.textContent = album.photos.length + '장';
-
-    // 커버 이미지 비율 감지 → orient 클래스 부여
-    const probe = new Image();
-    probe.onload = () => {
-      const r = probe.naturalWidth / probe.naturalHeight;
-      card.classList.remove('orient-wide', 'orient-tall', 'orient-square', 'orient-pano');
-      if      (r >= 2.2)  card.classList.add('orient-pano');
-      else if (r >= 1.2)  card.classList.add('orient-wide');
-      else if (r <= 0.85) card.classList.add('orient-tall');
-      else                card.classList.add('orient-square');
-    };
-    // 이미 캐시된 경우 onload 안 불릴 수 있으므로 완전성 보장
-    probe.onerror = () => card.classList.add('orient-wide');
-    probe.src = album.cover;
-    if (probe.complete) probe.onload();
   });
 }
 initGalleryOrientation();
