@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HAN_WOO95</title>
 <!-- 히어로 사진 미리 로드 (LCP 최적화) -->
-<link rel="preload" as="image" href="photos/NY_Main.jpg">
+<link rel="preload" as="image" href="photos/NY_Main.jpg"><!-- 슬라이드쇼 첫 장 힌트 -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -186,20 +186,41 @@
     100% { filter: hue-rotate(15deg) brightness(1.05); }
   }
 
-  /* Simulated landscape image */
-  .hero-landscape {
+  /* Hero 슬라이드쇼 */
+  .hero-slideshow {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(to bottom,
-        transparent 0%,
-        transparent 35%,
-        rgba(15,20,35,0.4) 50%,
-        rgba(8,10,15,0.85) 75%,
-        var(--bg) 100%
-      ),
-      radial-gradient(ellipse at 50% 60%, rgba(30,50,90,0.6) 0%, transparent 70%);
     overflow: hidden;
+  }
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    transform: scale(1.06);
+    animation: kenBurns 7s ease-in-out forwards;
+  }
+  .hero-slide.active {
+    opacity: 1;
+  }
+  .hero-slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.1)  0%,
+      rgba(0,0,0,0.05) 40%,
+      rgba(8,10,15,0.7) 78%,
+      var(--bg) 100%
+    );
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1.06) translate(0, 0); }
+    to   { transform: scale(1.0)  translate(-0.5%, 0.5%); }
   }
   .mountain {
     position: absolute;
@@ -808,7 +829,7 @@
   /* 모바일 성능 최적화 — 터치 기기 전용 */
   @media (hover: none) and (pointer: coarse) {
     /* 패럴랙스 효과 제거 */
-    .hero-landscape { background-attachment: scroll !important; }
+    .hero-slide { background-attachment: scroll !important; animation: none; transform: none; }
 
     /* GPU 가속 힌트 */
     .photo-bg { will-change: auto; }
@@ -1250,16 +1271,12 @@
 <!-- HERO -->
 <section id="home" style="padding:0; max-width:100%; margin:0;">
   <div class="hero-bg"></div>
-  <!-- 실제 사진으로 교체 -->
-<div class="hero-landscape" style="
-  background-image: url('photos/NY_Main.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: scroll;
-  image-rendering: auto;
-  will-change: auto;
-">
-</div>
+
+  <div class="hero-slideshow" id="heroSlideshow">
+    <div class="hero-slide" id="heroSlide0"></div>
+    <div class="hero-slide" id="heroSlide1"></div>
+  </div>
+
   <div class="hero-content">
     <p class="hero-eyebrow">portfolio</p>
     <h1 class="hero-title"><em>Fill This Way</em></h1>
@@ -1458,6 +1475,73 @@ if (!isMobile) {
     });
   });
 }
+
+// ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
+(function () {
+  // albums 데이터에서 모든 사진 경로 자동 수집 (정의 후 실행되도록 DOMContentLoaded 사용)
+  const INTERVAL = 5000;  // 전환 간격 (ms)
+  const FADE     = 2000;  // fade 시간 — CSS transition과 일치
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function init() {
+    // albums 객체에서 모든 src 수집
+    const allPhotos = Object.values(albums).flatMap(a => a.photos.map(p => p.src));
+    const list = shuffle(allPhotos);
+
+    const slides = [
+      document.getElementById('heroSlide0'),
+      document.getElementById('heroSlide1'),
+    ];
+    if (!slides[0] || list.length === 0) return;
+
+    let cur = 0;   // 현재 보이는 슬라이드 index (0 or 1)
+    let photoIdx = 0;
+
+    // 첫 번째 사진 — 즉시 표시
+    slides[0].style.backgroundImage = `url('${list[0]}')`;
+    slides[0].classList.add('active');
+
+    // 두 번째 사진 미리 로드
+    slides[1].style.backgroundImage = `url('${list[1 % list.length]}')`;
+
+    setInterval(() => {
+      const next = 1 - cur;
+      photoIdx = (photoIdx + 1) % list.length;
+
+      // 다음 슬라이드에 사진 세팅 & Ken Burns 재시작
+      slides[next].style.backgroundImage = `url('${list[photoIdx]}')`;
+      slides[next].style.animation = 'none';
+      slides[next].offsetHeight; // reflow — 애니메이션 리셋
+      slides[next].style.animation = '';
+
+      // 크로스페이드
+      slides[next].classList.add('active');
+      slides[cur].classList.remove('active');
+
+      // 다다음 사진 미리 로드
+      const preIdx = (photoIdx + 1) % list.length;
+      const preImg = new Image();
+      preImg.src = list[preIdx];
+
+      cur = next;
+    }, INTERVAL);
+  }
+
+  // albums 변수가 정의된 뒤 실행
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 
 // Nav scroll
 window.addEventListener('scroll', () => {
