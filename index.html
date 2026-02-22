@@ -1446,9 +1446,18 @@ if (!isMobile) {
 
 // ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
 (function () {
-  // albums 데이터에서 모든 사진 경로 자동 수집 (정의 후 실행되도록 DOMContentLoaded 사용)
-  const INTERVAL = 5000;  // 전환 간격 (ms)
-  const FADE     = 2000;  // fade 시간 — CSS transition과 일치
+  const INTERVAL = 5000;
+
+  const allPhotos = [
+    'photos/NY_Main.jpg','photos/NY_1.jpg','photos/NY_2.jpg','photos/NY_3.jpg',
+    'photos/NY_4.jpg','photos/NY_5.jpg','photos/NY_6.jpg','photos/NY_7.jpg','photos/NY_8.jpg',
+    'photos/Paris_Main.jpg','photos/Paris_1.jpg','photos/Paris_2.jpg','photos/Paris_3.jpg',
+    'photos/Paris_4.jpg','photos/Paris_5.jpg','photos/Paris_6.jpg','photos/Paris_7.jpg',
+    'photos/Italy_Main.jpg','photos/Italy_1.jpg','photos/Italy_2.jpg','photos/Italy_3.jpg',
+    'photos/Italy_4.jpg','photos/Italy_5.jpg','photos/Italy_6.jpg',
+    'photos/KR_Main.jpg','photos/KR_1.jpg','photos/KR_2.jpg','photos/KR_3.jpg',
+    'photos/KR_4.jpg','photos/KR_5.jpg','photos/KR_6.jpg','photos/KR_7.jpg',
+  ];
 
   function shuffle(arr) {
     const a = [...arr];
@@ -1459,56 +1468,34 @@ if (!isMobile) {
     return a;
   }
 
-  function init() {
-    // albums 객체에서 모든 src 수집
-    const allPhotos = Object.values(albums).flatMap(a => a.photos.map(p => p.src));
-    const list = shuffle(allPhotos);
+  const list = shuffle(allPhotos);
+  const slide0 = document.getElementById('heroSlide0');
+  const slide1 = document.getElementById('heroSlide1');
+  if (!slide0) return;
 
-    const slides = [
-      document.getElementById('heroSlide0'),
-      document.getElementById('heroSlide1'),
-    ];
-    if (!slides[0] || list.length === 0) return;
+  let cur = 0;
+  let photoIdx = 0;
 
-    let cur = 0;   // 현재 보이는 슬라이드 index (0 or 1)
-    let photoIdx = 0;
+  // 첫 사진 즉시 표시
+  slide0.style.backgroundImage = `url('${list[0]}')`;
+  slide0.classList.add('active');
+  slide1.style.backgroundImage = `url('${list[1 % list.length]}')`;
 
-    // 첫 번째 사진 — 즉시 표시
-    slides[0].style.backgroundImage = `url('${list[0]}')`;
-    slides[0].classList.add('active');
+  setInterval(() => {
+    const slides = [slide0, slide1];
+    const next = 1 - cur;
+    photoIdx = (photoIdx + 1) % list.length;
 
-    // 두 번째 사진 미리 로드
-    slides[1].style.backgroundImage = `url('${list[1 % list.length]}')`;
+    slides[next].style.backgroundImage = `url('${list[photoIdx]}')`;
+    slides[next].style.animation = 'none';
+    slides[next].offsetHeight;
+    slides[next].style.animation = '';
+    slides[next].classList.add('active');
+    slides[cur].classList.remove('active');
 
-    setInterval(() => {
-      const next = 1 - cur;
-      photoIdx = (photoIdx + 1) % list.length;
-
-      // 다음 슬라이드에 사진 세팅 & Ken Burns 재시작
-      slides[next].style.backgroundImage = `url('${list[photoIdx]}')`;
-      slides[next].style.animation = 'none';
-      slides[next].offsetHeight; // reflow — 애니메이션 리셋
-      slides[next].style.animation = '';
-
-      // 크로스페이드
-      slides[next].classList.add('active');
-      slides[cur].classList.remove('active');
-
-      // 다다음 사진 미리 로드
-      const preIdx = (photoIdx + 1) % list.length;
-      const preImg = new Image();
-      preImg.src = list[preIdx];
-
-      cur = next;
-    }, INTERVAL);
-  }
-
-  // albums 변수가 정의된 뒤 실행
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+    new Image().src = list[(photoIdx + 1) % list.length];
+    cur = next;
+  }, INTERVAL);
 })();
 
 // Nav scroll
