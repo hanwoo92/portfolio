@@ -1124,13 +1124,15 @@
   }
 
   /* 가로 긴 사진의 footer도 전체 너비 */
-  /* 그리드형: 가로/세로 모두 2열 균등 배치 */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
     grid-column: span 1;
   }
-  /* 세로 홀수 마지막도 1열 유지 */
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-last {
     grid-column: span 1;
+  }
+  /* 스크롤형에서 footer 스타일 */
+  .album-modal-grid.view-scroll .album-card-footer {
+    padding: 4px 12px 10px;
   }
   /* 페이지네이션 */
   .album-pagination {
@@ -1156,9 +1158,9 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .page-btn:hover:not([disabled]) { border-color: var(--accent); color: var(--accent); }
   .page-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(201,169,110,0.12); }
-  .page-btn:disabled { opacity: 0.2; cursor: default; }
+  .page-btn[disabled] { opacity: 0.25; cursor: default; }
 
   /* 오버레이: 좌하단=제목+날짜만 */
   .album-photo-overlay {
@@ -1823,16 +1825,18 @@ function openAlbum(category) {
   _curPage = 1;
   document.getElementById('albumModalTitle').textContent = album.title;
   setView('grid');
-  _renderPage();
+  _renderAlbumPage();
   document.getElementById('albumModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function _renderPage() {
+function _renderAlbumPage() {
   const album = albums[_curAlbumKey];
-  const total = album.photos.length;
-  const start = (_curPage - 1) * PHOTOS_PER_PAGE;
-  const pagePhotos = album.photos.slice(start, start + PHOTOS_PER_PAGE);
+  const allPhotos = album.photos;
+  const PER_PAGE = PHOTOS_PER_PAGE;
+  const pgTotal = Math.ceil(allPhotos.length / PER_PAGE) || 1;
+  const sliceStart = (_curPage - 1) * PER_PAGE;
+  const pagePhotos = allPhotos.slice(sliceStart, sliceStart + PER_PAGE);
 
   const grid = document.getElementById('albumModalGrid');
   grid.scrollTop = 0;
@@ -1859,37 +1863,34 @@ function _renderPage() {
     </div>
   `).join('');
 
-  // 페이지네이션 버튼 렌더 (항상 표시)
-  const pg = document.getElementById('albumPagination');
-  const totalPages = Math.ceil(total / PHOTOS_PER_PAGE) || 1;
-  let html = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
-  for (let i = 1; i <= totalPages; i++) {
-    html += `<button class="page-btn ${i === _curPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+  // 페이지네이션 (항상 표시)
+  const pgEl = document.getElementById('albumPagination');
+  let pgHtml = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
+  for (let i = 1; i <= pgTotal; i++) {
+    pgHtml += `<button class="page-btn${i === _curPage ? ' active' : ''}" onclick="goToPage(${i})">${i}</button>`;
   }
-  html += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === totalPages ? 'disabled' : ''}>›</button>`;
-  pg.innerHTML = html;
+  pgHtml += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === pgTotal ? 'disabled' : ''}>›</button>`;
+  pgEl.innerHTML = pgHtml;
 
   // lazy load
-  const lazyImages = grid.querySelectorAll('img[data-src]');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.dataset.src;
-        obs.unobserve(img);
+  const imgs = grid.querySelectorAll('img[data-src]');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.src = en.target.dataset.src;
+        obs.unobserve(en.target);
       }
     });
   }, { rootMargin: '300px' });
-  lazyImages.forEach(img => obs.observe(img));
+  imgs.forEach(img => obs.observe(img));
 }
 
-function goToPage(page) {
-  const album = albums[_curAlbumKey];
-  if (!album) return;
-  const totalPages = Math.ceil(album.photos.length / PHOTOS_PER_PAGE);
-  if (page < 1 || page > totalPages) return;
-  _curPage = page;
-  _renderPage();
+function goToPage(pg) {
+  if (!_curAlbumKey) return;
+  const pgTotal = Math.ceil(albums[_curAlbumKey].photos.length / PHOTOS_PER_PAGE) || 1;
+  if (pg < 1 || pg > pgTotal) return;
+  _curPage = pg;
+  _renderAlbumPage();
 }
 
 function closeAlbum() {
