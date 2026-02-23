@@ -1119,20 +1119,12 @@
     gap: 0;
     padding: 0;
   }
-  .album-modal-grid.view-scroll .album-photo-wrapper {
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-
-  /* 가로 긴 사진의 footer도 전체 너비 */
+  /* 그리드형: 가로/세로 모두 2열 균등 배치 */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
     grid-column: span 1;
   }
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-last {
     grid-column: span 1;
-  }
-  /* 스크롤형에서 footer 스타일 */
-  .album-modal-grid.view-scroll .album-card-footer {
-    padding: 4px 12px 10px;
   }
   /* 페이지네이션 */
   .album-pagination {
@@ -1162,36 +1154,8 @@
   .page-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(201,169,110,0.12); }
   .page-btn[disabled] { opacity: 0.25; cursor: default; }
 
-  /* 오버레이: 좌하단=제목+날짜만 */
-  .album-photo-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    padding: 10px 12px;
-    pointer-events: none;
-  }
-  .album-photo-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    pointer-events: none;
-  }
-  .album-photo-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.95rem;
-    font-style: italic;
-    color: var(--text);
-    line-height: 1.2;
-  }
-  .album-photo-date {
-    font-size: 0.5rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(201,169,110,0.8);
-  }
+  /* 오버레이: 제거 (글씨를 사진 바깥으로 이동) */
+  .album-photo-overlay { display: none; }
 
   /* 사진+COMMENT를 묶는 wrapper — 이게 grid 셀 단위 */
   .album-photo-wrapper {
@@ -1199,11 +1163,37 @@
     flex-direction: column;
   }
 
-  /* COMMENT 버튼 — 사진 바로 아래 우측 */
+  /* 사진 아래 정보 + COMMENT 영역 */
   .album-card-footer {
     display: flex;
-    justify-content: flex-end;
-    padding: 3px 0 0 0;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 5px 2px 4px 2px;
+    gap: 8px;
+  }
+  /* 좌측: 제목 + 날짜 */
+  .album-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .album-card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.55rem;
+    font-style: italic;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .album-card-date {
+    font-size: 0.45rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(201,169,110,0.7);
   }
   .album-comment-btn {
     background: none;
@@ -1217,12 +1207,28 @@
     cursor: pointer;
     transition: color 0.2s;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .album-comment-btn:hover { color: var(--accent); }
+
+  /* 리스트형: 세로 사진 2열, 가로 사진 1열(전체) */
+  .album-modal-grid.view-scroll {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+  .album-modal-grid.view-scroll .album-photo-wrapper {
+    /* 기본: 세로 사진 → 1열씩 */
+  }
+  .album-modal-grid.view-scroll .album-photo-wrapper.wide-photo {
+    grid-column: span 2;
+  }
 
   @media (max-width: 768px) {
     .album-modal-header { padding: 14px 16px; }
     .album-comment-btn { font-size: 0.52rem; }
+    .album-modal-grid.view-scroll { gap: 8px; padding: 10px; }
   }
 
 </style>
@@ -1847,14 +1853,12 @@ function _renderAlbumPage() {
            onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
         <img data-src="${photo.src}" alt="${photo.name}" decoding="async"
              style="width:100%;height:auto;display:block;background:var(--surface2);">
-        <div class="album-photo-overlay">
-          <div class="album-photo-info">
-            <div class="album-photo-name">${photo.name}</div>
-            ${photo.date ? `<div class="album-photo-date">${photo.date}</div>` : ''}
-          </div>
-        </div>
       </div>
       <div class="album-card-footer">
+        <div class="album-card-meta">
+          <div class="album-card-name">${photo.name}</div>
+          ${photo.date ? `<div class="album-card-date">${photo.date}</div>` : ''}
+        </div>
         <button class="album-comment-btn"
           onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${photo.name}', '${album.title}')">
           💬 COMMENT
@@ -1872,13 +1876,21 @@ function _renderAlbumPage() {
   pgHtml += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === pgTotal ? 'disabled' : ''}>›</button>`;
   pgEl.innerHTML = pgHtml;
 
-  // lazy load
+  // 비율 감지 → 그리드/리스트 모두 wide-photo 클래스 부여
   const imgs = grid.querySelectorAll('img[data-src]');
+  const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
   const obs = new IntersectionObserver(entries => {
     entries.forEach(en => {
       if (en.isIntersecting) {
-        en.target.src = en.target.dataset.src;
-        obs.unobserve(en.target);
+        const img = en.target;
+        const wrapper = img.closest('.album-photo-wrapper');
+        img.src = img.dataset.src;
+        img.onload = () => {
+          const isWide = img.naturalWidth > img.naturalHeight * 1.2;
+          if (isWide) wrapper.classList.add('wide-photo');
+          else wrapper.classList.remove('wide-photo');
+        };
+        obs.unobserve(img);
       }
     });
   }, { rootMargin: '300px' });
