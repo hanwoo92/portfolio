@@ -1860,18 +1860,15 @@ function _renderPage() {
     </div>
   `).join('');
 
-  // 페이지네이션 버튼 렌더
+  // 페이지네이션 버튼 렌더 (항상 표시)
   const pg = document.getElementById('albumPagination');
-  if (totalPages <= 1) {
-    pg.innerHTML = '';
-  } else {
-    let html = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
-    for (let i = 1; i <= totalPages; i++) {
-      html += `<button class="page-btn ${i === _curPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-    }
-    html += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === totalPages ? 'disabled' : ''}>›</button>`;
-    pg.innerHTML = html;
+  const totalPages = Math.ceil(total / PHOTOS_PER_PAGE) || 1;
+  let html = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn ${i === _curPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
   }
+  html += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === totalPages ? 'disabled' : ''}>›</button>`;
+  pg.innerHTML = html;
 
   // lazy load
   const lazyImages = grid.querySelectorAll('img[data-src]');
