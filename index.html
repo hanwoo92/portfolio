@@ -1211,23 +1211,18 @@
   }
   .album-comment-btn:hover { color: var(--accent); }
 
-  /* 리스트형: 세로 사진 2열, 가로 사진 1열(전체) */
+  /* 리스트형: 1열 세로 나열 */
   .album-modal-grid.view-scroll {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     padding: 16px;
   }
-  .album-modal-grid.view-scroll .album-photo-wrapper {
-    /* 기본: 세로 사진 → 1열씩 */
-  }
   .album-modal-grid.view-scroll .album-photo-wrapper.wide-photo {
-    grid-column: span 2;
+    grid-column: unset;
   }
 
   @media (max-width: 768px) {
-    .album-modal-header { padding: 14px 16px; }
-    .album-comment-btn { font-size: 0.52rem; }
     .album-modal-grid.view-scroll { gap: 8px; padding: 10px; }
   }
 
