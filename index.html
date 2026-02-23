@@ -1831,7 +1831,6 @@ function openAlbum(category) {
 function _renderPage() {
   const album = albums[_curAlbumKey];
   const total = album.photos.length;
-  const totalPages = Math.ceil(total / PHOTOS_PER_PAGE);
   const start = (_curPage - 1) * PHOTOS_PER_PAGE;
   const pagePhotos = album.photos.slice(start, start + PHOTOS_PER_PAGE);
 
