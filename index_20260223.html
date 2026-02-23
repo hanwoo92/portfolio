@@ -1124,41 +1124,17 @@
   }
 
   /* 가로 긴 사진의 footer도 전체 너비 */
-  /* 그리드형: 가로/세로 모두 2열 균등 배치 */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
-    grid-column: span 1;
+    grid-column: span 2;
   }
-  /* 세로 홀수 마지막도 1열 유지 */
+  /* 세로 사진 홀수 마지막 → 전체 너비 */
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-last {
-    grid-column: span 1;
+    grid-column: span 2;
   }
-  /* 페이지네이션 */
-  .album-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    padding: 18px 16px;
-    flex-shrink: 0;
-    border-top: 1px solid rgba(255,255,255,0.07);
-    background: var(--bg);
+  /* 스크롤형에서 footer 스타일 */
+  .album-modal-grid.view-scroll .album-card-footer {
+    padding: 4px 12px 10px;
   }
-  .page-btn {
-    min-width: 32px; height: 32px;
-    padding: 0 8px;
-    display: flex; align-items: center; justify-content: center;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(232,228,221,0.5);
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .page-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(201,169,110,0.12); }
-  .page-btn:disabled { opacity: 0.2; cursor: default; }
 
   /* 오버레이: 좌하단=제목+날짜만 */
   .album-photo-overlay {
@@ -1811,34 +1787,13 @@ const albums = {
   },
 };
 
-// ── 앨범 페이지네이션 ────────────────────────────────────────────────────
-const PHOTOS_PER_PAGE = 10;
-let _curAlbumKey = null;
-let _curPage = 1;
-
 function openAlbum(category) {
   const album = albums[category];
   if (!album) return;
-  _curAlbumKey = category;
-  _curPage = 1;
   document.getElementById('albumModalTitle').textContent = album.title;
-  setView('grid');
-  _renderPage();
-  document.getElementById('albumModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function _renderPage() {
-  const album = albums[_curAlbumKey];
-  const total = album.photos.length;
-  const totalPages = Math.ceil(total / PHOTOS_PER_PAGE);
-  const start = (_curPage - 1) * PHOTOS_PER_PAGE;
-  const pagePhotos = album.photos.slice(start, start + PHOTOS_PER_PAGE);
 
   const grid = document.getElementById('albumModalGrid');
-  grid.scrollTop = 0;
-
-  grid.innerHTML = pagePhotos.map(photo => `
+  grid.innerHTML = album.photos.map(photo => `
     <div class="album-photo-wrapper">
       <div class="album-photo-card"
            onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
@@ -1860,40 +1815,66 @@ function _renderPage() {
     </div>
   `).join('');
 
-  // 페이지네이션 버튼 렌더
-  const pg = document.getElementById('albumPagination');
-  if (totalPages <= 1) {
-    pg.innerHTML = '';
-  } else {
-    let html = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
-    for (let i = 1; i <= totalPages; i++) {
-      html += `<button class="page-btn ${i === _curPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-    }
-    html += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === totalPages ? 'disabled' : ''}>›</button>`;
-    pg.innerHTML = html;
-  }
-
-  // lazy load
+  // 이미지 로드 후 가로/세로 판단 → DOM 재정렬로 세로끼리 짝 맞추기
+  const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
   const lazyImages = grid.querySelectorAll('img[data-src]');
-  const obs = new IntersectionObserver((entries) => {
+
+  let loadedCount = 0;
+  const photoTypes = new Array(wrappers.length).fill(null); // 'wide' | 'portrait'
+
+  const applyLayout = () => {
+    // 각 wrapper에 타입별 클래스 부여
+    wrappers.forEach((w, i) => {
+      w.classList.remove('wide-photo', 'portrait-last');
+      if (photoTypes[i] === 'wide') w.classList.add('wide-photo');
+    });
+
+    // 가로형은 span 2로 단독 배치되므로
+    // 세로형만 추출해서 2개씩 짝 맞추고, 홀수면 마지막 하나 span 2
+    const portraitWrappers = wrappers.filter((_, i) => photoTypes[i] === 'portrait');
+
+    // 세로형 홀수개 → 마지막 하나 전체 너비
+    if (portraitWrappers.length % 2 === 1) {
+      portraitWrappers[portraitWrappers.length - 1].classList.add('portrait-last');
+    }
+
+    // DOM 재정렬: wide → 전체 너비 / portrait → 순서대로 2열
+    // grid에서 가로형 사이에 세로형 홀수가 끼는 경우를 막기 위해
+    // 가로형을 맨 위로, 세로형을 그 아래로 재배치
+    const wides = wrappers.filter((_, i) => photoTypes[i] === 'wide');
+    const portraits = wrappers.filter((_, i) => photoTypes[i] === 'portrait');
+    [...wides, ...portraits].forEach(w => grid.appendChild(w));
+  };
+
+  const imgObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const img = entry.target;
+        const wrapperEl = img.closest('.album-photo-wrapper');
+        const idx = wrappers.indexOf(wrapperEl);
         img.src = img.dataset.src;
-        obs.unobserve(img);
+        img.onload = () => {
+          const isWide = img.naturalWidth > img.naturalHeight * 1.2;
+          photoTypes[idx] = isWide ? 'wide' : 'portrait';
+          loadedCount++;
+          if (loadedCount === lazyImages.length) applyLayout();
+        };
+        img.onerror = () => {
+          photoTypes[idx] = 'portrait'; // 로드 실패시 세로형으로 처리
+          loadedCount++;
+          if (loadedCount === lazyImages.length) applyLayout();
+        };
+        imgObserver.unobserve(img);
       }
     });
-  }, { rootMargin: '300px' });
-  lazyImages.forEach(img => obs.observe(img));
-}
+  }, { rootMargin: '200px' });
+  lazyImages.forEach(img => imgObserver.observe(img));
 
-function goToPage(page) {
-  const album = albums[_curAlbumKey];
-  if (!album) return;
-  const totalPages = Math.ceil(album.photos.length / PHOTOS_PER_PAGE);
-  if (page < 1 || page > totalPages) return;
-  _curPage = page;
-  _renderPage();
+  // 뷰 토글 그리드로 초기화
+  setView('grid');
+
+  document.getElementById('albumModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeAlbum() {
@@ -1991,7 +1972,6 @@ function setView(type) {
 window.openAlbum = openAlbum;
 window.closeAlbum = closeAlbum;
 window.setView = setView;
-window.goToPage = goToPage;
 window.openLightboxFromAlbum = openLightboxFromAlbum;
 </script>
 
@@ -2015,7 +1995,6 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
     </div>
   </div>
   <div class="album-modal-grid view-grid" id="albumModalGrid"></div>
-  <div class="album-pagination" id="albumPagination"></div>
 </div>
 
 <!-- COMMENT PANEL -->
