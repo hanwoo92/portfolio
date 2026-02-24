@@ -89,6 +89,12 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
+  .logo-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-decoration: none;
+  }
   .logo {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.6rem;
@@ -98,6 +104,14 @@
     text-decoration: none;
   }
   .logo span { color: var(--accent); }
+  .logo-meta {
+    font-size: 0.42rem;
+    letter-spacing: 0.18em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+  }
   .nav-links {
     display: flex;
     gap: 40px;
@@ -1262,7 +1276,10 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#home" class="logo">HAN<span>WOO</span>95</a>
+  <a href="#home" class="logo-wrap">
+    <span class="logo">HAN<span>WOO</span>95</span>
+    <span class="logo-meta">2026.02.24 &nbsp;rev.01</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#home">HOME</a></li>
     <li><a href="#gallery">ALBUM</a></li>
@@ -2230,27 +2247,6 @@ window.goToCarpPage = goToCarpPage;
   <div class="album-pagination" id="carpPagination"></div>
 </div>
 
-
-<!-- CARPENTRY MODAL -->
-<div class="album-modal" id="carpModal">
-  <div class="album-modal-header">
-    <div class="album-modal-header-top">
-      <div>
-        <div class="album-modal-label">Carpentry</div>
-        <div class="album-modal-title" id="carpModalTitle"></div>
-      </div>
-      <button type="button" class="album-modal-close" onclick="closeCarpentry()">← Back to Main</button>
-    </div>
-    <div class="album-modal-header-bottom">
-      <div class="view-toggle">
-        <button type="button" class="view-toggle-btn active" id="carpBtnGrid" onclick="setCarpView('grid')" title="그리드">&#8862;</button>
-        <button type="button" class="view-toggle-btn" id="carpBtnScroll" onclick="setCarpView('scroll')" title="스크롤">&#9776;</button>
-      </div>
-    </div>
-  </div>
-  <div class="album-modal-grid view-grid" id="carpModalGrid"></div>
-  <div class="album-pagination" id="carpPagination"></div>
-</div>
 
 <!-- COMMENT PANEL -->
 <div class="comment-panel" id="commentPanel" onclick="closeComments()">
