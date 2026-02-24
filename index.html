@@ -640,61 +640,6 @@
 
   /* CARPENTRY */
   #carpentry { text-align: center; }
-  .carpentry-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 48px;
-  }
-  @media (max-width: 768px) {
-    .carpentry-grid { grid-template-columns: 1fr; gap: 16px; }
-  }
-  .carpentry-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.3s, transform 0.3s;
-  }
-  .carpentry-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-  .carpentry-card-img {
-    width: 100%;
-    aspect-ratio: 4/3;
-    background: var(--surface2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .carpentry-card-img svg { opacity: 0.18; }
-  .carpentry-card-body {
-    padding: 16px;
-    text-align: left;
-  }
-  .carpentry-card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    font-style: italic;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .carpentry-card-desc {
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    line-height: 1.6;
-  }
-  .carpentry-tag {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 0.5rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(201,169,110,0.3);
-    padding: 2px 8px;
-  }
 
   /* CONTACT */
   #contact { text-align: center; padding-bottom: 40px; }
@@ -1419,8 +1364,7 @@
 <!-- CARPENTRY -->
 <section id="carpentry">
   <div class="gallery-header reveal">
-    <p class="section-label">Handcraft</p>
-    <h2 class="section-title">CARPENTRY</h2>
+    <h2 class="section-title about-introduce-label">CARPENTRY</h2>
   </div>
   <div class="gallery-grid">
 
@@ -2053,6 +1997,12 @@ function openLightboxFromAlbum(src, title, id) {
 // ── 앨범 카드 장수 업데이트 ───────────────────────────────────────────────
 Object.entries(albums).forEach(([key, album]) => {
   const card = document.querySelector(`#section-${key} .photo-count`);
+  if (card) card.textContent = `${album.photos.length}장`;
+});
+
+// ── 카펜트리 카드 장수 업데이트 ──────────────────────────────────────────
+Object.entries(carpentryAlbums).forEach(([key, album]) => {
+  const card = document.querySelector(`#carp-${key} .photo-count`);
   if (card) card.textContent = `${album.photos.length}장`;
 });
 
