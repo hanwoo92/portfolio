@@ -310,9 +310,6 @@
     color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 24px;
-    text-shadow:
-      0 0 1px rgba(255,255,255,0.6),
-      0 0 2px rgba(255,255,255,0.4);
   }
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
@@ -322,20 +319,10 @@
     letter-spacing: -0.02em;
     color: var(--text);
     margin-bottom: 32px;
-    text-shadow:
-      -0.5px -0.5px 0 rgba(255,255,255,0.25),
-       0.5px -0.5px 0 rgba(255,255,255,0.25),
-      -0.5px  0.5px 0 rgba(255,255,255,0.25),
-       0.5px  0.5px 0 rgba(255,255,255,0.25);
   }
   .hero-title em {
     font-style: italic;
     color: var(--accent);
-    text-shadow:
-      -0.5px -0.5px 0 rgba(255,255,255,0.3),
-       0.5px -0.5px 0 rgba(255,255,255,0.3),
-      -0.5px  0.5px 0 rgba(255,255,255,0.3),
-       0.5px  0.5px 0 rgba(255,255,255,0.3);
   }
   .hero-sub {
     font-size: 0.75rem;
@@ -344,7 +331,6 @@
     max-width: 340px;
     margin: 0 auto 48px;
     line-height: 1.8;
-    text-shadow: 0 0 6px rgba(0,0,0,0.8);
   }
   .hero-btn {
     display: inline-block;
@@ -356,11 +342,6 @@
     letter-spacing: 0.3em;
     text-transform: uppercase;
     transition: color 0.3s;
-    text-shadow:
-      -0.5px -0.5px 0 rgba(255,255,255,0.3),
-       0.5px -0.5px 0 rgba(255,255,255,0.3),
-      -0.5px  0.5px 0 rgba(255,255,255,0.3),
-       0.5px  0.5px 0 rgba(255,255,255,0.3);
   }
   .hero-btn:hover {
     color: var(--text);
@@ -636,64 +617,6 @@
     line-height: 1.2;
     margin-bottom: 24px;
     color: var(--text);
-  }
-
-  /* CARPENTRY */
-  #carpentry { text-align: center; }
-  .carpentry-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 48px;
-  }
-  @media (max-width: 768px) {
-    .carpentry-grid { grid-template-columns: 1fr; gap: 16px; }
-  }
-  .carpentry-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.3s, transform 0.3s;
-  }
-  .carpentry-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-  .carpentry-card-img {
-    width: 100%;
-    aspect-ratio: 4/3;
-    background: var(--surface2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .carpentry-card-img svg { opacity: 0.18; }
-  .carpentry-card-body {
-    padding: 16px;
-    text-align: left;
-  }
-  .carpentry-card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    font-style: italic;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .carpentry-card-desc {
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    line-height: 1.6;
-  }
-  .carpentry-tag {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 0.5rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(201,169,110,0.3);
-    padding: 2px 8px;
   }
 
   /* CONTACT */
@@ -1321,7 +1244,6 @@
   <ul class="nav-links">
     <li><a href="#home">HOME</a></li>
     <li><a href="#gallery">ALBUM</a></li>
-    <li><a href="#carpentry">CARPENTRY</a></li>
     <li><a href="#about">ABOUT</a></li>
     <li><a href="#contact">CONTACT</a></li>
   </ul>
@@ -1333,7 +1255,6 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#home" onclick="closeMenu()">HOME</a>
   <a href="#gallery" onclick="closeMenu()">ALBUM</a>
-  <a href="#carpentry" onclick="closeMenu()">CARPENTRY</a>
   <a href="#about" onclick="closeMenu()">ABOUT</a>
   <a href="#contact" onclick="closeMenu()">CONTACT</a>
 </div>
@@ -1415,67 +1336,6 @@
 
   </div>
 </div>
-
-<!-- CARPENTRY -->
-<section id="carpentry">
-  <div class="gallery-header reveal">
-    <p class="section-label">Handcraft</p>
-    <h2 class="section-title">CARPENTRY</h2>
-  </div>
-  <div class="carpentry-grid reveal">
-
-    <div class="carpentry-card">
-      <div class="carpentry-card-img">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="30" width="60" height="8" rx="2" fill="#c9a96e"/>
-          <rect x="18" y="38" width="6" height="28" rx="1" fill="#c9a96e"/>
-          <rect x="56" y="38" width="6" height="28" rx="1" fill="#c9a96e"/>
-          <rect x="10" y="20" width="60" height="5" rx="1" fill="#c9a96e" opacity="0.5"/>
-        </svg>
-      </div>
-      <div class="carpentry-card-body">
-        <div class="carpentry-card-title">Walnut Side Table</div>
-        <div class="carpentry-card-desc">Hand-jointed walnut table with dovetail corners</div>
-        <span class="carpentry-tag">Furniture</span>
-      </div>
-    </div>
-
-    <div class="carpentry-card">
-      <div class="carpentry-card-img">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="15" y="12" width="50" height="56" rx="2" fill="none" stroke="#c9a96e" stroke-width="2.5"/>
-          <rect x="22" y="20" width="16" height="20" rx="1" fill="#c9a96e" opacity="0.3"/>
-          <rect x="42" y="20" width="16" height="20" rx="1" fill="#c9a96e" opacity="0.3"/>
-          <rect x="22" y="46" width="36" height="14" rx="1" fill="#c9a96e" opacity="0.3"/>
-          <circle cx="39" cy="36" r="2" fill="#c9a96e"/>
-        </svg>
-      </div>
-      <div class="carpentry-card-body">
-        <div class="carpentry-card-title">Oak Shelf Cabinet</div>
-        <div class="carpentry-card-desc">Custom wall-mounted oak cabinet with sliding doors</div>
-        <span class="carpentry-tag">Storage</span>
-      </div>
-    </div>
-
-    <div class="carpentry-card">
-      <div class="carpentry-card-img">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="40" cy="28" rx="28" ry="6" fill="none" stroke="#c9a96e" stroke-width="2"/>
-          <line x1="12" y1="28" x2="20" y2="62" stroke="#c9a96e" stroke-width="2.5" stroke-linecap="round"/>
-          <line x1="68" y1="28" x2="60" y2="62" stroke="#c9a96e" stroke-width="2.5" stroke-linecap="round"/>
-          <line x1="20" y1="62" x2="60" y2="62" stroke="#c9a96e" stroke-width="2" stroke-linecap="round"/>
-          <ellipse cx="40" cy="28" rx="28" ry="6" fill="#c9a96e" opacity="0.15"/>
-        </svg>
-      </div>
-      <div class="carpentry-card-body">
-        <div class="carpentry-card-title">Pine Wood Bowl</div>
-        <div class="carpentry-card-desc">Lathe-turned pine bowl with natural oil finish</div>
-        <span class="carpentry-tag">Turning</span>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 <!-- ABOUT -->
 <section id="about">
