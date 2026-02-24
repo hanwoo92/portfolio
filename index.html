@@ -1336,7 +1336,7 @@
 
     <!-- NEWYORK -->
     <div id="section-newyork" class="photo-card reveal" data-category="newyork"
-      onclick="openAlbum('newyork')">
+     >
       <img class="photo-bg-img" src="photos/NY_1.jpg" alt="NEWYORK" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
@@ -1346,7 +1346,7 @@
 
     <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
-      onclick="openAlbum('paris')">
+     >
       <img class="photo-bg-img" src="photos/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
@@ -1356,7 +1356,7 @@
 
     <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
-      onclick="openAlbum('italy')">
+     >
       <img class="photo-bg-img" src="photos/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
@@ -1366,7 +1366,7 @@
 
     <!-- KOREA -->
     <div id="section-korea" class="photo-card reveal" data-category="korea"
-      onclick="openAlbum('korea')">
+     >
       <img class="photo-bg-img" src="photos/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">KOREA</div>
@@ -1387,7 +1387,7 @@
   <div class="gallery-grid">
 
     <!-- STOOL -->
-    <div id="carp-stool" class="photo-card reveal" onclick="openCarpentry('stool')">
+    <div id="carp-stool" class="photo-card reveal">
       <img class="photo-bg-img" src="carpentry/stool_finish.jpg" alt="STOOL" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">STOOL</div>
@@ -1396,7 +1396,7 @@
     </div>
 
     <!-- HOUSE -->
-    <div id="carp-house" class="photo-card reveal" onclick="openCarpentry('house')">
+    <div id="carp-house" class="photo-card reveal">
       <img class="photo-bg-img" src="carpentry/house_1.jpg" alt="HOUSE" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">HOUSE</div>
@@ -2198,6 +2198,20 @@ window.openCarpentry = openCarpentry;
 window.closeCarpentry = closeCarpentry;
 window.setCarpView = setCarpView;
 window.goToCarpPage = goToCarpPage;
+
+// ── 이벤트 위임: photo-card 클릭 ─────────────────────────────────────────
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.photo-card');
+  if (!card) return;
+
+  // ALBUM 카드
+  const albumMatch = card.id && card.id.match(/^section-(.+)$/);
+  if (albumMatch) { openAlbum(albumMatch[1]); return; }
+
+  // CARPENTRY 카드
+  const carpMatch = card.id && card.id.match(/^carp-(.+)$/);
+  if (carpMatch) { openCarpentry(carpMatch[1]); return; }
+});
 
 
 
