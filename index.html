@@ -1903,6 +1903,16 @@ const albums = {
   },
 };
 
+// CARPENTRY 데이터
+const carpentryAlbums = {
+  stool: { title: 'STOOL', photos: [
+    { id: 'stool_finish', src: 'carpentry/stool_finish.jpg', name: 'Stool Finish', date: '' }
+  ]},
+  house: { title: 'HOUSE', photos: [
+    { id: 'house_1', src: 'carpentry/house_1.jpg', name: 'House', date: '' }
+  ]},
+};
+
 // ── 앨범 페이지네이션 ────────────────────────────────────────────────────
 const PHOTOS_PER_PAGE = 10;
 let _curAlbumKey = null;
@@ -2092,15 +2102,7 @@ window.closeAlbum = closeAlbum;
 window.setView = setView;
 window.goToPage = goToPage;
 window.openLightboxFromAlbum = openLightboxFromAlbum;
-// CARPENTRY
-const carpentryAlbums = {
-  stool: { title: 'STOOL', photos: [
-    { id: 'stool_finish', src: 'carpentry/stool_finish.jpg', name: 'Stool Finish', date: '' }
-  ]},
-  house: { title: 'HOUSE', photos: [
-    { id: 'house_1', src: 'carpentry/house_1.jpg', name: 'House', date: '' }
-  ]},
-};
+
 let _curCarpKey=null, _curCarpPage=1;
 
 function makeCarpCard(ph, albTitle) {
