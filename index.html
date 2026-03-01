@@ -1550,64 +1550,7 @@ if (!isMobile) {
   });
 }
 
-// ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
-(function () {
-  const INTERVAL = 5000;
 
-  const allPhotos = [
-    'photos/NY_Main.jpg','photos/NY_1.jpg','photos/NY_2.jpg','photos/NY_3.jpg',
-    'photos/NY_4.jpg','photos/NY_5.jpg','photos/NY_6.jpg','photos/NY_7.jpg','photos/NY_8.jpg',
-    'photos/Paris_Main.jpg','photos/Paris_1.jpg','photos/Paris_2.jpg','photos/Paris_3.jpg',
-    'photos/Paris_4.jpg','photos/Paris_5.jpg','photos/Paris_6.jpg','photos/Paris_7.jpg',
-    'photos/Italy_Main.jpg','photos/Italy_1.jpg','photos/Italy_2.jpg','photos/Italy_3.jpg',
-    'photos/Italy_4.jpg','photos/Italy_5.jpg','photos/Italy_6.jpg',
-    'photos/KR_Main.jpg','photos/KR_1.jpg','photos/KR_2.jpg','photos/KR_3.jpg',
-    'photos/KR_4.jpg','photos/KR_5.jpg','photos/KR_6.jpg','photos/KR_7.jpg',
-    'photos/JP_Main.jpg','photos/JP_1.jpg','photos/JP_2.jpg','photos/JP_3.jpg',
-    'photos/JP_4.jpg','photos/JP_5.jpg','photos/JP_6.jpg','photos/JP_7.jpg',
-    'photos/JP_8.jpg','photos/JP_9.jpg','photos/JP_10.jpg','photos/JP_11.jpg',
-    'photos/JP_12.jpg','photos/JP_13.jpg','photos/JP_14.jpg','photos/JP_15.jpg',
-    'photos/JP_16.jpg','photos/JP_17.jpg'
-  ];
-
-  function shuffle(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  const list = shuffle(allPhotos);
-  const slide0 = document.getElementById('heroSlide0');
-  const slide1 = document.getElementById('heroSlide1');
-  if (!slide0) return;
-
-  let cur = 0;
-  let photoIdx = 0;
-
-  // 첫 사진 즉시 표시
-  slide0.style.backgroundImage = `url('${list[0]}')`;
-  slide0.classList.add('active');
-  slide1.style.backgroundImage = `url('${list[1 % list.length]}')`;
-
-  setInterval(() => {
-    const slides = [slide0, slide1];
-    const next = 1 - cur;
-    photoIdx = (photoIdx + 1) % list.length;
-
-    slides[next].style.backgroundImage = `url('${list[photoIdx]}')`;
-    slides[next].style.animation = 'none';
-    slides[next].offsetHeight;
-    slides[next].style.animation = '';
-    slides[next].classList.add('active');
-    slides[cur].classList.remove('active');
-
-    new Image().src = list[(photoIdx + 1) % list.length];
-    cur = next;
-  }, INTERVAL);
-})();
 
 // Nav scroll
 window.addEventListener('scroll', () => {
@@ -1941,6 +1884,52 @@ const albums = {
     ]
   },
 };
+
+// ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
+(function () {
+  const INTERVAL = 5000;
+
+  // albums 객체에서 자동으로 사진 목록 추출 (앨범 추가 시 자동 반영)
+  const allPhotos = Object.values(albums).flatMap(album => album.photos.map(p => p.src));
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const list = shuffle(allPhotos);
+  const slide0 = document.getElementById('heroSlide0');
+  const slide1 = document.getElementById('heroSlide1');
+  if (!slide0) return;
+
+  let cur = 0;
+  let photoIdx = 0;
+
+  // 첫 사진 즉시 표시
+  slide0.style.backgroundImage = `url('${list[0]}')`;
+  slide0.classList.add('active');
+  slide1.style.backgroundImage = `url('${list[1 % list.length]}')`;
+
+  setInterval(() => {
+    const slides = [slide0, slide1];
+    const next = 1 - cur;
+    photoIdx = (photoIdx + 1) % list.length;
+
+    slides[next].style.backgroundImage = `url('${list[photoIdx]}')`;
+    slides[next].style.animation = 'none';
+    slides[next].offsetHeight;
+    slides[next].style.animation = '';
+    slides[next].classList.add('active');
+    slides[cur].classList.remove('active');
+
+    new Image().src = list[(photoIdx + 1) % list.length];
+    cur = next;
+  }, INTERVAL);
+})();
 
 // CARPENTRY 데이터
 const carpentryAlbums = {
