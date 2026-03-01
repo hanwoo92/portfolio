@@ -1279,7 +1279,7 @@
 <nav id="nav">
   <a href="#home" class="logo-wrap">
     <span class="logo">HAN<span>WOO</span>95</span>
-    <span class="logo-meta" id="logoMeta"></span>
+    <span class="logo-meta">2026.02.25 &nbsp;Rev.01</span>
   </a>
   <ul class="nav-links">
     <li><a href="#home">HOME</a></li>
@@ -1338,7 +1338,7 @@
     <!-- NEWYORK -->
     <div id="section-newyork" class="photo-card reveal" data-category="newyork"
      >
-      <img class="photo-bg-img" src="photos/newyork/NY_1.jpg" alt="NEWYORK" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/NY_1.jpg" alt="NEWYORK" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
         <div class="photo-count" id="count-newyork"></div>
@@ -1348,7 +1348,7 @@
     <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
      >
-      <img class="photo-bg-img" src="photos/paris/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
         <div class="photo-count" id="count-paris"></div>
@@ -1358,7 +1358,7 @@
     <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
      >
-      <img class="photo-bg-img" src="photos/italy/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
         <div class="photo-count" id="count-italy"></div>
@@ -1368,7 +1368,7 @@
     <!-- KOREA -->
     <div id="section-korea" class="photo-card reveal" data-category="korea"
      >
-      <img class="photo-bg-img" src="photos/korea/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">KOREA</div>
         <div class="photo-count" id="count-korea"></div>
@@ -1378,7 +1378,7 @@
     <!-- JAPAN -->
     <div id="section-japan" class="photo-card reveal" data-category="japan"
      >
-      <img class="photo-bg-img" src="photos/japan/JP_Main.jpg" alt="JAPAN" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/JP_Main.jpg" alt="JAPAN" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">JAPAN</div>
         <div class="photo-count" id="count-japan"></div>
@@ -1551,17 +1551,6 @@ if (!isMobile) {
 }
 
 
-
-// ── 로고 날짜 자동 업데이트 ──────────────────────────────────────────────
-(function() {
-  const REV = 'Rev.01'; // 파일 수정 시 업데이트
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  const el = document.getElementById('logoMeta');
-  if (el) el.textContent = `${y}.${m}.${d}  ${REV}`;
-})();
 
 // Nav scroll
 window.addEventListener('scroll', () => {
@@ -1803,114 +1792,114 @@ const albums = {
   newyork: {
     title: 'NEWYORK',
     photos: [
-      { id: 'ny_main', src: 'photos/newyork/NY_Main.jpg' },
-      { id: 'ny_1', src: 'photos/newyork/NY_1.jpg' },
-      { id: 'ny_2', src: 'photos/newyork/NY_2.jpg' },
-      { id: 'ny_3', src: 'photos/newyork/NY_3.jpg' },
-      { id: 'ny_4', src: 'photos/newyork/NY_4.jpg' },
-      { id: 'ny_5', src: 'photos/newyork/NY_5.jpg' },
-      { id: 'ny_6', src: 'photos/newyork/NY_6.jpg' },
-      { id: 'ny_7', src: 'photos/newyork/NY_7.jpg' },
-      { id: 'ny_8', src: 'photos/newyork/NY_8.jpg' },
-      { id: 'ny_9', src: 'photos/newyork/NY_9.jpg' },
-      { id: 'ny_10', src: 'photos/newyork/NY_10.jpg' },
-      { id: 'ny_11', src: 'photos/newyork/NY_11.jpg' },
-      { id: 'ny_12', src: 'photos/newyork/NY_12.jpg' },
-      { id: 'ny_13', src: 'photos/newyork/NY_13.jpg' },
-      { id: 'ny_14', src: 'photos/newyork/NY_14.jpg' },
-      { id: 'ny_15', src: 'photos/newyork/NY_15.jpg' },
-      { id: 'ny_16', src: 'photos/newyork/NY_16.jpg' },
-      { id: 'ny_17', src: 'photos/newyork/NY_17.jpg' },
-      { id: 'ny_18', src: 'photos/newyork/NY_18.jpg' },
-      { id: 'ny_19', src: 'photos/newyork/NY_19.jpg' },
-      { id: 'ny_20', src: 'photos/newyork/NY_20.jpg' },
-      { id: 'ny_21', src: 'photos/newyork/NY_21.jpg' },
+      { id: 'ny_main', src: 'photos/NY_Main.jpg',  name: 'Pebble Beach',  date: '2023.09' },
+      { id: 'ny_1', src: 'photos/NY_1.jpg',    name: 'Pebble Beach',  date: '2023.09' },
+      { id: 'ny_2', src: 'photos/NY_2.jpg',    name: 'Central Park',  date: '2023.09' },
+      { id: 'ny_3', src: 'photos/NY_3.jpg',    name: 'Top of The Rock',  date: '2023.09' },
+      { id: 'ny_4', src: 'photos/NY_4.jpg',    name: 'Summit One',  date: '2023.09' },
+      { id: 'ny_5', src: 'photos/NY_5.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_6', src: 'photos/NY_6.jpg',    name: 'Top of The Rock',  date: '2023.09' },
+      { id: 'ny_7', src: 'photos/NY_7.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_8', src: 'photos/NY_8.jpg',    name: 'Fellini Coffee Soho',  date: '2023.09' },
+      { id: 'ny_9', src: 'photos/NY_9.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_10', src: 'photos/NY_10.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_11', src: 'photos/NY_11.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_12', src: 'photos/NY_12.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_13', src: 'photos/NY_13.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_14', src: 'photos/NY_14.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_15', src: 'photos/NY_15.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_16', src: 'photos/NY_16.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_17', src: 'photos/NY_17.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_18', src: 'photos/NY_18.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_19', src: 'photos/NY_19.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_20', src: 'photos/NY_20.jpg',    name: 'NEW YORK',  date: '2023.09' },
+      { id: 'ny_21', src: 'photos/NY_21.jpg',    name: 'NEW YORK',  date: '2023.09' },
     ]
   },
   paris: {
     title: 'PARIS',
     photos: [
-      { id: 'pa_main', src: 'photos/paris/Paris_Main.jpg' },
-      { id: 'pa_1', src: 'photos/paris/Paris_1.jpg' },
-      { id: 'pa_2', src: 'photos/paris/Paris_2.jpg' },
-      { id: 'pa_3', src: 'photos/paris/Paris_3.jpg' },
-      { id: 'pa_4', src: 'photos/paris/Paris_4.jpg' },
-      { id: 'pa_5', src: 'photos/paris/Paris_5.jpg' },
-      { id: 'pa_6', src: 'photos/paris/Paris_6.jpg' },
-      { id: 'pa_7', src: 'photos/paris/Paris_7.jpg' },
-      { id: 'pa_8', src: 'photos/paris/Paris_8.jpg' },
-      { id: 'pa_9', src: 'photos/paris/Paris_9.jpg' },
-      { id: 'pa_10', src: 'photos/paris/Paris_10.jpg' },
-      { id: 'pa_11', src: 'photos/paris/Paris_11.jpg' },
-      { id: 'pa_12', src: 'photos/paris/Paris_12.jpg' },
-      { id: 'pa_13', src: 'photos/paris/Paris_13.jpg' },
-      { id: 'pa_14', src: 'photos/paris/Paris_14.jpg' },
-      { id: 'pa_15', src: 'photos/paris/Paris_15.jpg' },
-      { id: 'pa_16', src: 'photos/paris/Paris_16.jpg' },
-      { id: 'pa_17', src: 'photos/paris/Paris_17.jpg' },
-      { id: 'pa_18', src: 'photos/paris/Paris_18.jpg' },
+      { id: 'pa_main', src: 'photos/Paris_Main.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_1', src: 'photos/Paris_1.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_2', src: 'photos/Paris_2.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_3', src: 'photos/Paris_3.jpg',  name: 'Eiffel Tower',  date: '2024.10' },
+      { id: 'pa_4', src: 'photos/Paris_4.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_5', src: 'photos/Paris_5.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_6', src: 'photos/Paris_6.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_7', src: 'photos/Paris_7.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_8', src: 'photos/Paris_8.jpg',  name: 'Mont Saint Michel',  date: '2024.10' },
+      { id: 'pa_9', src: 'photos/Paris_9.jpg',  name: 'Mont Saint Michel',  date: '2024.10' },
+      { id: 'pa_10', src: 'photos/Paris_10.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_11', src: 'photos/Paris_11.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_12', src: 'photos/Paris_12.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_13', src: 'photos/Paris_13.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_14', src: 'photos/Paris_14.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_15', src: 'photos/Paris_15.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_16', src: 'photos/Paris_16.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_17', src: 'photos/Paris_17.jpg',  name: 'PARIS Street',  date: '2024.10' },
+      { id: 'pa_18', src: 'photos/Paris_18.jpg',  name: 'PARIS Street',  date: '2024.10' },
     ]
   },
   italy: {
     title: 'ITALY',
     photos: [
-      { id: 'it_main', src: 'photos/italy/Italy_Main.jpg' },
-      { id: 'it_1', src: 'photos/italy/Italy_1.jpg' },
-      { id: 'it_2', src: 'photos/italy/Italy_2.jpg' },
-      { id: 'it_3', src: 'photos/italy/Italy_3.jpg' },
-      { id: 'it_4', src: 'photos/italy/Italy_4.jpg' },
-      { id: 'it_5', src: 'photos/italy/Italy_5.jpg' },
-      { id: 'it_6', src: 'photos/italy/Italy_6.jpg' },
-      { id: 'it_7', src: 'photos/italy/Italy_7.jpg' },
-      { id: 'it_8', src: 'photos/italy/Italy_8.jpg' },
+      { id: 'it_main', src: 'photos/Italy_Main.jpg',  name: 'Piazzale Michelangelo',   date: '2025.10' },
+      { id: 'it_1', src: 'photos/Italy_1.jpg',    name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_2', src: 'photos/Italy_2.jpg',  name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_3', src: 'photos/Italy_3.jpg',  name: 'Dolomiti',  date: '2025.10' },
+      { id: 'it_4', src: 'photos/Italy_4.jpg',  name: 'Lago di Misurina',  date: '2025.10' },
+      { id: 'it_5', src: 'photos/Italy_5.jpg',  name: 'Lago di Misurina',  date: '2025.10' },
+      { id: 'it_6', src: 'photos/Italy_6.jpg',  name: 'Lake Braies',  date: '2025.10' },
+      { id: 'it_7', src: 'photos/Italy_7.jpg',  name: 'Lake Braies',  date: '2025.10' },
+      { id: 'it_8', src: 'photos/Italy_8.jpg',  name: 'Lake Braies',  date: '2025.10' },
     ]
   },
   korea: {
     title: 'KOREA',
     photos: [
-      { id: 'kr_main', src: 'photos/korea/KR_Main.jpg' },
-      { id: 'kr_1', src: 'photos/korea/KR_1.jpg' },
-      { id: 'kr_2', src: 'photos/korea/KR_2.jpg' },
-      { id: 'kr_3', src: 'photos/korea/KR_3.jpg' },
-      { id: 'kr_4', src: 'photos/korea/KR_4.jpg' },
-      { id: 'kr_5', src: 'photos/korea/KR_5.jpg' },
-      { id: 'kr_6', src: 'photos/korea/KR_6.jpg' },
-      { id: 'kr_7', src: 'photos/korea/KR_7.jpg' },
-      { id: 'kr_8', src: 'photos/korea/KR_8.jpg' },
-      { id: 'kr_9', src: 'photos/korea/KR_9.jpg' },
-      { id: 'kr_10', src: 'photos/korea/KR_10.jpg' },
-      { id: 'kr_11', src: 'photos/korea/KR_11.jpg' },
-      { id: 'kr_12', src: 'photos/korea/KR_12.jpg' },
-      { id: 'kr_13', src: 'photos/korea/KR_13.jpg' },
-      { id: 'kr_14', src: 'photos/korea/KR_14.jpg' },
-      { id: 'kr_15', src: 'photos/korea/KR_15.jpg' },
-      { id: 'kr_16', src: 'photos/korea/KR_16.jpg' },
-      { id: 'kr_17', src: 'photos/korea/KR_17.jpg' },
+      { id: 'kr_main', src: 'photos/KR_Main.jpg',  name: 'Suwon',  date: '2000.00' },
+      { id: 'kr_1', src: 'photos/KR_1.jpg',  name: 'Jeju',  date: '2000.00' },
+      { id: 'kr_2', src: 'photos/KR_2.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_3', src: 'photos/KR_3.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_4', src: 'photos/KR_4.jpg',  name: 'Sokcho',  date: '2000.00' },
+      { id: 'kr_5', src: 'photos/KR_5.jpg',  name: 'Busan',  date: '2000.00' },
+      { id: 'kr_6', src: 'photos/KR_6.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_7', src: 'photos/KR_7.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_8', src: 'photos/KR_8.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_9', src: 'photos/KR_9.jpg',  name: 'Seoul',  date: '2000.00' },
+      { id: 'kr_10', src: 'photos/KR_10.jpg',  name: 'Busan',  date: '2000.00' },
+      { id: 'kr_11', src: 'photos/KR_11.jpg',  name: 'Busan',  date: '2000.00' },
+      { id: 'kr_12', src: 'photos/KR_12.jpg',  name: 'Haman',  date: '2000.00' },
+      { id: 'kr_13', src: 'photos/KR_13.jpg',  name: 'Haman',  date: '2000.00' },
+      { id: 'kr_14', src: 'photos/KR_14.jpg',  name: 'Haman',  date: '2000.00' },
+      { id: 'kr_15', src: 'photos/KR_15.jpg',  name: 'Haman',  date: '2000.00' },
+      { id: 'kr_16', src: 'photos/KR_16.jpg',  name: 'Haman',  date: '2000.00' },
+      { id: 'kr_17', src: 'photos/KR_17.jpg',  name: 'Seoul',  date: '2000.00' },
     ]
   },
   japan: {
     title: 'JAPAN',
     photos: [
-      { id: 'jp_main', src: 'photos/japan/JP_Main.jpg' },
-      { id: 'jp_1',    src: 'photos/japan/JP_1.jpg' },
-      { id: 'jp_2',    src: 'photos/japan/JP_2.jpg' },
-      { id: 'jp_3',    src: 'photos/japan/JP_3.jpg' },
-      { id: 'jp_4',    src: 'photos/japan/JP_4.jpg' },
-      { id: 'jp_5',    src: 'photos/japan/JP_5.jpg' },
-      { id: 'jp_6',    src: 'photos/japan/JP_6.jpg' },
-      { id: 'jp_7',    src: 'photos/japan/JP_7.jpg' },
-      { id: 'jp_8',    src: 'photos/japan/JP_8.jpg' },
-      { id: 'jp_9',    src: 'photos/japan/JP_9.jpg' },
-      { id: 'jp_10',    src: 'photos/japan/JP_10.jpg' },
-      { id: 'jp_11',    src: 'photos/japan/JP_11.jpg' },
-      { id: 'jp_12',    src: 'photos/japan/JP_12.jpg' },
-      { id: 'jp_13',    src: 'photos/japan/JP_13.jpg' },
-      { id: 'jp_14',    src: 'photos/japan/JP_14.jpg' },
-      { id: 'jp_15',    src: 'photos/japan/JP_15.jpg' },
-      { id: 'jp_16',    src: 'photos/japan/JP_16.jpg' },
-      { id: 'jp_17',    src: 'photos/japan/JP_17.jpg' },
-      { id: 'jp_18',    src: 'photos/japan/JP_18.jpg' },
-      { id: 'jp_19',    src: 'photos/japan/JP_19.jpg' },
+      { id: 'jp_main', src: 'photos/JP_Main.jpg', name: 'Japan', date: '2000.00' },
+      { id: 'jp_1',    src: 'photos/JP_1.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_2',    src: 'photos/JP_2.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_3',    src: 'photos/JP_3.jpg',    name: 'Kamakura', date: '2000.00' },
+      { id: 'jp_4',    src: 'photos/JP_4.jpg',    name: 'Kamakura', date: '2000.00' },
+      { id: 'jp_5',    src: 'photos/JP_5.jpg',    name: 'Kamakura', date: '2000.00' },
+      { id: 'jp_6',    src: 'photos/JP_6.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_7',    src: 'photos/JP_7.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_8',    src: 'photos/JP_8.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_9',    src: 'photos/JP_9.jpg',    name: 'Kamakura', date: '2000.00' },
+      { id: 'jp_10',    src: 'photos/JP_10.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_11',    src: 'photos/JP_11.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_12',    src: 'photos/JP_12.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_13',    src: 'photos/JP_13.jpg',    name: 'Ine, Kyoto', date: '2000.00' },
+      { id: 'jp_14',    src: 'photos/JP_14.jpg',    name: 'Ine, Kyoto', date: '2000.00' },
+      { id: 'jp_15',    src: 'photos/JP_15.jpg',    name: 'Ine, Kyoto', date: '2000.00' },
+      { id: 'jp_16',    src: 'photos/JP_16.jpg',    name: 'Kyoto', date: '2000.00' },
+      { id: 'jp_17',    src: 'photos/JP_17.jpg',    name: 'Kamakura', date: '2000.00' },
+      { id: 'jp_18',    src: 'photos/JP_18.jpg',    name: 'Tokyo', date: '2000.00' },
+      { id: 'jp_19',    src: 'photos/JP_19.jpg',    name: 'Kyoto', date: '2000.00' },
     ]
   },
 };
@@ -1988,20 +1977,6 @@ function openAlbum(category) {
   document.body.style.overflow = 'hidden';
 }
 
-// ── 파일명 파싱 헬퍼 ─────────────────────────────────────────────────────
-// 파일명 형식: '소제목_날짜.jpg' → name: '소제목', date: '날짜'
-// 언더스코어가 없으면 name: 파일명(확장자제거), date: ''
-function parsePhotoMeta(src) {
-  const filename = src.split('/').pop().replace(/\.[^.]+$/, ''); // 확장자 제거
-  const parts = filename.split('_');
-  if (parts.length >= 2) {
-    const date = parts[parts.length - 1];
-    const name = parts.slice(0, -1).join(' ');
-    return { name, date };
-  }
-  return { name: filename, date: '' };
-}
-
 function _renderAlbumPage() {
   const album = albums[_curAlbumKey];
   const allPhotos = album.photos;
@@ -2013,27 +1988,25 @@ function _renderAlbumPage() {
   const grid = document.getElementById('albumModalGrid');
   grid.scrollTop = 0;
 
-  grid.innerHTML = pagePhotos.map(photo => {
-    const meta = parsePhotoMeta(photo.src);
-    return `
+  grid.innerHTML = pagePhotos.map(photo => `
     <div class="album-photo-wrapper">
       <div class="album-photo-card"
-           onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
-        <img data-src="${photo.src}" alt="${meta.name}" decoding="async"
+           onclick="openLightboxFromAlbum('${photo.src}', '${photo.name}', '${photo.id}')">
+        <img data-src="${photo.src}" alt="${photo.name}" decoding="async"
              style="width:100%;height:auto;display:block;background:var(--surface2);">
       </div>
       <div class="album-card-footer">
         <div class="album-card-meta">
-          <div class="album-card-name">${meta.name}</div>
-          ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
+          <div class="album-card-name">${photo.name}</div>
+          ${photo.date ? `<div class="album-card-date">${photo.date}</div>` : ''}
         </div>
         <button class="album-comment-btn"
-          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${album.title}')">
+          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${photo.name}', '${album.title}')">
           💬 COMMENT
         </button>
       </div>
     </div>
-  `;}).join('');
+  `).join('');
 
   // 페이지네이션 (항상 표시)
   const pgEl = document.getElementById('albumPagination');
@@ -2180,15 +2153,14 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
 let _curCarpKey=null, _curCarpPage=1;
 
 function makeCarpCard(ph, albTitle) {
-  var pmeta = parsePhotoMeta(ph.src);
   var d = document.createElement('div');
   d.className = 'album-photo-wrapper';
   var card = document.createElement('div');
   card.className = 'album-photo-card';
-  card.setAttribute('onclick', "openLightboxFromAlbum('" + ph.src + "','" + pmeta.name + "','" + ph.id + "')");
+  card.setAttribute('onclick', "openLightboxFromAlbum('" + ph.src + "','" + ph.name + "','" + ph.id + "')");
   var img = document.createElement('img');
   img.setAttribute('data-src', ph.src);
-  img.alt = pmeta.name;
+  img.alt = ph.name;
   img.decoding = 'async';
   img.style.cssText = 'width:100%;height:auto;display:block;background:var(--surface2)';
   card.appendChild(img);
@@ -2199,17 +2171,17 @@ function makeCarpCard(ph, albTitle) {
   meta.className = 'album-card-meta';
   var nameEl = document.createElement('div');
   nameEl.className = 'album-card-name';
-  nameEl.textContent = pmeta.name;
+  nameEl.textContent = ph.name;
   meta.appendChild(nameEl);
-  if (pmeta.date) {
+  if (ph.date) {
     var dateEl = document.createElement('div');
     dateEl.className = 'album-card-date';
-    dateEl.textContent = pmeta.date;
+    dateEl.textContent = ph.date;
     meta.appendChild(dateEl);
   }
   var btn = document.createElement('button');
   btn.className = 'album-comment-btn';
-  btn.setAttribute('onclick', "event.stopPropagation();event.preventDefault();openComments('" + ph.id + "','" + pmeta.name + "','" + albTitle + "')");
+  btn.setAttribute('onclick', "event.stopPropagation();event.preventDefault();openComments('" + ph.id + "','" + ph.name + "','" + albTitle + "')");
   btn.textContent = '\uD83D\uDCAC COMMENT';
   footer.appendChild(meta);
   footer.appendChild(btn);
