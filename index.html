@@ -460,7 +460,7 @@
   .gallery-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 0;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -810,7 +810,7 @@
     #gallery { padding: 80px 16px; }
     #carpentry { padding: 80px 16px; }
     .gallery-header { padding: 0 8px; margin-bottom: 32px; }
-    .gallery-grid { grid-template-columns: 1fr; gap: 8px; }
+    .gallery-grid { grid-template-columns: 1fr; gap: 0; }
     #about { gap: 24px; }
     .about-top-row {
       grid-template-columns: 1fr 1fr;
@@ -1035,7 +1035,9 @@
     background: rgba(0,0,0,0.97);
     z-index: 2000;
     flex-direction: column;
-    overflow: hidden; /* 헤더 고정을 위해 모달 자체는 hidden */
+    overflow: hidden;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
   .album-modal.open { display: flex; }
 
@@ -1101,17 +1103,22 @@
     min-height: 0;
     box-sizing: border-box;
     width: 100%;
+    max-width: 100%;
   }
 
   .album-photo-card {
     position: relative;
     width: 100%;
+    max-width: 100%;
     cursor: pointer;
     background: var(--surface);
     flex-shrink: 0;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .album-photo-card img {
     width: 100%;
+    max-width: 100%;
     height: auto;
     display: block;
   }
@@ -1140,7 +1147,7 @@
   }
   .view-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* 그리드형 (기본) — 2열 고정, 가로 사진 span2 / 세로 span1 */
+  /* 그리드형 — 2열 고정, 가로 사진 span2 / 세로 span1 */
   .album-modal-grid.view-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1148,6 +1155,8 @@
     padding: 16px;
     align-content: start;
     overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
   }
   @media (min-width: 900px) {
     .album-modal-grid.view-grid {
@@ -1169,12 +1178,13 @@
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
     grid-column: span 2;
   }
-  /* 세로 사진 홀수 마지막: 가운데 배치 */
+  /* 세로 사진 홀수 마지막: 가운데 1열 배치 */
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
     grid-column: 1 / -1;
     max-width: 50%;
     margin: 0 auto;
     width: 100%;
+    box-sizing: border-box;
   }
   @media (min-width: 900px) {
     .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
@@ -1221,6 +1231,9 @@
   .album-photo-wrapper {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   /* 사진 아래 정보 + COMMENT 영역 */
@@ -1240,7 +1253,7 @@
   }
   .album-card-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
+    font-size: 0.6rem;
     font-style: italic;
     color: var(--text);
     letter-spacing: 0.05em;
@@ -1250,7 +1263,7 @@
     text-overflow: ellipsis;
   }
   .album-card-date {
-    font-size: 0.75rem;
+    font-size: 0.5rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(201,169,110,0.7);
@@ -1261,7 +1274,7 @@
     color: rgba(201,169,110,0.6);
     padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.8rem;
+    font-size: 0.48rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
