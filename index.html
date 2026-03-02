@@ -460,7 +460,7 @@
   .gallery-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 4px;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -1161,20 +1161,26 @@
     padding: 0;
   }
 
-  /* 가로 사진: 2칸 span */
+  /* 가로 사진: 모바일 2칸, 데스크탑 2칸 span */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
     grid-column: span 2;
   }
-  /* 세로 사진 홀수 마지막: 가운데 배치 */
+  /* 세로 사진 홀수 마지막: 모바일에서 전체 너비 */
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
-    grid-column: 2 / 3;
+    grid-column: 1 / -1;
+    max-width: 50%;
+    margin: 0 auto;
   }
   @media (min-width: 900px) {
+    /* 데스크탑: 가로 사진 2칸 span */
     .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
       grid-column: span 2;
     }
+    /* 데스크탑: 세로 홀수 마지막 → 3열 중 가운데 */
     .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
       grid-column: 2 / 3;
+      max-width: unset;
+      margin: 0;
     }
   }
   /* 페이지네이션 */
@@ -1231,7 +1237,7 @@
   }
   .album-card-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.6rem;
+    font-size: 0.95rem;
     font-style: italic;
     color: var(--text);
     letter-spacing: 0.05em;
@@ -1241,7 +1247,7 @@
     text-overflow: ellipsis;
   }
   .album-card-date {
-    font-size: 0.5rem;
+    font-size: 0.65rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(201,169,110,0.7);
@@ -1252,7 +1258,7 @@
     color: rgba(201,169,110,0.6);
     padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.48rem;
+    font-size: 0.7rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
@@ -2041,12 +2047,25 @@ function openAlbum(category) {
 function parsePhotoMeta(src) {
   const filename = src.split('/').pop().replace(/\.[^.]+$/, ''); // 확장자 제거
   const parts = filename.split('_');
-  if (parts.length >= 2) {
-    const date = parts[parts.length - 1];
-    const name = parts.slice(0, -1).join(' ');
-    return { name, date };
+
+  // 마지막 파트가 날짜 형식(YYYY.MM 또는 숫자)인지 확인
+  const lastPart = parts[parts.length - 1];
+  const isDate = /^\d{4}\.\d{2}$/.test(lastPart);
+  const isNum  = /^\d+$/.test(lastPart);
+
+  let name, date;
+  if (parts.length >= 2 && (isDate || isNum)) {
+    date = isDate ? lastPart : '';           // 순수 숫자면 날짜 아님 → 표시 안 함
+    name = parts.slice(0, -1).join(' ');
+  } else {
+    name = parts.join(' ');
+    date = '';
   }
-  return { name: filename, date: '' };
+
+  // 소제목 끝에 남은 숫자(공백+숫자) 제거 ex) "Central Park 2" → "Central Park"
+  name = name.replace(/\s+\d+$/, '').trim();
+
+  return { name, date };
 }
 
 // ── 이미지 비율 캐시 (측정 완료 후 재사용) ───────────────────────────────
