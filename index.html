@@ -460,7 +460,7 @@
   .gallery-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 16px;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -810,7 +810,7 @@
     #gallery { padding: 80px 16px; }
     #carpentry { padding: 80px 16px; }
     .gallery-header { padding: 0 8px; margin-bottom: 32px; }
-    .gallery-grid { grid-template-columns: 1fr; gap: 0; }
+    .gallery-grid { grid-template-columns: 1fr; gap: 10px; }
     #about { gap: 24px; }
     .about-top-row {
       grid-template-columns: 1fr 1fr;
@@ -1253,7 +1253,7 @@
   }
   .album-card-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.6rem;
+    font-size: 1.1rem;
     font-style: italic;
     color: var(--text);
     letter-spacing: 0.05em;
@@ -1263,7 +1263,7 @@
     text-overflow: ellipsis;
   }
   .album-card-date {
-    font-size: 0.5rem;
+    font-size: 0.75rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(201,169,110,0.7);
@@ -1274,7 +1274,7 @@
     color: rgba(201,169,110,0.6);
     padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.48rem;
+    font-size: 0.8rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
@@ -2111,10 +2111,41 @@ function _buildAlbumCard(photo, albumTitle, isWide) {
   </div>`;
 }
 
+// ── 스마트 레이아웃: 순서 최대한 유지하며 세로형 짝 맞추기 ──────────────
+// 가로형 나오기 전 세로형이 홀수면 solo 처리 후 가로형 배치
+function _smartLayout(photos, ratios) {
+  const result = [];
+  const portraitQueue = [];
+
+  const flush = (forceSolo = false) => {
+    while (portraitQueue.length > 0) {
+      if (portraitQueue.length === 1 || (forceSolo && portraitQueue.length % 2 === 1)) {
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: true });
+      } else {
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+      }
+    }
+  };
+
+  photos.forEach((photo, i) => {
+    if (ratios[i]) {
+      flush(true);
+      result.push({ photo, isWide: true, isSolo: false });
+    } else {
+      portraitQueue.push(photo);
+      if (portraitQueue.length === 2) {
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+      }
+    }
+  });
+  flush(true);
+  return result;
+}
+
 function _applyPortraitSolo(grid) {
-  // 세로 사진이 홀수로 남으면 마지막 세로 사진 가운데 배치
   const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
-  // portrait-solo 초기화
   wrappers.forEach(w => w.classList.remove('portrait-solo'));
   const portraits = wrappers.filter(w => !w.classList.contains('wide-photo'));
   if (portraits.length % 2 === 1) {
@@ -2134,14 +2165,32 @@ async function _renderAlbumPage() {
   grid.scrollTop = 0;
   grid.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.7rem;letter-spacing:0.2em;">LOADING...</div>';
 
-  // 모든 사진 비율 미리 측정
+  // 모든 사진 비율 미리 측정 후 스마트 레이아웃 적용
   const ratios = await Promise.all(pagePhotos.map(p => _measureRatio(p.src)));
+  const layout = _smartLayout(pagePhotos, ratios);
 
-  grid.innerHTML = pagePhotos.map((photo, i) =>
-    _buildAlbumCard(photo, album.title, ratios[i])
-  ).join('');
-
-  _applyPortraitSolo(grid);
+  grid.innerHTML = layout.map(({ photo, isWide, isSolo }) => {
+    const extraClass = isWide ? ' wide-photo' : isSolo ? ' portrait-solo' : '';
+    const meta = parsePhotoMeta(photo.src);
+    return `
+    <div class="album-photo-wrapper${extraClass}">
+      <div class="album-photo-card"
+           onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
+        <img src="${photo.src}" alt="${meta.name}" decoding="async" loading="lazy"
+             style="width:100%;height:auto;display:block;background:var(--surface2);">
+      </div>
+      <div class="album-card-footer">
+        <div class="album-card-meta">
+          <div class="album-card-name">${meta.name}</div>
+          ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
+        </div>
+        <button class="album-comment-btn"
+          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${album.title}')">
+          💬 COMMENT
+        </button>
+      </div>
+    </div>`;
+  }).join('');
 
   // 페이지네이션
   const pgEl = document.getElementById('albumPagination');
@@ -2302,10 +2351,31 @@ async function _renderCarpPage() {
   grid.scrollTop = 0;
   grid.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.7rem;letter-spacing:0.2em;">LOADING...</div>';
 
-  // 비율 미리 측정
+  // 비율 미리 측정 후 스마트 레이아웃 적용
   const ratios = await Promise.all(page.map(ph => _measureRatio(ph.src)));
-  grid.innerHTML = page.map((ph, i) => _buildAlbumCard(ph, alb.title, ratios[i])).join('');
-  _applyPortraitSolo(grid);
+  const layout = _smartLayout(page, ratios);
+  grid.innerHTML = layout.map(({ photo, isWide, isSolo }) => {
+    const extraClass = isWide ? ' wide-photo' : isSolo ? ' portrait-solo' : '';
+    const meta = parsePhotoMeta(photo.src);
+    return `
+    <div class="album-photo-wrapper${extraClass}">
+      <div class="album-photo-card"
+           onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
+        <img src="${photo.src}" alt="${meta.name}" decoding="async" loading="lazy"
+             style="width:100%;height:auto;display:block;background:var(--surface2);">
+      </div>
+      <div class="album-card-footer">
+        <div class="album-card-meta">
+          <div class="album-card-name">${meta.name}</div>
+          ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
+        </div>
+        <button class="album-comment-btn"
+          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${alb.title}')">
+          💬 COMMENT
+        </button>
+      </div>
+    </div>`;
+  }).join('');
 
   var pg = document.getElementById('carpPagination');
   var h = '<button class="page-btn" onclick="goToCarpPage(' + (_curCarpPage-1) + ')" ' + (_curCarpPage===1?'disabled':'') + '>\u2039</button>';
