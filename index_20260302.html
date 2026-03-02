@@ -1137,7 +1137,7 @@
   }
   .view-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* 그리드형 (기본) — 3열 기준, 가로 사진 span2 / 세로 span1 */
+  /* 그리드형 (기본) — wrapper가 그리드 셀 */
   .album-modal-grid.view-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1146,11 +1146,7 @@
     align-content: start;
   }
   @media (min-width: 900px) {
-    .album-modal-grid.view-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      padding: 28px;
-    }
+    .album-modal-grid.view-grid { gap: 20px; padding: 28px; }
   }
 
   /* 스크롤형 (1열 세로) */
@@ -1160,22 +1156,12 @@
     gap: 0;
     padding: 0;
   }
-
-  /* 가로 사진: 2칸 span */
+  /* 그리드형: 가로/세로 모두 2열 균등 배치 */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
-    grid-column: span 2;
+    grid-column: span 1;
   }
-  /* 세로 사진 홀수 마지막: 가운데 배치 */
-  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
-    grid-column: 2 / 3;
-  }
-  @media (min-width: 900px) {
-    .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
-      grid-column: span 2;
-    }
-    .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
-      grid-column: 2 / 3;
-    }
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-last {
+    grid-column: span 1;
   }
   /* 페이지네이션 */
   .album-pagination {
@@ -1813,68 +1799,121 @@ async function deleteComment(docId) {
 }
 
 // ── 앨범 데이터 (사진 추가 시 여기만 수정) ───────────────────────────────
-// ── 앨범 데이터 ──────────────────────────────────────────────────────────
-// 파일명 형식: '소제목_날짜.jpg' → 소제목/날짜 자동 파싱
-// 새 사진 추가 시 files 배열에 파일명만 추가하면 자동 반영
 const albums = {
   newyork: {
     title: 'NEWYORK',
-    folder: 'photos/NEWYORK',
-    files: [
-      'NY_Main.jpg','NY_1.jpg','NY_2.jpg','NY_3.jpg','NY_4.jpg',
-      'NY_5.jpg','NY_6.jpg','NY_7.jpg','NY_8.jpg','NY_9.jpg',
-      'NY_10.jpg','NY_11.jpg','NY_12.jpg','NY_13.jpg','NY_14.jpg',
-      'NY_15.jpg','NY_16.jpg','NY_17.jpg','NY_18.jpg','NY_19.jpg',
-      'NY_20.jpg','NY_21.jpg',
+    photos: [
+      { id: 'ny_main', src: 'photos/NEWYORK/NY_Main.jpg' },
+      { id: 'ny_1', src: 'photos/NEWYORK/NY_1.jpg' },
+      { id: 'ny_2', src: 'photos/NEWYORK/NY_2.jpg' },
+      { id: 'ny_3', src: 'photos/NEWYORK/NY_3.jpg' },
+      { id: 'ny_4', src: 'photos/NEWYORK/NY_4.jpg' },
+      { id: 'ny_5', src: 'photos/NEWYORK/NY_5.jpg' },
+      { id: 'ny_6', src: 'photos/NEWYORK/NY_6.jpg' },
+      { id: 'ny_7', src: 'photos/NEWYORK/NY_7.jpg' },
+      { id: 'ny_8', src: 'photos/NEWYORK/NY_8.jpg' },
+      { id: 'ny_9', src: 'photos/NEWYORK/NY_9.jpg' },
+      { id: 'ny_10', src: 'photos/NEWYORK/NY_10.jpg' },
+      { id: 'ny_11', src: 'photos/NEWYORK/NY_11.jpg' },
+      { id: 'ny_12', src: 'photos/NEWYORK/NY_12.jpg' },
+      { id: 'ny_13', src: 'photos/NEWYORK/NY_13.jpg' },
+      { id: 'ny_14', src: 'photos/NEWYORK/NY_14.jpg' },
+      { id: 'ny_15', src: 'photos/NEWYORK/NY_15.jpg' },
+      { id: 'ny_16', src: 'photos/NEWYORK/NY_16.jpg' },
+      { id: 'ny_17', src: 'photos/NEWYORK/NY_17.jpg' },
+      { id: 'ny_18', src: 'photos/NEWYORK/NY_18.jpg' },
+      { id: 'ny_19', src: 'photos/NEWYORK/NY_19.jpg' },
+      { id: 'ny_20', src: 'photos/NEWYORK/NY_20.jpg' },
+      { id: 'ny_21', src: 'photos/NEWYORK/NY_21.jpg' },
     ]
   },
   paris: {
     title: 'PARIS',
-    folder: 'photos/PARIS',
-    files: [
-      'Paris_Main.jpg','Paris_1.jpg','Paris_2.jpg','Paris_3.jpg','Paris_4.jpg',
-      'Paris_5.jpg','Paris_6.jpg','Paris_7.jpg','Paris_8.jpg','Paris_9.jpg',
-      'Paris_10.jpg','Paris_11.jpg','Paris_12.jpg','Paris_13.jpg','Paris_14.jpg',
-      'Paris_15.jpg','Paris_16.jpg','Paris_17.jpg','Paris_18.jpg',
+    photos: [
+      { id: 'pa_main', src: 'photos/PARIS/Paris_Main.jpg' },
+      { id: 'pa_1', src: 'photos/PARIS/Paris_1.jpg' },
+      { id: 'pa_2', src: 'photos/PARIS/Paris_2.jpg' },
+      { id: 'pa_3', src: 'photos/PARIS/Paris_3.jpg' },
+      { id: 'pa_4', src: 'photos/PARIS/Paris_4.jpg' },
+      { id: 'pa_5', src: 'photos/PARIS/Paris_5.jpg' },
+      { id: 'pa_6', src: 'photos/PARIS/Paris_6.jpg' },
+      { id: 'pa_7', src: 'photos/PARIS/Paris_7.jpg' },
+      { id: 'pa_8', src: 'photos/PARIS/Paris_8.jpg' },
+      { id: 'pa_9', src: 'photos/PARIS/Paris_9.jpg' },
+      { id: 'pa_10', src: 'photos/PARIS/Paris_10.jpg' },
+      { id: 'pa_11', src: 'photos/PARIS/Paris_11.jpg' },
+      { id: 'pa_12', src: 'photos/PARIS/Paris_12.jpg' },
+      { id: 'pa_13', src: 'photos/PARIS/Paris_13.jpg' },
+      { id: 'pa_14', src: 'photos/PARIS/Paris_14.jpg' },
+      { id: 'pa_15', src: 'photos/PARIS/Paris_15.jpg' },
+      { id: 'pa_16', src: 'photos/PARIS/Paris_16.jpg' },
+      { id: 'pa_17', src: 'photos/PARIS/Paris_17.jpg' },
+      { id: 'pa_18', src: 'photos/PARIS/Paris_18.jpg' },
     ]
   },
   italy: {
     title: 'ITALY',
-    folder: 'photos/ITALY',
-    files: [
-      'Italy_Main.jpg','Italy_1.jpg','Italy_2.jpg','Italy_3.jpg','Italy_4.jpg',
-      'Italy_5.jpg','Italy_6.jpg','Italy_7.jpg','Italy_8.jpg',
+    photos: [
+      { id: 'it_main', src: 'photos/ITALY/Italy_Main.jpg' },
+      { id: 'it_1', src: 'photos/ITALY/Italy_1.jpg' },
+      { id: 'it_2', src: 'photos/ITALY/Italy_2.jpg' },
+      { id: 'it_3', src: 'photos/ITALY/Italy_3.jpg' },
+      { id: 'it_4', src: 'photos/ITALY/Italy_4.jpg' },
+      { id: 'it_5', src: 'photos/ITALY/Italy_5.jpg' },
+      { id: 'it_6', src: 'photos/ITALY/Italy_6.jpg' },
+      { id: 'it_7', src: 'photos/ITALY/Italy_7.jpg' },
+      { id: 'it_8', src: 'photos/ITALY/Italy_8.jpg' },
     ]
   },
   korea: {
     title: 'KOREA',
-    folder: 'photos/KOREA',
-    files: [
-      'KR_Main.jpg','KR_1.jpg','KR_2.jpg','KR_3.jpg','KR_4.jpg',
-      'KR_5.jpg','KR_6.jpg','KR_7.jpg','KR_8.jpg','KR_9.jpg',
-      'KR_10.jpg','KR_11.jpg','KR_12.jpg','KR_13.jpg','KR_14.jpg',
-      'KR_15.jpg','KR_16.jpg','KR_17.jpg',
+    photos: [
+      { id: 'kr_main', src: 'photos/KOREA/KR_Main.jpg' },
+      { id: 'kr_1', src: 'photos/KOREA/KR_1.jpg' },
+      { id: 'kr_2', src: 'photos/KOREA/KR_2.jpg' },
+      { id: 'kr_3', src: 'photos/KOREA/KR_3.jpg' },
+      { id: 'kr_4', src: 'photos/KOREA/KR_4.jpg' },
+      { id: 'kr_5', src: 'photos/KOREA/KR_5.jpg' },
+      { id: 'kr_6', src: 'photos/KOREA/KR_6.jpg' },
+      { id: 'kr_7', src: 'photos/KOREA/KR_7.jpg' },
+      { id: 'kr_8', src: 'photos/KOREA/KR_8.jpg' },
+      { id: 'kr_9', src: 'photos/KOREA/KR_9.jpg' },
+      { id: 'kr_10', src: 'photos/KOREA/KR_10.jpg' },
+      { id: 'kr_11', src: 'photos/KOREA/KR_11.jpg' },
+      { id: 'kr_12', src: 'photos/KOREA/KR_12.jpg' },
+      { id: 'kr_13', src: 'photos/KOREA/KR_13.jpg' },
+      { id: 'kr_14', src: 'photos/KOREA/KR_14.jpg' },
+      { id: 'kr_15', src: 'photos/KOREA/KR_15.jpg' },
+      { id: 'kr_16', src: 'photos/KOREA/KR_16.jpg' },
+      { id: 'kr_17', src: 'photos/KOREA/KR_17.jpg' },
     ]
   },
   japan: {
     title: 'JAPAN',
-    folder: 'photos/JAPAN',
-    files: [
-      'JP_Main.jpg','JP_1.jpg','JP_2.jpg','JP_3.jpg','JP_4.jpg',
-      'JP_5.jpg','JP_6.jpg','JP_7.jpg','JP_8.jpg','JP_9.jpg',
-      'JP_10.jpg','JP_11.jpg','JP_12.jpg','JP_13.jpg','JP_14.jpg',
-      'JP_15.jpg','JP_16.jpg','JP_17.jpg','JP_18.jpg','JP_19.jpg',
+    photos: [
+      { id: 'jp_main', src: 'photos/JAPAN/JP_Main.jpg' },
+      { id: 'jp_1',    src: 'photos/JAPAN/JP_1.jpg' },
+      { id: 'jp_2',    src: 'photos/JAPAN/JP_2.jpg' },
+      { id: 'jp_3',    src: 'photos/JAPAN/JP_3.jpg' },
+      { id: 'jp_4',    src: 'photos/JAPAN/JP_4.jpg' },
+      { id: 'jp_5',    src: 'photos/JAPAN/JP_5.jpg' },
+      { id: 'jp_6',    src: 'photos/JAPAN/JP_6.jpg' },
+      { id: 'jp_7',    src: 'photos/JAPAN/JP_7.jpg' },
+      { id: 'jp_8',    src: 'photos/JAPAN/JP_8.jpg' },
+      { id: 'jp_9',    src: 'photos/JAPAN/JP_9.jpg' },
+      { id: 'jp_10',    src: 'photos/JAPAN/JP_10.jpg' },
+      { id: 'jp_11',    src: 'photos/JAPAN/JP_11.jpg' },
+      { id: 'jp_12',    src: 'photos/JAPAN/JP_12.jpg' },
+      { id: 'jp_13',    src: 'photos/JAPAN/JP_13.jpg' },
+      { id: 'jp_14',    src: 'photos/JAPAN/JP_14.jpg' },
+      { id: 'jp_15',    src: 'photos/JAPAN/JP_15.jpg' },
+      { id: 'jp_16',    src: 'photos/JAPAN/JP_16.jpg' },
+      { id: 'jp_17',    src: 'photos/JAPAN/JP_17.jpg' },
+      { id: 'jp_18',    src: 'photos/JAPAN/JP_18.jpg' },
+      { id: 'jp_19',    src: 'photos/JAPAN/JP_19.jpg' },
     ]
   },
 };
-
-// files → photos 배열 자동 생성
-Object.entries(albums).forEach(([key, album]) => {
-  album.photos = album.files.map((file, i) => ({
-    id: `${key}_${i}`,
-    src: `${album.folder}/${file}`,
-  }));
-});
 
 // ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
 (function () {
@@ -1924,31 +1963,15 @@ Object.entries(albums).forEach(([key, album]) => {
 
 // CARPENTRY 데이터
 const carpentryAlbums = {
-  stool: {
-    title: 'STOOL',
-    folder: 'carpentry/STOOL',
-    files: [
-      'stool_finish.jpg',
-      'stool_1.jpg',
-    ]
-  },
-  house: {
-    title: 'HOUSE',
-    folder: 'carpentry/HOUSE',
-    files: [
-      'house_1.jpg',
-      'house_2.jpg',
-    ]
-  },
+  stool: { title: 'STOOL', photos: [
+    { id: 'stool_finish', src: 'carpentry/STOOL/stool_finish.jpg' },
+    { id: 'stool_1', src: 'carpentry/STOOL/stool_1.jpg' },
+  ]},
+  house: { title: 'HOUSE', photos: [
+    { id: 'house_1', src: 'carpentry/HOUSE/house_1.jpg' },
+    { id: 'house_2', src: 'carpentry/HOUSE/house_2.jpg' },
+  ]},
 };
-
-// files → photos 배열 자동 생성
-Object.entries(carpentryAlbums).forEach(([key, album]) => {
-  album.photos = album.files.map((file, i) => ({
-    id: `carp_${key}_${i}`,
-    src: `${album.folder}/${file}`,
-  }));
-});
 
 // ── 앨범 페이지네이션 ────────────────────────────────────────────────────
 const PHOTOS_PER_PAGE = 10;
@@ -1981,58 +2004,7 @@ function parsePhotoMeta(src) {
   return { name: filename, date: '' };
 }
 
-// ── 이미지 비율 캐시 (측정 완료 후 재사용) ───────────────────────────────
-const _ratioCache = {};
-
-function _measureRatio(src) {
-  return new Promise(resolve => {
-    if (_ratioCache[src] !== undefined) { resolve(_ratioCache[src]); return; }
-    const img = new Image();
-    img.onload = () => {
-      const isWide = img.naturalWidth > img.naturalHeight * 1.2;
-      _ratioCache[src] = isWide;
-      resolve(isWide);
-    };
-    img.onerror = () => { _ratioCache[src] = false; resolve(false); };
-    img.src = src;
-  });
-}
-
-function _buildAlbumCard(photo, albumTitle, isWide) {
-  const meta = parsePhotoMeta(photo.src);
-  const wideClass = isWide ? ' wide-photo' : '';
-  return `
-  <div class="album-photo-wrapper${wideClass}">
-    <div class="album-photo-card"
-         onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
-      <img src="${photo.src}" alt="${meta.name}" decoding="async" loading="lazy"
-           style="width:100%;height:auto;display:block;background:var(--surface2);">
-    </div>
-    <div class="album-card-footer">
-      <div class="album-card-meta">
-        <div class="album-card-name">${meta.name}</div>
-        ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
-      </div>
-      <button class="album-comment-btn"
-        onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${albumTitle}')">
-        💬 COMMENT
-      </button>
-    </div>
-  </div>`;
-}
-
-function _applyPortraitSolo(grid) {
-  // 세로 사진이 홀수로 남으면 마지막 세로 사진 가운데 배치
-  const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
-  // portrait-solo 초기화
-  wrappers.forEach(w => w.classList.remove('portrait-solo'));
-  const portraits = wrappers.filter(w => !w.classList.contains('wide-photo'));
-  if (portraits.length % 2 === 1) {
-    portraits[portraits.length - 1].classList.add('portrait-solo');
-  }
-}
-
-async function _renderAlbumPage() {
+function _renderAlbumPage() {
   const album = albums[_curAlbumKey];
   const allPhotos = album.photos;
   const PER_PAGE = PHOTOS_PER_PAGE;
@@ -2042,18 +2014,30 @@ async function _renderAlbumPage() {
 
   const grid = document.getElementById('albumModalGrid');
   grid.scrollTop = 0;
-  grid.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.7rem;letter-spacing:0.2em;">LOADING...</div>';
 
-  // 모든 사진 비율 미리 측정
-  const ratios = await Promise.all(pagePhotos.map(p => _measureRatio(p.src)));
+  grid.innerHTML = pagePhotos.map(photo => {
+    const meta = parsePhotoMeta(photo.src);
+    return `
+    <div class="album-photo-wrapper">
+      <div class="album-photo-card"
+           onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
+        <img data-src="${photo.src}" alt="${meta.name}" decoding="async"
+             style="width:100%;height:auto;display:block;background:var(--surface2);">
+      </div>
+      <div class="album-card-footer">
+        <div class="album-card-meta">
+          <div class="album-card-name">${meta.name}</div>
+          ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
+        </div>
+        <button class="album-comment-btn"
+          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${album.title}')">
+          💬 COMMENT
+        </button>
+      </div>
+    </div>
+  `;}).join('');
 
-  grid.innerHTML = pagePhotos.map((photo, i) =>
-    _buildAlbumCard(photo, album.title, ratios[i])
-  ).join('');
-
-  _applyPortraitSolo(grid);
-
-  // 페이지네이션
+  // 페이지네이션 (항상 표시)
   const pgEl = document.getElementById('albumPagination');
   let pgHtml = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
   for (let i = 1; i <= pgTotal; i++) {
@@ -2061,6 +2045,26 @@ async function _renderAlbumPage() {
   }
   pgHtml += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === pgTotal ? 'disabled' : ''}>›</button>`;
   pgEl.innerHTML = pgHtml;
+
+  // 비율 감지 → 그리드/리스트 모두 wide-photo 클래스 부여
+  const imgs = grid.querySelectorAll('img[data-src]');
+  const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        const img = en.target;
+        const wrapper = img.closest('.album-photo-wrapper');
+        img.src = img.dataset.src;
+        img.onload = () => {
+          const isWide = img.naturalWidth > img.naturalHeight * 1.2;
+          if (isWide) wrapper.classList.add('wide-photo');
+          else wrapper.classList.remove('wide-photo');
+        };
+        obs.unobserve(img);
+      }
+    });
+  }, { rootMargin: '300px' });
+  imgs.forEach(img => obs.observe(img));
 }
 
 function goToPage(pg) {
@@ -2177,6 +2181,44 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
 
 let _curCarpKey=null, _curCarpPage=1;
 
+function makeCarpCard(ph, albTitle) {
+  var pmeta = parsePhotoMeta(ph.src);
+  var d = document.createElement('div');
+  d.className = 'album-photo-wrapper';
+  var card = document.createElement('div');
+  card.className = 'album-photo-card';
+  card.setAttribute('onclick', "openLightboxFromAlbum('" + ph.src + "','" + pmeta.name + "','" + ph.id + "')");
+  var img = document.createElement('img');
+  img.setAttribute('data-src', ph.src);
+  img.alt = pmeta.name;
+  img.decoding = 'async';
+  img.style.cssText = 'width:100%;height:auto;display:block;background:var(--surface2)';
+  card.appendChild(img);
+  d.appendChild(card);
+  var footer = document.createElement('div');
+  footer.className = 'album-card-footer';
+  var meta = document.createElement('div');
+  meta.className = 'album-card-meta';
+  var nameEl = document.createElement('div');
+  nameEl.className = 'album-card-name';
+  nameEl.textContent = pmeta.name;
+  meta.appendChild(nameEl);
+  if (pmeta.date) {
+    var dateEl = document.createElement('div');
+    dateEl.className = 'album-card-date';
+    dateEl.textContent = pmeta.date;
+    meta.appendChild(dateEl);
+  }
+  var btn = document.createElement('button');
+  btn.className = 'album-comment-btn';
+  btn.setAttribute('onclick', "event.stopPropagation();event.preventDefault();openComments('" + ph.id + "','" + pmeta.name + "','" + albTitle + "')");
+  btn.textContent = '\uD83D\uDCAC COMMENT';
+  footer.appendChild(meta);
+  footer.appendChild(btn);
+  d.appendChild(footer);
+  return d;
+}
+
 function openCarpentry(cat) {
   var alb = carpentryAlbums[cat];
   if (!alb) return;
@@ -2202,7 +2244,7 @@ function setCarpView(type) {
     bS.classList.add('active'); bG.classList.remove('active');
   }
 }
-async function _renderCarpPage() {
+function _renderCarpPage() {
   var alb = carpentryAlbums[_curCarpKey];
   var all = alb.photos;
   var tot = Math.ceil(all.length / PHOTOS_PER_PAGE) || 1;
@@ -2210,18 +2252,20 @@ async function _renderCarpPage() {
   var page = all.slice(s, s + PHOTOS_PER_PAGE);
   var grid = document.getElementById('carpModalGrid');
   grid.scrollTop = 0;
-  grid.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.7rem;letter-spacing:0.2em;">LOADING...</div>';
-
-  // 비율 미리 측정
-  const ratios = await Promise.all(page.map(ph => _measureRatio(ph.src)));
-  grid.innerHTML = page.map((ph, i) => _buildAlbumCard(ph, alb.title, ratios[i])).join('');
-  _applyPortraitSolo(grid);
-
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  page.forEach(function(ph) { grid.appendChild(makeCarpCard(ph, alb.title)); });
   var pg = document.getElementById('carpPagination');
   var h = '<button class="page-btn" onclick="goToCarpPage(' + (_curCarpPage-1) + ')" ' + (_curCarpPage===1?'disabled':'') + '>\u2039</button>';
   for (var i=1;i<=tot;i++) h += '<button class="page-btn' + (i===_curCarpPage?' active':'') + '" onclick="goToCarpPage('+i+')">' + i + '</button>';
   h += '<button class="page-btn" onclick="goToCarpPage(' + (_curCarpPage+1) + ')" ' + (_curCarpPage===tot?'disabled':'') + '>\u203A</button>';
   pg.innerHTML = h;
+  var imgs = grid.querySelectorAll('img[data-src]');
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(en) {
+      if (en.isIntersecting) { en.target.src = en.target.dataset.src; obs.unobserve(en.target); }
+    });
+  }, { rootMargin: '300px' });
+  imgs.forEach(function(img) { obs.observe(img); });
 }
 function goToCarpPage(pg) {
   if (!_curCarpKey) return;
