@@ -2086,7 +2086,7 @@ function parsePhotoMeta(src) {
     name = parts.join(' ');
     date = '';
   }
-  name = name.replace(/\s+\d+$/, '').trim();
+  name = name.replace(/\s*\d+$/, '').trim();
 
   return { name, date };
 }
