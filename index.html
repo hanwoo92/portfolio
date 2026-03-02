@@ -2080,14 +2080,12 @@ function parsePhotoMeta(src) {
 
   let name, date;
   if (parts.length >= 2 && (isDate || isNum)) {
-    date = isDate ? lastPart : '';   // 순수 숫자면 날짜 아님
+    date = isDate ? lastPart : '';
     name = parts.slice(0, -1).join(' ');
   } else {
     name = parts.join(' ');
     date = '';
   }
-
-  // 소제목 끝 임시 숫자 제거: "Central Park 2" → "Central Park"
   name = name.replace(/\s+\d+$/, '').trim();
 
   return { name, date };
