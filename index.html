@@ -1294,6 +1294,24 @@
     font-size: clamp(0.8rem, 3vw, 0.85rem); // 홀수 한장짜리 날짜/Comment 크기
   }
 
+  /* 그리드형 가로사진 (wide-photo): 2열 전체 너비라 글씨 크게 */
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-card-name {
+    font-size: clamp(1.2rem, 3vw, 1.2rem);
+  }
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-card-date,
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-comment-btn {
+    font-size: clamp(0.8rem, 3vw, 0.85rem);
+  }
+
+  /* 스크롤형: 1열 전체 너비라 글씨 크게 */
+  .album-modal-grid.view-scroll .album-card-name {
+    font-size: clamp(1.2rem, 3vw, 1.2rem);
+  }
+  .album-modal-grid.view-scroll .album-card-date,
+  .album-modal-grid.view-scroll .album-comment-btn {
+    font-size: clamp(0.8rem, 3vw, 0.85rem);
+  }
+
   /* 리스트형: 1열 세로 나열 */
   .album-modal-grid.view-scroll {
     display: flex;
