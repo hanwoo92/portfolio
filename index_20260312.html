@@ -1105,11 +1105,6 @@
     width: 100%;
     max-width: 100%;
   }
-  /* LOADING 텍스트 가운데 정렬용 */
-  .album-modal-grid.is-loading {
-    justify-content: center;
-    align-items: center;
-  }
 
   .album-photo-card {
     position: relative;
@@ -1568,8 +1563,7 @@
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lightbox-content" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="closeLightbox()">✕ Close</button>
-    <img id="lightboxImg" class="lightbox-img" src="" alt=""
-         style="border-radius:0;image-rendering:auto;" decoding="async">
+    <img id="lightboxImg" class="lightbox-img" src="" alt="" style="border-radius:0;">
     <div class="lightbox-info">
       <p id="lightboxTitle" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;margin-bottom:6px;color:var(--text);"></p>
       <p id="lightboxMeta" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);"></p>
@@ -2235,27 +2229,21 @@ async function _renderAlbumPage() {
 
   const grid = document.getElementById('albumModalGrid');
   grid.scrollTop = 0;
-  grid.classList.add('is-loading');
-  grid.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.75rem;letter-spacing:0.25em;">LOADING...</div>';
+  grid.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.7rem;letter-spacing:0.2em;">LOADING...</div>';
 
   // 모든 사진 비율 미리 측정 후 스마트 레이아웃 적용
   const ratios = await Promise.all(pagePhotos.map(p => _measureRatio(p.src)));
   const layout = _smartLayout(pagePhotos, ratios);
 
-  grid.classList.remove('is-loading');
   grid.innerHTML = layout.map(({ photo, isWide, isSolo }) => {
     const extraClass = isWide ? ' wide-photo' : isSolo ? ' portrait-solo' : '';
     const meta = parsePhotoMeta(photo.src);
-    // 썸네일: 화면 너비 기준 최대 600px로 제한 → 브라우저가 작은 크기로 디코딩
-    const thumbSizes = isWide ? '(min-width:900px) 800px, 100vw' : '(min-width:900px) 400px, 50vw';
     return `
     <div class="album-photo-wrapper${extraClass}">
       <div class="album-photo-card"
            onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
-        <img src="${photo.src}" alt="${meta.name}"
-             decoding="async" loading="lazy"
-             sizes="${thumbSizes}"
-             style="width:100%;height:auto;display:block;background:var(--surface2);image-rendering:auto;">
+        <img src="${photo.src}" alt="${meta.name}" decoding="async" loading="lazy"
+             style="width:100%;height:auto;display:block;background:var(--surface2);">
       </div>
       <div class="album-card-footer">
         <div class="album-card-meta">
@@ -2427,25 +2415,20 @@ async function _renderCarpPage() {
   var page = all.slice(s, s + PHOTOS_PER_PAGE);
   var grid = document.getElementById('carpModalGrid');
   grid.scrollTop = 0;
-  grid.classList.add('is-loading');
-  grid.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.75rem;letter-spacing:0.25em;">LOADING...</div>';
+  grid.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.7rem;letter-spacing:0.2em;">LOADING...</div>';
 
   // 비율 미리 측정 후 스마트 레이아웃 적용
   const ratios = await Promise.all(page.map(ph => _measureRatio(ph.src)));
   const layout = _smartLayout(page, ratios);
-  grid.classList.remove('is-loading');
   grid.innerHTML = layout.map(({ photo, isWide, isSolo }) => {
     const extraClass = isWide ? ' wide-photo' : isSolo ? ' portrait-solo' : '';
     const meta = parsePhotoMeta(photo.src);
-    const thumbSizes = isWide ? '(min-width:900px) 800px, 100vw' : '(min-width:900px) 400px, 50vw';
     return `
     <div class="album-photo-wrapper${extraClass}">
       <div class="album-photo-card"
            onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
-        <img src="${photo.src}" alt="${meta.name}"
-             decoding="async" loading="lazy"
-             sizes="${thumbSizes}"
-             style="width:100%;height:auto;display:block;background:var(--surface2);image-rendering:auto;">
+        <img src="${photo.src}" alt="${meta.name}" decoding="async" loading="lazy"
+             style="width:100%;height:auto;display:block;background:var(--surface2);">
       </div>
       <div class="album-card-footer">
         <div class="album-card-meta">
