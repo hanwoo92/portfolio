@@ -1257,7 +1257,7 @@
   }
   .album-card-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(0.8rem, 3.5vw, 1.1rem); /* 소제목 크기 */
+    font-size: clamp(0.65rem, 2.8vw, 0.9rem);
     font-style: italic;
     color: var(--text);
     letter-spacing: 0.05em;
@@ -1267,7 +1267,7 @@
     white-space: nowrap;
   }
   .album-card-date {
-    font-size: clamp(0.55rem, 1.8vw, 0.75rem); /* 날짜 글씨 크기 */
+    font-size: clamp(0.48rem, 1.5vw, 0.62rem);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(201,169,110,0.7);
@@ -1278,7 +1278,7 @@
     color: rgba(201,169,110,0.6);
     padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: clamp(0.55rem, 1.8vw, 0.8rem); /* Comment 글씨 크기 */
+    font-size: clamp(0.48rem, 1.5vw, 0.65rem);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: pointer;
@@ -1295,8 +1295,9 @@
     color: rgba(201,169,110,0.6);
     padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: clamp(0.55rem, 1.8vw, 0.8rem);
+    font-size: clamp(0.48rem, 1.5vw, 0.65rem);
     letter-spacing: 0.1em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: color 0.2s;
     white-space: nowrap;
@@ -1307,14 +1308,14 @@
   }
   .album-like-btn:hover { color: var(--accent); }
   .album-like-btn.liked { color: #e0445e; }
-  .album-like-btn .like-heart { font-size: 13px; display: inline-block; transition: transform 0.2s; }
+  .album-like-btn .like-heart { font-size: 11px; display: inline-block; transition: transform 0.2s; }
   .album-like-btn.liked .like-heart { animation: heartPop 0.25s ease; }
   @keyframes heartPop {
     0%   { transform: scale(1); }
     50%  { transform: scale(1.5); }
     100% { transform: scale(1); }
   }
-  /* footer 우측 버튼 묶음 */
+  /* footer 우측 버튼 묶음: COMMENT 먼저, LIKES 뒤 */
   .album-card-actions {
     display: flex;
     align-items: center;
@@ -1324,29 +1325,32 @@
 
   /* portrait-solo (1열 전체): 글씨 크기 크게 */
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-card-name {
-    font-size: clamp(1.0rem, 2.5vw, 1.2rem); /* 홀수 한장짜리 소제목 크기 */
+    font-size: clamp(0.85rem, 2.2vw, 1.0rem);
   }
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-card-date,
-  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-comment-btn {
-    font-size: clamp(0.8rem, 3vw, 0.85rem); /* 홀수 한장짜리 날짜/Comment 크기 */
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-comment-btn,
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-like-btn {
+    font-size: clamp(0.6rem, 2vw, 0.72rem);
   }
 
   /* 그리드형 가로사진 (wide-photo): 2열 전체 너비라 글씨 크게 */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-card-name {
-    font-size: clamp(1.0rem, 2.5vw, 1.2rem);
+    font-size: clamp(0.85rem, 2.2vw, 1.0rem);
   }
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-card-date,
-  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-comment-btn {
-    font-size: clamp(0.8rem, 3vw, 0.85rem);
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-comment-btn,
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-like-btn {
+    font-size: clamp(0.6rem, 2vw, 0.72rem);
   }
 
   /* 스크롤형: 1열 전체 너비라 글씨 크게 */
   .album-modal-grid.view-scroll .album-card-name {
-    font-size: clamp(1.0rem, 2.5vw, 1.2rem);
+    font-size: clamp(0.85rem, 2.2vw, 1.0rem);
   }
   .album-modal-grid.view-scroll .album-card-date,
-  .album-modal-grid.view-scroll .album-comment-btn {
-    font-size: clamp(0.8rem, 3vw, 0.85rem);
+  .album-modal-grid.view-scroll .album-comment-btn,
+  .album-modal-grid.view-scroll .album-like-btn {
+    font-size: clamp(0.6rem, 2vw, 0.72rem);
   }
 
   /* 리스트형: 1열 세로 나열 */
@@ -1831,7 +1835,7 @@ async function _refreshLikeBtn(btnEl, photoId) {
   const snap = await getDoc(likeRef);
   const count = snap.exists() ? (snap.data().count || 0) : 0;
   btnEl.classList.toggle('liked', liked);
-  btnEl.querySelector('.like-heart').textContent = liked ? '❤️' : '🤍';
+  btnEl.querySelector('.like-heart').textContent = liked ? '♥' : '♡';
   btnEl.querySelector('.like-count-num').textContent = count > 0 ? count : '';
 }
 
@@ -2338,13 +2342,13 @@ async function _renderAlbumPage() {
           ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
         </div>
         <div class="album-card-actions">
-          <button class="album-like-btn" data-id="${photo.id}"
-            onclick="event.stopPropagation(); event.preventDefault(); toggleLike('${photo.id}', this)">
-            <span class="like-heart">🤍</span><span class="like-count-num"></span>
-          </button>
           <button class="album-comment-btn"
             onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${album.title}')">
             💬 COMMENT
+          </button>
+          <button class="album-like-btn" data-id="${photo.id}"
+            onclick="event.stopPropagation(); event.preventDefault(); toggleLike('${photo.id}', this)">
+            <span class="like-heart">♡</span><span>LIKES</span><span class="like-count-num"></span>
           </button>
         </div>
       </div>
@@ -2525,13 +2529,13 @@ async function _renderCarpPage() {
           ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
         </div>
         <div class="album-card-actions">
-          <button class="album-like-btn" data-id="${photo.id}"
-            onclick="event.stopPropagation(); event.preventDefault(); toggleLike('${photo.id}', this)">
-            <span class="like-heart">🤍</span><span class="like-count-num"></span>
-          </button>
           <button class="album-comment-btn"
             onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${alb.title}')">
             💬 COMMENT
+          </button>
+          <button class="album-like-btn" data-id="${photo.id}"
+            onclick="event.stopPropagation(); event.preventDefault(); toggleLike('${photo.id}', this)">
+            <span class="like-heart">♡</span><span>LIKES</span><span class="like-count-num"></span>
           </button>
         </div>
       </div>
