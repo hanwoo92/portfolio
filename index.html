@@ -1288,6 +1288,40 @@
   }
   .album-comment-btn:hover { color: var(--accent); }
 
+  /* 좋아요 버튼 */
+  .album-like-btn {
+    background: none;
+    border: none;
+    color: rgba(201,169,110,0.6);
+    padding: 2px 0;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: clamp(0.55rem, 1.8vw, 0.8rem);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: color 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .album-like-btn:hover { color: var(--accent); }
+  .album-like-btn.liked { color: #e0445e; }
+  .album-like-btn .like-heart { font-size: 13px; display: inline-block; transition: transform 0.2s; }
+  .album-like-btn.liked .like-heart { animation: heartPop 0.25s ease; }
+  @keyframes heartPop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.5); }
+    100% { transform: scale(1); }
+  }
+  /* footer 우측 버튼 묶음 */
+  .album-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
   /* portrait-solo (1열 전체): 글씨 크기 크게 */
   .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-card-name {
     font-size: clamp(1.0rem, 2.5vw, 1.2rem); /* 홀수 한장짜리 소제목 크기 */
@@ -1578,7 +1612,7 @@
 <script type="module">
 // ── Firebase import (반드시 맨 위) ────────────────────────────────────────
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBQWDDMBTdmvoQZKu2y5Eoit-spy4hF7yg",
@@ -1764,6 +1798,48 @@ contactForm.addEventListener('submit', async function(e) {
     }, 3000);
   }
 });
+
+// ── Firebase Likes ────────────────────────────────────────────────────────
+const _likedKey = id => `liked_${id}`;
+
+async function toggleLike(photoId, btnEl) {
+  const alreadyLiked = localStorage.getItem(_likedKey(photoId)) === '1';
+  const likeRef = doc(db, 'likes', photoId);
+  try {
+    const snap = await getDoc(likeRef);
+    if (!snap.exists()) {
+      await setDoc(likeRef, { count: alreadyLiked ? 0 : 1 });
+    } else {
+      await updateDoc(likeRef, { count: increment(alreadyLiked ? -1 : 1) });
+    }
+    if (alreadyLiked) {
+      localStorage.removeItem(_likedKey(photoId));
+    } else {
+      localStorage.setItem(_likedKey(photoId), '1');
+    }
+    // 버튼 UI 즉시 갱신
+    _refreshLikeBtn(btnEl, photoId);
+  } catch(e) {
+    console.error('좋아요 오류:', e);
+  }
+}
+
+async function _refreshLikeBtn(btnEl, photoId) {
+  if (!btnEl) return;
+  const liked = localStorage.getItem(_likedKey(photoId)) === '1';
+  const likeRef = doc(db, 'likes', photoId);
+  const snap = await getDoc(likeRef);
+  const count = snap.exists() ? (snap.data().count || 0) : 0;
+  btnEl.classList.toggle('liked', liked);
+  btnEl.querySelector('.like-heart').textContent = liked ? '❤️' : '🤍';
+  btnEl.querySelector('.like-count-num').textContent = count > 0 ? count : '';
+}
+
+async function initLikeBtn(photoId) {
+  const btnEl = document.querySelector(`.album-like-btn[data-id="${photoId}"]`);
+  if (!btnEl) return;
+  _refreshLikeBtn(btnEl, photoId);
+}
 
 // ── Firebase Comments ─────────────────────────────────────────────────────
 let currentPhotoId = null;
@@ -2261,10 +2337,16 @@ async function _renderAlbumPage() {
           <div class="album-card-name">${meta.name}</div>
           ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
         </div>
-        <button class="album-comment-btn"
-          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${album.title}')">
-          💬 COMMENT
-        </button>
+        <div class="album-card-actions">
+          <button class="album-like-btn" data-id="${photo.id}"
+            onclick="event.stopPropagation(); event.preventDefault(); toggleLike('${photo.id}', this)">
+            <span class="like-heart">🤍</span><span class="like-count-num"></span>
+          </button>
+          <button class="album-comment-btn"
+            onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${album.title}')">
+            💬 COMMENT
+          </button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -2277,6 +2359,9 @@ async function _renderAlbumPage() {
   }
   pgHtml += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === pgTotal ? 'disabled' : ''}>›</button>`;
   pgEl.innerHTML = pgHtml;
+
+  // 좋아요 버튼 초기화
+  pagePhotos.forEach(photo => initLikeBtn(photo.id));
 }
 
 function goToPage(pg) {
@@ -2439,10 +2524,16 @@ async function _renderCarpPage() {
           <div class="album-card-name">${meta.name}</div>
           ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
         </div>
-        <button class="album-comment-btn"
-          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${alb.title}')">
-          💬 COMMENT
-        </button>
+        <div class="album-card-actions">
+          <button class="album-like-btn" data-id="${photo.id}"
+            onclick="event.stopPropagation(); event.preventDefault(); toggleLike('${photo.id}', this)">
+            <span class="like-heart">🤍</span><span class="like-count-num"></span>
+          </button>
+          <button class="album-comment-btn"
+            onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${alb.title}')">
+            💬 COMMENT
+          </button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -2452,6 +2543,9 @@ async function _renderCarpPage() {
   for (var i=1;i<=tot;i++) h += '<button class="page-btn' + (i===_curCarpPage?' active':'') + '" onclick="goToCarpPage('+i+')">' + i + '</button>';
   h += '<button class="page-btn" onclick="goToCarpPage(' + (_curCarpPage+1) + ')" ' + (_curCarpPage===tot?'disabled':'') + '>\u203A</button>';
   pg.innerHTML = h;
+
+  // 좋아요 버튼 초기화
+  page.forEach(photo => initLikeBtn(photo.id));
 }
 function goToCarpPage(pg) {
   if (!_curCarpKey) return;
@@ -2463,6 +2557,7 @@ window.openCarpentry = openCarpentry;
 window.closeCarpentry = closeCarpentry;
 window.setCarpView = setCarpView;
 window.goToCarpPage = goToCarpPage;
+window.toggleLike = toggleLike;
 
 // ── 이벤트 위임: photo-card 클릭 ─────────────────────────────────────────
 document.addEventListener('click', function(e) {

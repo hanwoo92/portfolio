@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HAN_WOO95</title>
 <!-- 히어로 사진 미리 로드 (LCP 최적화) -->
-<link rel="preload" as="image" href="photos/NY_Main.jpg"><!-- 슬라이드쇼 첫 장 힌트 -->
+<link rel="preload" as="image" href="photos/[Main] Pebble Beach_2023.09.jpg"><!-- 슬라이드쇼 첫 장 힌트 -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@100;300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -105,7 +105,7 @@
   }
   .logo span { color: var(--accent); }
   .logo-meta {
-    font-size: 0.42rem;
+    font-size: 0.65rem;
     letter-spacing: 0.18em;
     color: var(--text-dim);
     text-transform: uppercase;
@@ -460,7 +460,7 @@
   .gallery-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 16px;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -523,29 +523,25 @@
   .photo-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 24px;
+    align-items: center;
+    padding: 0 24px 28px;
     opacity: 1;
     transition: opacity 0.4s;
   }
   .photo-card:hover .photo-overlay { opacity: 1; }
-  .photo-count {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(201,169,110,0.85);
-    margin-top: 4px;
-  }
+  .photo-count { display: none; }
   .photo-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.9rem;
     font-weight: 300;
     font-style: italic;
     color: var(--text);
-    margin-bottom: 6px;
+    margin-bottom: 0;
+    text-align: center;
   }
   .photo-meta {
     font-size: 0.78rem;
@@ -810,7 +806,7 @@
     #gallery { padding: 80px 16px; }
     #carpentry { padding: 80px 16px; }
     .gallery-header { padding: 0 8px; margin-bottom: 32px; }
-    .gallery-grid { grid-template-columns: 1fr; gap: 0; }
+    .gallery-grid { grid-template-columns: 1fr; gap: 10px; }
     #about { gap: 24px; }
     .about-top-row {
       grid-template-columns: 1fr 1fr;
@@ -1035,7 +1031,9 @@
     background: rgba(0,0,0,0.97);
     z-index: 2000;
     flex-direction: column;
-    overflow: hidden; /* 헤더 고정을 위해 모달 자체는 hidden */
+    overflow: hidden;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
   .album-modal.open { display: flex; }
 
@@ -1090,25 +1088,40 @@
   /* 그리드: flex:1 + overflow-y:auto 로 헤더 아래 영역만 스크롤 */
   .album-modal-grid {
     flex: 1;
-    overflow-y: scroll;   /* scroll 강제 — auto보다 확실 */
-    -webkit-overflow-scrolling: touch; /* iOS 모멘텀 스크롤 */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     padding: 24px 16px;
     display: flex;
-    flex-direction: column; /* 1열 세로 나열 — 잘림 완전 방지 */
+    flex-direction: column;
     gap: 20px;
-    min-height: 0; /* flex 자식의 overflow 동작을 위해 필수 */
+    min-height: 0;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+  /* LOADING 텍스트 가운데 정렬용 */
+  .album-modal-grid.is-loading {
+  display: flex !important;  /* view-grid의 display:grid 강제 덮어쓰기 */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   }
 
   .album-photo-card {
     position: relative;
     width: 100%;
+    max-width: 100%;
     cursor: pointer;
     background: var(--surface);
     flex-shrink: 0;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .album-photo-card img {
     width: 100%;
+    max-width: 100%;
     height: auto;
     display: block;
   }
@@ -1137,16 +1150,23 @@
   }
   .view-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* 그리드형 (기본) — wrapper가 그리드 셀 */
+  /* 그리드형 — 2열 고정, 가로 사진 span2 / 세로 span1 */
   .album-modal-grid.view-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 16px;
     align-content: start;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
   }
   @media (min-width: 900px) {
-    .album-modal-grid.view-grid { gap: 20px; padding: 28px; }
+    .album-modal-grid.view-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 28px;
+    }
   }
 
   /* 스크롤형 (1열 세로) */
@@ -1156,12 +1176,28 @@
     gap: 0;
     padding: 0;
   }
-  /* 그리드형: 가로/세로 모두 2열 균등 배치 */
+
+  /* 가로 사진: 2칸 span */
   .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
-    grid-column: span 1;
+    grid-column: span 2;
   }
-  .album-modal-grid.view-grid .album-photo-wrapper.portrait-last {
-    grid-column: span 1;
+  /* 세로 사진 홀수 마지막: 모바일 전체 너비 */
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
+    grid-column: 1 / -1;
+    max-width: 100%;
+    margin: 0;
+    width: 100%;
+  }
+  @media (min-width: 900px) {
+    .album-modal-grid.view-grid .album-photo-wrapper.wide-photo {
+      grid-column: span 2;
+    }
+    /* 데스크탑: 가운데 50% */
+    .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo {
+      grid-column: 1 / -1;
+      max-width: 50%;
+      margin: 0 auto;
+    }
   }
   /* 페이지네이션 */
   .album-pagination {
@@ -1198,6 +1234,9 @@
   .album-photo-wrapper {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   /* 사진 아래 정보 + COMMENT 영역 */
@@ -1206,7 +1245,7 @@
     justify-content: space-between;
     align-items: flex-start;
     padding: 5px 2px 4px 2px;
-    gap: 8px;
+    gap: 4px;
   }
   /* 좌측: 제목 + 날짜 */
   .album-card-meta {
@@ -1214,21 +1253,22 @@
     flex-direction: column;
     gap: 2px;
     min-width: 0;
+    flex: 1;
   }
   .album-card-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.6rem;
+    font-size: clamp(0.8rem, 3.5vw, 1.1rem); /* 소제목 크기 */
     font-style: italic;
     color: var(--text);
     letter-spacing: 0.05em;
     line-height: 1.3;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .album-card-date {
-    font-size: 0.5rem;
-    letter-spacing: 0.15em;
+    font-size: clamp(0.55rem, 1.8vw, 0.75rem); /* 날짜 글씨 크기 */
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(201,169,110,0.7);
   }
@@ -1238,8 +1278,8 @@
     color: rgba(201,169,110,0.6);
     padding: 2px 0;
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.48rem;
-    letter-spacing: 0.15em;
+    font-size: clamp(0.55rem, 1.8vw, 0.8rem); /* Comment 글씨 크기 */
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.2s;
@@ -1247,6 +1287,33 @@
     flex-shrink: 0;
   }
   .album-comment-btn:hover { color: var(--accent); }
+
+  /* portrait-solo (1열 전체): 글씨 크기 크게 */
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-card-name {
+    font-size: clamp(1.0rem, 2.5vw, 1.2rem); /* 홀수 한장짜리 소제목 크기 */
+  }
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-card-date,
+  .album-modal-grid.view-grid .album-photo-wrapper.portrait-solo .album-comment-btn {
+    font-size: clamp(0.8rem, 3vw, 0.85rem); /* 홀수 한장짜리 날짜/Comment 크기 */
+  }
+
+  /* 그리드형 가로사진 (wide-photo): 2열 전체 너비라 글씨 크게 */
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-card-name {
+    font-size: clamp(1.0rem, 2.5vw, 1.2rem);
+  }
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-card-date,
+  .album-modal-grid.view-grid .album-photo-wrapper.wide-photo .album-comment-btn {
+    font-size: clamp(0.8rem, 3vw, 0.85rem);
+  }
+
+  /* 스크롤형: 1열 전체 너비라 글씨 크게 */
+  .album-modal-grid.view-scroll .album-card-name {
+    font-size: clamp(1.0rem, 2.5vw, 1.2rem);
+  }
+  .album-modal-grid.view-scroll .album-card-date,
+  .album-modal-grid.view-scroll .album-comment-btn {
+    font-size: clamp(0.8rem, 3vw, 0.85rem);
+  }
 
   /* 리스트형: 1열 세로 나열 */
   .album-modal-grid.view-scroll {
@@ -1338,7 +1405,7 @@
     <!-- NEWYORK -->
     <div id="section-newyork" class="photo-card reveal" data-category="newyork"
      >
-      <img class="photo-bg-img" src="photos/NEWYORK/NY_Main.jpg" alt="NEWYORK" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/NEWYORK/[Main] Pebble Beach_2023.09.jpg" alt="NEWYORK" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">NEWYORK</div>
         <div class="photo-count" id="count-newyork"></div>
@@ -1348,7 +1415,7 @@
     <!-- PARIS -->
     <div id="section-paris" class="photo-card reveal" data-category="paris"
      >
-      <img class="photo-bg-img" src="photos/PARIS/Paris_Main.jpg" alt="PARIS" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/PARIS/[Main] Tour Eiffel_2024.10.jpg" alt="PARIS" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">PARIS</div>
         <div class="photo-count" id="count-paris"></div>
@@ -1358,7 +1425,7 @@
     <!-- ITALY -->
     <div id="section-italy" class="photo-card reveal" data-category="italy"
      >
-      <img class="photo-bg-img" src="photos/ITALY/Italy_Main.jpg" alt="ITALY" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/ITALY/[Main] Pizzale Michelangelo_2025.10.jpg" alt="ITALY" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">ITALY</div>
         <div class="photo-count" id="count-italy"></div>
@@ -1368,7 +1435,7 @@
     <!-- KOREA -->
     <div id="section-korea" class="photo-card reveal" data-category="korea"
      >
-      <img class="photo-bg-img" src="photos/KOREA/KR_Main.jpg" alt="KOREA" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/KOREA/[Main] Jeju 어딘가_2000.00.jpg" alt="KOREA" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">KOREA</div>
         <div class="photo-count" id="count-korea"></div>
@@ -1378,7 +1445,7 @@
     <!-- JAPAN -->
     <div id="section-japan" class="photo-card reveal" data-category="japan"
      >
-      <img class="photo-bg-img" src="photos/JAPAN/JP_Main.jpg" alt="JAPAN" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="photos/JAPAN/Ine_2023.01.jpg" alt="JAPAN" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">JAPAN</div>
         <div class="photo-count" id="count-japan"></div>
@@ -1399,7 +1466,7 @@
 
     <!-- STOOL -->
     <div id="carp-stool" class="photo-card reveal">
-      <img class="photo-bg-img" src="carpentry/STOOL/stool_finish.jpg" alt="STOOL" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="carpentry/STOOL/[Main] Stool Finished_2025.08.jpg" alt="STOOL" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">STOOL</div>
         <div class="photo-count" id="ccount-stool"></div>
@@ -1408,7 +1475,7 @@
 
     <!-- HOUSE -->
     <div id="carp-house" class="photo-card reveal">
-      <img class="photo-bg-img" src="carpentry/HOUSE/house_1.jpg" alt="HOUSE" loading="lazy" decoding="async">
+      <img class="photo-bg-img" src="carpentry/HOUSE/[Main] House_2025.08.jpg" alt="HOUSE" loading="lazy" decoding="async">
       <div class="photo-overlay">
         <div class="photo-title">HOUSE</div>
         <div class="photo-count" id="ccount-house"></div>
@@ -1446,7 +1513,7 @@
   <!-- 하단: 설명+스탯 (전체 너비, 중앙정렬) -->
   <div class="about-bottom-row reveal">
     <p class="about-desc-text">
-      10여 년 동안 찍은 사진들을 정리 중이고, 이제 자랑 좀 하겠습니다?.
+      10여 년 동안 찍은 사진들을 정리 중이고, <br>이제 자랑 좀 하겠습니다?.
     </p>
     <div class="about-stats">
       <div>
@@ -1458,7 +1525,7 @@
         <div class="stat-label">Recently Visited</div>
       </div>
       <div>
-        <div class="stat-num">Australia</div>
+        <div class="stat-num">CANADA</div>
         <div class="stat-label">Next Stop</div>
       </div>
     </div>
@@ -1499,7 +1566,8 @@
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lightbox-content" onclick="event.stopPropagation()">
     <button class="lightbox-close" onclick="closeLightbox()">✕ Close</button>
-    <img id="lightboxImg" class="lightbox-img" src="" alt="" style="border-radius:0;">
+    <img id="lightboxImg" class="lightbox-img" src="" alt=""
+         style="border-radius:0;image-rendering:auto;" decoding="async">
     <div class="lightbox-info">
       <p id="lightboxTitle" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;margin-bottom:6px;color:var(--text);"></p>
       <p id="lightboxMeta" style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);"></p>
@@ -1554,7 +1622,7 @@ if (!isMobile) {
 
 // ── 로고 날짜 자동 업데이트 ──────────────────────────────────────────────
 (function() {
-  const REV = 'Rev.01'; // 파일 수정 시 업데이트
+  const REV = 'Rev.03'; // 파일 수정 시 업데이트
   const now = new Date();
   const y = now.getFullYear();
   const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -1799,121 +1867,165 @@ async function deleteComment(docId) {
 }
 
 // ── 앨범 데이터 (사진 추가 시 여기만 수정) ───────────────────────────────
+// ── 앨범 데이터 ──────────────────────────────────────────────────────────
+// 파일명 형식: '소제목_날짜.jpg' → 소제목/날짜 자동 파싱
+// 새 사진 추가 시 files 배열에 파일명만 추가하면 자동 반영
 const albums = {
   newyork: {
     title: 'NEWYORK',
-    photos: [
-      { id: 'ny_main', src: 'photos/NEWYORK/NY_Main.jpg' },
-      { id: 'ny_1', src: 'photos/NEWYORK/NY_1.jpg' },
-      { id: 'ny_2', src: 'photos/NEWYORK/NY_2.jpg' },
-      { id: 'ny_3', src: 'photos/NEWYORK/NY_3.jpg' },
-      { id: 'ny_4', src: 'photos/NEWYORK/NY_4.jpg' },
-      { id: 'ny_5', src: 'photos/NEWYORK/NY_5.jpg' },
-      { id: 'ny_6', src: 'photos/NEWYORK/NY_6.jpg' },
-      { id: 'ny_7', src: 'photos/NEWYORK/NY_7.jpg' },
-      { id: 'ny_8', src: 'photos/NEWYORK/NY_8.jpg' },
-      { id: 'ny_9', src: 'photos/NEWYORK/NY_9.jpg' },
-      { id: 'ny_10', src: 'photos/NEWYORK/NY_10.jpg' },
-      { id: 'ny_11', src: 'photos/NEWYORK/NY_11.jpg' },
-      { id: 'ny_12', src: 'photos/NEWYORK/NY_12.jpg' },
-      { id: 'ny_13', src: 'photos/NEWYORK/NY_13.jpg' },
-      { id: 'ny_14', src: 'photos/NEWYORK/NY_14.jpg' },
-      { id: 'ny_15', src: 'photos/NEWYORK/NY_15.jpg' },
-      { id: 'ny_16', src: 'photos/NEWYORK/NY_16.jpg' },
-      { id: 'ny_17', src: 'photos/NEWYORK/NY_17.jpg' },
-      { id: 'ny_18', src: 'photos/NEWYORK/NY_18.jpg' },
-      { id: 'ny_19', src: 'photos/NEWYORK/NY_19.jpg' },
-      { id: 'ny_20', src: 'photos/NEWYORK/NY_20.jpg' },
-      { id: 'ny_21', src: 'photos/NEWYORK/NY_21.jpg' },
+    folder: 'photos/NEWYORK',
+    files: [
+'Brooklyn Bridge_2023.09.jpg',
+'Central Park_2023.09.jpg',
+'Dumbo Street_2023.09.jpg',
+'East 22nd St._2023.09.jpg',
+'Edge NYC2_2023.09.jpg',
+'Edge NYC3_2023.09.jpg',
+'Edge NYC_2023.09.jpg',
+'Fellini Coffee_2023.09.jpg',
+'Greenwich Ave_2023.09.jpg',
+'Hudson River Cruise_2023.09.jpg',
+'Pebble Beach_2023.09.jpg',
+'Pier 76 at Hudson River Park Cruise_2023.09.jpg',
+'SUMMIT One Vanderbilt_2023.09.jpg',
+'The Metropolitan Museum of Art_2023.09.jpg',
+'Top of The Rock2_2023.09.jpg',
+'Top of The Rock3_2023.09.jpg',
+'Top of The Rock4_2023.09.jpg',
+'Top of The Rock_2023.09.jpg',
+'Washington Square Arch_2023.09.jpg',
+'Washington Square_2023.09.jpg',
+'[Main] Pebble Beach_2023.09.jpg',
     ]
   },
   paris: {
     title: 'PARIS',
-    photos: [
-      { id: 'pa_main', src: 'photos/PARIS/Paris_Main.jpg' },
-      { id: 'pa_1', src: 'photos/PARIS/Paris_1.jpg' },
-      { id: 'pa_2', src: 'photos/PARIS/Paris_2.jpg' },
-      { id: 'pa_3', src: 'photos/PARIS/Paris_3.jpg' },
-      { id: 'pa_4', src: 'photos/PARIS/Paris_4.jpg' },
-      { id: 'pa_5', src: 'photos/PARIS/Paris_5.jpg' },
-      { id: 'pa_6', src: 'photos/PARIS/Paris_6.jpg' },
-      { id: 'pa_7', src: 'photos/PARIS/Paris_7.jpg' },
-      { id: 'pa_8', src: 'photos/PARIS/Paris_8.jpg' },
-      { id: 'pa_9', src: 'photos/PARIS/Paris_9.jpg' },
-      { id: 'pa_10', src: 'photos/PARIS/Paris_10.jpg' },
-      { id: 'pa_11', src: 'photos/PARIS/Paris_11.jpg' },
-      { id: 'pa_12', src: 'photos/PARIS/Paris_12.jpg' },
-      { id: 'pa_13', src: 'photos/PARIS/Paris_13.jpg' },
-      { id: 'pa_14', src: 'photos/PARIS/Paris_14.jpg' },
-      { id: 'pa_15', src: 'photos/PARIS/Paris_15.jpg' },
-      { id: 'pa_16', src: 'photos/PARIS/Paris_16.jpg' },
-      { id: 'pa_17', src: 'photos/PARIS/Paris_17.jpg' },
-      { id: 'pa_18', src: 'photos/PARIS/Paris_18.jpg' },
+    folder: 'photos/PARIS',
+    files: [
+'Château de Sceaux_2024.10.jpg',
+'Honfleur_2024.10.jpg',
+'Mont Saint-Michel2_2024.10.jpg',
+'Mont Saint-Michel_2024.10.jpg',
+'Musée de Orsay_2024.10.jpg',
+'Passerelle Léopold-Sédar-Senghor_2024.10.jpg',
+'Pont Alexandre III & Grand Palais_2024.10.jpg',
+'Pont Alexandre III_2024.10.jpg',
+'Pont de la Concorde_2024.10.jpg',
+'Rue de la Perle_2024.10.jpg',
+'Rue de Temple_2024.10.jpg',
+'Rue Saint-Merri2_2024.10.jpg',
+'Rue Saint-Merri_2024.10.jpg',
+'Seine_2024.10.jpg',
+'Square du Vert-Galant_2024.10.jpg',
+'[Main] Tour Eiffel_2024.10.jpg',
+'Tour Eiffel_2024.10.jpg',
+'Tour Eiffel2_2024.10.jpg',
+'Tour Eiffel3_2024.10.jpg',
+'Tour Eiffel4_2024.10.jpg',
+'Pont de Bir-Hakeim_2024.10.jpg',
+'Paris Street_2024.10.jpg',
+'Panthéon_2024.10.jpg',
+'Bourse de Commerce  Pinault Collection_2024.10.jpg',
+'Bourse de Commerce  Pinault Collection2_2024.10.jpg',
+'Bourse de Commerce  Pinault Collection2_2024.10.jpg',
+'Musée de Orsay2_2024.10.jpg',
+'Musée du Louvre_2024.10.jpg',
+'Musée du Louvre2_2024.10.jpg',
+'La Petite Chaise_2024.10.jpg',
+'Hotel des Invalides_2025.10.jpg',
     ]
   },
   italy: {
     title: 'ITALY',
-    photos: [
-      { id: 'it_main', src: 'photos/ITALY/Italy_Main.jpg' },
-      { id: 'it_1', src: 'photos/ITALY/Italy_1.jpg' },
-      { id: 'it_2', src: 'photos/ITALY/Italy_2.jpg' },
-      { id: 'it_3', src: 'photos/ITALY/Italy_3.jpg' },
-      { id: 'it_4', src: 'photos/ITALY/Italy_4.jpg' },
-      { id: 'it_5', src: 'photos/ITALY/Italy_5.jpg' },
-      { id: 'it_6', src: 'photos/ITALY/Italy_6.jpg' },
-      { id: 'it_7', src: 'photos/ITALY/Italy_7.jpg' },
-      { id: 'it_8', src: 'photos/ITALY/Italy_8.jpg' },
+    folder: 'photos/ITALY',
+    files: [
+'Alpe di Siusi2_2025.10.jpg',
+'Alpe di Siusi3_2025.10.jpg',
+'Alpe di Siusi_2025.10.jpg',
+'Lago di Braies2_2025.10.jpg',
+'Lago di Braies_2025.10.jpg',
+'Lago di Misurina2_2025.10.jpg',
+'Lago di Misurina_2025.10.jpg',
+'Seceda_2025.10.jpg',
+'[Main] Pizzale Michelangelo_2025.10.jpg',
     ]
   },
   korea: {
     title: 'KOREA',
-    photos: [
-      { id: 'kr_main', src: 'photos/KOREA/KR_Main.jpg' },
-      { id: 'kr_1', src: 'photos/KOREA/KR_1.jpg' },
-      { id: 'kr_2', src: 'photos/KOREA/KR_2.jpg' },
-      { id: 'kr_3', src: 'photos/KOREA/KR_3.jpg' },
-      { id: 'kr_4', src: 'photos/KOREA/KR_4.jpg' },
-      { id: 'kr_5', src: 'photos/KOREA/KR_5.jpg' },
-      { id: 'kr_6', src: 'photos/KOREA/KR_6.jpg' },
-      { id: 'kr_7', src: 'photos/KOREA/KR_7.jpg' },
-      { id: 'kr_8', src: 'photos/KOREA/KR_8.jpg' },
-      { id: 'kr_9', src: 'photos/KOREA/KR_9.jpg' },
-      { id: 'kr_10', src: 'photos/KOREA/KR_10.jpg' },
-      { id: 'kr_11', src: 'photos/KOREA/KR_11.jpg' },
-      { id: 'kr_12', src: 'photos/KOREA/KR_12.jpg' },
-      { id: 'kr_13', src: 'photos/KOREA/KR_13.jpg' },
-      { id: 'kr_14', src: 'photos/KOREA/KR_14.jpg' },
-      { id: 'kr_15', src: 'photos/KOREA/KR_15.jpg' },
-      { id: 'kr_16', src: 'photos/KOREA/KR_16.jpg' },
-      { id: 'kr_17', src: 'photos/KOREA/KR_17.jpg' },
+    folder: 'photos/KOREA',
+    files: [
+'묵리 459 용인_2025.07.jpg',
+'[Main] Jeju 어딘가_2000.00.jpg',
+'제주0_2000.00.jpg',
+'제주1_2000.00.jpg',
+'제주2_2000.00.jpg',
+'제주3_2000.00.jpg',
+'제주4_2000.00.jpg',
+'제주7_2000.00.jpg',
+'제주8_2000.00.jpg',
+'제주9_2000.00.jpg',
+'풀베개_2000.00.jpg',
+'르토아베이스먼트_2000.00.jpg',
+'응봉산2_2000.00.jpg',
+'부산 GOOF_2000.00.jpg',
+'부산 봉래산_2000.00.jpg',
+'부산 피아크_2000.00.jpg',
+'서울 어딘가2_2000.00.jpg',
+'속초 영금정_2018.02.jpg',
+'속초_2025.02.jpg',
+'속초2_2025.02.jpg',
+'속초3_2025.07.jpg',
+'속초4_2025.07.jpg',
+'속초5_2022.01.jpg',
+'수원화성_2020.11.jpg',
+'양화 한강공원_2019.09.jpg',
+'올림픽공원2_2019.08.jpg',
+'올림픽공원_2019.08.jpg',
+'응봉산_2000.00.jpg',
+'잠원 한강시민공원_2000.00.jpg',
+'풍납 시티극동_2019.08.jpg',
+'함안 낙화놀이2_2023.05.jpg',
+'함안 낙화놀이3_2023.05.jpg',
+'함안 낙화놀이4_2023.05.jpg',
+'함안 낙화놀이5_2023.05.jpg',
+'함안 낙화놀이_2023.05.jpg',
     ]
   },
   japan: {
     title: 'JAPAN',
-    photos: [
-      { id: 'jp_main', src: 'photos/JAPAN/JP_Main.jpg' },
-      { id: 'jp_1',    src: 'photos/JAPAN/JP_1.jpg' },
-      { id: 'jp_2',    src: 'photos/JAPAN/JP_2.jpg' },
-      { id: 'jp_3',    src: 'photos/JAPAN/JP_3.jpg' },
-      { id: 'jp_4',    src: 'photos/JAPAN/JP_4.jpg' },
-      { id: 'jp_5',    src: 'photos/JAPAN/JP_5.jpg' },
-      { id: 'jp_6',    src: 'photos/JAPAN/JP_6.jpg' },
-      { id: 'jp_7',    src: 'photos/JAPAN/JP_7.jpg' },
-      { id: 'jp_8',    src: 'photos/JAPAN/JP_8.jpg' },
-      { id: 'jp_9',    src: 'photos/JAPAN/JP_9.jpg' },
-      { id: 'jp_10',    src: 'photos/JAPAN/JP_10.jpg' },
-      { id: 'jp_11',    src: 'photos/JAPAN/JP_11.jpg' },
-      { id: 'jp_12',    src: 'photos/JAPAN/JP_12.jpg' },
-      { id: 'jp_13',    src: 'photos/JAPAN/JP_13.jpg' },
-      { id: 'jp_14',    src: 'photos/JAPAN/JP_14.jpg' },
-      { id: 'jp_15',    src: 'photos/JAPAN/JP_15.jpg' },
-      { id: 'jp_16',    src: 'photos/JAPAN/JP_16.jpg' },
-      { id: 'jp_17',    src: 'photos/JAPAN/JP_17.jpg' },
-      { id: 'jp_18',    src: 'photos/JAPAN/JP_18.jpg' },
-      { id: 'jp_19',    src: 'photos/JAPAN/JP_19.jpg' },
+    folder: 'photos/JAPAN',
+    files: [
+'Akatsuki_2023.01.jpg',
+'Ine2_2023.01.jpg',
+'Ine3_2023.01.jpg',
+'Ine_2023.01.jpg',
+'Kamakura_2019.04.jpg',
+'Kyoto Ichijoji2_2023.01.jpg',
+'Kyoto Ichijoji3_2023.01.jpg',
+'Kyoto Ichijoji4_2023.01.jpg',
+'Kyoto Ichijoji_2023.01.jpg',
+'Kyoto JR2_2023.01.jpg',
+'Kyoto JR_2023.01.jpg',
+'Kyoto station2_2023.01.jpg',
+'Kyoto station_2023.01.jpg',
+'Ninenzaka2_2023.01.jpg',
+'Ninenzaka_2023.01.jpg',
+'School Bus Coffee2_2023.01.jpg',
+'School Bus Coffee_2023.01.jpg',
+'Tokyo2_2019.04.jpg',
+'Tokyo_2019.04.jpg',
+'[Main] Kamakura_2019.04.jpg',
     ]
   },
 };
+
+// files → photos 배열 자동 생성
+Object.entries(albums).forEach(([key, album]) => {
+  album.photos = album.files.map((file, i) => ({
+    id: `${key}_${i}`,
+    src: `${album.folder}/${file}`,
+  }));
+});
 
 // ── Hero 슬라이드쇼 ──────────────────────────────────────────────────────
 (function () {
@@ -1963,15 +2075,31 @@ const albums = {
 
 // CARPENTRY 데이터
 const carpentryAlbums = {
-  stool: { title: 'STOOL', photos: [
-    { id: 'stool_finish', src: 'carpentry/STOOL/stool_finish.jpg' },
-    { id: 'stool_1', src: 'carpentry/STOOL/stool_1.jpg' },
-  ]},
-  house: { title: 'HOUSE', photos: [
-    { id: 'house_1', src: 'carpentry/HOUSE/house_1.jpg' },
-    { id: 'house_2', src: 'carpentry/HOUSE/house_2.jpg' },
-  ]},
+  stool: {
+    title: 'STOOL',
+    folder: 'carpentry/STOOL',
+    files: [
+      '[Main] Stool Finished_2025.08.jpg',
+      'Stool_2025.06.jpg',
+    ]
+  },
+  house: {
+    title: 'HOUSE',
+    folder: 'carpentry/HOUSE',
+    files: [
+      '[Main] House_2025.08.jpg',
+      'House_2025.09.jpg',
+    ]
+  },
 };
+
+// files → photos 배열 자동 생성
+Object.entries(carpentryAlbums).forEach(([key, album]) => {
+  album.photos = album.files.map((file, i) => ({
+    id: `carp_${key}_${i}`,
+    src: `${album.folder}/${file}`,
+  }));
+});
 
 // ── 앨범 페이지네이션 ────────────────────────────────────────────────────
 const PHOTOS_PER_PAGE = 10;
@@ -1996,15 +2124,107 @@ function openAlbum(category) {
 function parsePhotoMeta(src) {
   const filename = src.split('/').pop().replace(/\.[^.]+$/, ''); // 확장자 제거
   const parts = filename.split('_');
-  if (parts.length >= 2) {
-    const date = parts[parts.length - 1];
-    const name = parts.slice(0, -1).join(' ');
-    return { name, date };
+
+  const lastPart = parts[parts.length - 1];
+  const isDate = /^\d{4}\.\d{2}$/.test(lastPart);
+  const isNum  = /^\d+$/.test(lastPart);
+
+  let name, date;
+  if (parts.length >= 2 && (isDate || isNum)) {
+    date = isDate ? lastPart : '';
+    name = parts.slice(0, -1).join(' ');
+  } else {
+    name = parts.join(' ');
+    date = '';
   }
-  return { name: filename, date: '' };
+  name = name.replace(/\s*\d+$/, '').trim();
+
+  return { name, date };
 }
 
-function _renderAlbumPage() {
+// ── 이미지 비율 캐시 (측정 완료 후 재사용) ───────────────────────────────
+const _ratioCache = {};
+
+function _measureRatio(src) {
+  return new Promise(resolve => {
+    if (_ratioCache[src] !== undefined) { resolve(_ratioCache[src]); return; }
+    const img = new Image();
+    img.onload = () => {
+      const isWide = img.naturalWidth > img.naturalHeight * 1.2;
+      _ratioCache[src] = isWide;
+      resolve(isWide);
+    };
+    img.onerror = () => { _ratioCache[src] = false; resolve(false); };
+    img.src = src;
+  });
+}
+
+function _buildAlbumCard(photo, albumTitle, isWide) {
+  const meta = parsePhotoMeta(photo.src);
+  const wideClass = isWide ? ' wide-photo' : '';
+  return `
+  <div class="album-photo-wrapper${wideClass}">
+    <div class="album-photo-card"
+         onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
+      <img src="${photo.src}" alt="${meta.name}" decoding="async" loading="lazy"
+           style="width:100%;height:auto;display:block;background:var(--surface2);">
+    </div>
+    <div class="album-card-footer">
+      <div class="album-card-meta">
+        <div class="album-card-name">${meta.name}</div>
+        ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
+      </div>
+      <button class="album-comment-btn"
+        onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${albumTitle}')">
+        💬 COMMENT
+      </button>
+    </div>
+  </div>`;
+}
+
+// ── 스마트 레이아웃: 순서 최대한 유지하며 세로형 짝 맞추기 ──────────────
+// 가로형 나오기 전 세로형이 홀수면 solo 처리 후 가로형 배치
+function _smartLayout(photos, ratios) {
+  const result = [];
+  const portraitQueue = [];
+
+  const flush = (forceSolo = false) => {
+    while (portraitQueue.length > 0) {
+      if (portraitQueue.length === 1 || (forceSolo && portraitQueue.length % 2 === 1)) {
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: true });
+      } else {
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+      }
+    }
+  };
+
+  photos.forEach((photo, i) => {
+    if (ratios[i]) {
+      flush(true);
+      result.push({ photo, isWide: true, isSolo: false });
+    } else {
+      portraitQueue.push(photo);
+      if (portraitQueue.length === 2) {
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+        result.push({ photo: portraitQueue.shift(), isWide: false, isSolo: false });
+      }
+    }
+  });
+  flush(true);
+  return result;
+}
+
+function _applyPortraitSolo(grid) {
+  const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
+  wrappers.forEach(w => w.classList.remove('portrait-solo'));
+  const portraits = wrappers.filter(w => !w.classList.contains('wide-photo'));
+  if (portraits.length % 2 === 1) {
+    portraits[portraits.length - 1].classList.add('portrait-solo');
+  }
+}
+
+async function _renderAlbumPage() {
   const album = albums[_curAlbumKey];
   const allPhotos = album.photos;
   const PER_PAGE = PHOTOS_PER_PAGE;
@@ -2014,15 +2234,27 @@ function _renderAlbumPage() {
 
   const grid = document.getElementById('albumModalGrid');
   grid.scrollTop = 0;
+  grid.classList.add('is-loading');
+  grid.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.75rem;letter-spacing:0.25em;">LOADING...</div>';
 
-  grid.innerHTML = pagePhotos.map(photo => {
+  // 모든 사진 비율 미리 측정 후 스마트 레이아웃 적용
+  const ratios = await Promise.all(pagePhotos.map(p => _measureRatio(p.src)));
+  const layout = _smartLayout(pagePhotos, ratios);
+
+  grid.classList.remove('is-loading');
+  grid.innerHTML = layout.map(({ photo, isWide, isSolo }) => {
+    const extraClass = isWide ? ' wide-photo' : isSolo ? ' portrait-solo' : '';
     const meta = parsePhotoMeta(photo.src);
+    // 썸네일: 화면 너비 기준 최대 600px로 제한 → 브라우저가 작은 크기로 디코딩
+    const thumbSizes = isWide ? '(min-width:900px) 800px, 100vw' : '(min-width:900px) 400px, 50vw';
     return `
-    <div class="album-photo-wrapper">
+    <div class="album-photo-wrapper${extraClass}">
       <div class="album-photo-card"
            onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
-        <img data-src="${photo.src}" alt="${meta.name}" decoding="async"
-             style="width:100%;height:auto;display:block;background:var(--surface2);">
+        <img src="${photo.src}" alt="${meta.name}"
+             decoding="async" loading="lazy"
+             sizes="${thumbSizes}"
+             style="width:100%;height:auto;display:block;background:var(--surface2);image-rendering:auto;">
       </div>
       <div class="album-card-footer">
         <div class="album-card-meta">
@@ -2034,10 +2266,10 @@ function _renderAlbumPage() {
           💬 COMMENT
         </button>
       </div>
-    </div>
-  `;}).join('');
+    </div>`;
+  }).join('');
 
-  // 페이지네이션 (항상 표시)
+  // 페이지네이션
   const pgEl = document.getElementById('albumPagination');
   let pgHtml = `<button class="page-btn" onclick="goToPage(${_curPage - 1})" ${_curPage === 1 ? 'disabled' : ''}>‹</button>`;
   for (let i = 1; i <= pgTotal; i++) {
@@ -2045,26 +2277,6 @@ function _renderAlbumPage() {
   }
   pgHtml += `<button class="page-btn" onclick="goToPage(${_curPage + 1})" ${_curPage === pgTotal ? 'disabled' : ''}>›</button>`;
   pgEl.innerHTML = pgHtml;
-
-  // 비율 감지 → 그리드/리스트 모두 wide-photo 클래스 부여
-  const imgs = grid.querySelectorAll('img[data-src]');
-  const wrappers = Array.from(grid.querySelectorAll('.album-photo-wrapper'));
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (en.isIntersecting) {
-        const img = en.target;
-        const wrapper = img.closest('.album-photo-wrapper');
-        img.src = img.dataset.src;
-        img.onload = () => {
-          const isWide = img.naturalWidth > img.naturalHeight * 1.2;
-          if (isWide) wrapper.classList.add('wide-photo');
-          else wrapper.classList.remove('wide-photo');
-        };
-        obs.unobserve(img);
-      }
-    });
-  }, { rootMargin: '300px' });
-  imgs.forEach(img => obs.observe(img));
 }
 
 function goToPage(pg) {
@@ -2097,18 +2309,6 @@ function openLightboxFromAlbum(src, title, id) {
   // 라이트박스 닫을 때 앨범으로 복귀
   lb.dataset.fromAlbum = 'true';
 }
-
-// ── 앨범 카드 장수 업데이트 ───────────────────────────────────────────────
-Object.entries(albums).forEach(([key, album]) => {
-  const card = document.querySelector(`#section-${key} .photo-count`);
-  if (card) card.textContent = `${album.photos.length}장`;
-});
-
-// ── 카펜트리 카드 장수 업데이트 ──────────────────────────────────────────
-Object.entries(carpentryAlbums).forEach(([key, album]) => {
-  const card = document.querySelector(`#carp-${key} .photo-count`);
-  if (card) card.textContent = `${album.photos.length}장`;
-});
 
 // ── 저작권 보호 ───────────────────────────────────────────────────────────
 // 이미지 우클릭 금지
@@ -2181,44 +2381,6 @@ window.openLightboxFromAlbum = openLightboxFromAlbum;
 
 let _curCarpKey=null, _curCarpPage=1;
 
-function makeCarpCard(ph, albTitle) {
-  var pmeta = parsePhotoMeta(ph.src);
-  var d = document.createElement('div');
-  d.className = 'album-photo-wrapper';
-  var card = document.createElement('div');
-  card.className = 'album-photo-card';
-  card.setAttribute('onclick', "openLightboxFromAlbum('" + ph.src + "','" + pmeta.name + "','" + ph.id + "')");
-  var img = document.createElement('img');
-  img.setAttribute('data-src', ph.src);
-  img.alt = pmeta.name;
-  img.decoding = 'async';
-  img.style.cssText = 'width:100%;height:auto;display:block;background:var(--surface2)';
-  card.appendChild(img);
-  d.appendChild(card);
-  var footer = document.createElement('div');
-  footer.className = 'album-card-footer';
-  var meta = document.createElement('div');
-  meta.className = 'album-card-meta';
-  var nameEl = document.createElement('div');
-  nameEl.className = 'album-card-name';
-  nameEl.textContent = pmeta.name;
-  meta.appendChild(nameEl);
-  if (pmeta.date) {
-    var dateEl = document.createElement('div');
-    dateEl.className = 'album-card-date';
-    dateEl.textContent = pmeta.date;
-    meta.appendChild(dateEl);
-  }
-  var btn = document.createElement('button');
-  btn.className = 'album-comment-btn';
-  btn.setAttribute('onclick', "event.stopPropagation();event.preventDefault();openComments('" + ph.id + "','" + pmeta.name + "','" + albTitle + "')");
-  btn.textContent = '\uD83D\uDCAC COMMENT';
-  footer.appendChild(meta);
-  footer.appendChild(btn);
-  d.appendChild(footer);
-  return d;
-}
-
 function openCarpentry(cat) {
   var alb = carpentryAlbums[cat];
   if (!alb) return;
@@ -2244,7 +2406,7 @@ function setCarpView(type) {
     bS.classList.add('active'); bG.classList.remove('active');
   }
 }
-function _renderCarpPage() {
+async function _renderCarpPage() {
   var alb = carpentryAlbums[_curCarpKey];
   var all = alb.photos;
   var tot = Math.ceil(all.length / PHOTOS_PER_PAGE) || 1;
@@ -2252,20 +2414,44 @@ function _renderCarpPage() {
   var page = all.slice(s, s + PHOTOS_PER_PAGE);
   var grid = document.getElementById('carpModalGrid');
   grid.scrollTop = 0;
-  while (grid.firstChild) grid.removeChild(grid.firstChild);
-  page.forEach(function(ph) { grid.appendChild(makeCarpCard(ph, alb.title)); });
+  grid.classList.add('is-loading');
+  grid.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.75rem;letter-spacing:0.25em;">LOADING...</div>';
+
+  // 비율 미리 측정 후 스마트 레이아웃 적용
+  const ratios = await Promise.all(page.map(ph => _measureRatio(ph.src)));
+  const layout = _smartLayout(page, ratios);
+  grid.classList.remove('is-loading');
+  grid.innerHTML = layout.map(({ photo, isWide, isSolo }) => {
+    const extraClass = isWide ? ' wide-photo' : isSolo ? ' portrait-solo' : '';
+    const meta = parsePhotoMeta(photo.src);
+    const thumbSizes = isWide ? '(min-width:900px) 800px, 100vw' : '(min-width:900px) 400px, 50vw';
+    return `
+    <div class="album-photo-wrapper${extraClass}">
+      <div class="album-photo-card"
+           onclick="openLightboxFromAlbum('${photo.src}', '${meta.name}', '${photo.id}')">
+        <img src="${photo.src}" alt="${meta.name}"
+             decoding="async" loading="lazy"
+             sizes="${thumbSizes}"
+             style="width:100%;height:auto;display:block;background:var(--surface2);image-rendering:auto;">
+      </div>
+      <div class="album-card-footer">
+        <div class="album-card-meta">
+          <div class="album-card-name">${meta.name}</div>
+          ${meta.date ? `<div class="album-card-date">${meta.date}</div>` : ''}
+        </div>
+        <button class="album-comment-btn"
+          onclick="event.stopPropagation(); event.preventDefault(); openComments('${photo.id}', '${meta.name}', '${alb.title}')">
+          💬 COMMENT
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
   var pg = document.getElementById('carpPagination');
   var h = '<button class="page-btn" onclick="goToCarpPage(' + (_curCarpPage-1) + ')" ' + (_curCarpPage===1?'disabled':'') + '>\u2039</button>';
   for (var i=1;i<=tot;i++) h += '<button class="page-btn' + (i===_curCarpPage?' active':'') + '" onclick="goToCarpPage('+i+')">' + i + '</button>';
   h += '<button class="page-btn" onclick="goToCarpPage(' + (_curCarpPage+1) + ')" ' + (_curCarpPage===tot?'disabled':'') + '>\u203A</button>';
   pg.innerHTML = h;
-  var imgs = grid.querySelectorAll('img[data-src]');
-  var obs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(en) {
-      if (en.isIntersecting) { en.target.src = en.target.dataset.src; obs.unobserve(en.target); }
-    });
-  }, { rootMargin: '300px' });
-  imgs.forEach(function(img) { obs.observe(img); });
 }
 function goToCarpPage(pg) {
   if (!_curCarpKey) return;
