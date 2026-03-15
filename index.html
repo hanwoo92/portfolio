@@ -1138,6 +1138,14 @@
   }
   .album-modal-close:hover { color: var(--text); }
 
+  /* 모달 내 BGM 행 */
+  .album-modal-bgm-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 2px 0;
+  }
+
   /* 그리드: flex:1 + overflow-y:auto 로 헤더 아래 영역만 스크롤 */
   .album-modal-grid {
     flex: 1;
@@ -1756,23 +1764,7 @@ function _bgmGetTitle(src) {
 
 // 곡명 슬라이딩 표시 — 처음엔 왼쪽 정렬, 2초 후 끊김없는 루프 슬라이딩
 function _bgmShowTitle(title) {
-  const wrap = document.getElementById('bgmTitleWrap');
-  const inner = document.getElementById('bgmTitleInner');
-  const el = document.getElementById('bgmTitle');
-  const el2 = document.getElementById('bgmTitle2');
-  if (!wrap || !inner || !el || !el2) return;
-  // 초기화
-  inner.classList.remove('scrolling');
-  inner.style.transform = 'translateX(0)';
-  el.textContent = title;
-  el2.textContent = title;
-  wrap.classList.add('visible');
-  void inner.offsetWidth;
-  // 2초 후 슬라이딩 시작
-  clearTimeout(inner._scrollTimer);
-  inner._scrollTimer = setTimeout(() => {
-    inner.classList.add('scrolling');
-  }, 2000);
+  _bgmSyncTitle(title);
 }
 
 function _bgmHideTitle() {
@@ -1800,12 +1792,41 @@ _bgmAudio.addEventListener('ended', () => {
   }).catch(() => {});
 });
 
+// 모든 BGM 상태 표시 동기화 (nav + 두 모달)
 function _bgmSetBtn(playing) {
-  const status = document.getElementById('bgmStatus');
-  if (status) {
-    status.textContent = playing ? '▶  재생 중' : '||  정지됨';
-    status.classList.toggle('playing', playing);
-  }
+  const ids = ['bgmStatus', 'albumBgmStatus', 'carpBgmStatus'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = playing ? '▶  재생 중' : '||  정지됨';
+    el.classList.toggle('playing', playing);
+  });
+}
+
+// 모든 곡명 표시 동기화
+function _bgmSyncTitle(title) {
+  const groups = [
+    { inner: 'bgmTitleInner',      t1: 'bgmTitle',      t2: 'bgmTitle2',      wrap: 'bgmTitleWrap' },
+    { inner: 'albumBgmTitleInner', t1: 'albumBgmTitle', t2: 'albumBgmTitle2', wrap: 'albumBgmTitleWrap' },
+    { inner: 'carpBgmTitleInner',  t1: 'carpBgmTitle',  t2: 'carpBgmTitle2',  wrap: 'carpBgmTitleWrap' },
+  ];
+  groups.forEach(g => {
+    const wrap  = document.getElementById(g.wrap);
+    const inner = document.getElementById(g.inner);
+    const el    = document.getElementById(g.t1);
+    const el2   = document.getElementById(g.t2);
+    if (!wrap || !inner || !el || !el2) return;
+    inner.classList.remove('scrolling');
+    inner.style.transform = 'translateX(0)';
+    el.textContent  = title;
+    el2.textContent = title;
+    wrap.classList.add('visible');
+    void inner.offsetWidth;
+    clearTimeout(inner._scrollTimer);
+    inner._scrollTimer = setTimeout(() => {
+      inner.classList.add('scrolling');
+    }, 2000);
+  });
 }
 
 function toggleBGM() {
@@ -1839,6 +1860,20 @@ _bgmAudio.play().then(() => {
   _bgmSetBtn(true);
 }).catch(() => {
   _bgmSetBtn(false);
+  // 자동재생 차단 시 첫 인터랙션(클릭/스크롤)에 재생 시작
+  function _bgmAutoStart() {
+    if (_bgmPlaying) return;
+    _bgmAudio.play().then(() => {
+      _bgmPlaying = true;
+      _bgmSetBtn(true);
+    }).catch(() => {});
+    document.removeEventListener('click', _bgmAutoStart);
+    document.removeEventListener('scroll', _bgmAutoStart);
+    document.removeEventListener('touchstart', _bgmAutoStart);
+  }
+  document.addEventListener('click', _bgmAutoStart);
+  document.addEventListener('scroll', _bgmAutoStart);
+  document.addEventListener('touchstart', _bgmAutoStart);
 });
 
 // Nav scroll
@@ -2764,7 +2799,17 @@ document.addEventListener('click', function(e) {
       </div>
       <button type="button" class="album-modal-close" onclick="closeAlbum()">← Back to Main</button>
     </div>
-    <!-- 2행: 뷰 토글 -->
+    <!-- 2행: BGM -->
+    <div class="album-modal-bgm-row" id="albumModalBgmRow">
+      <span class="bgm-status" id="albumBgmStatus" onclick="event.preventDefault(); event.stopPropagation(); toggleBGM()"></span>
+      <div class="bgm-title-wrap" id="albumBgmTitleWrap">
+        <div class="bgm-title-inner" id="albumBgmTitleInner">
+          <span class="bgm-title" id="albumBgmTitle"></span>
+          <span class="bgm-title" id="albumBgmTitle2"></span>
+        </div>
+      </div>
+    </div>
+    <!-- 3행: 뷰 토글 -->
     <div class="album-modal-header-bottom">
       <div class="view-toggle">
         <button type="button" class="view-toggle-btn active" id="btnGrid" onclick="setView('grid')" title="그리드">⊞</button>
@@ -2786,6 +2831,16 @@ document.addEventListener('click', function(e) {
         <div class="album-modal-title" id="carpModalTitle"></div>
       </div>
       <button type="button" class="album-modal-close" onclick="closeCarpentry()">← Back to Main</button>
+    </div>
+    <!-- BGM 행 -->
+    <div class="album-modal-bgm-row" id="carpModalBgmRow">
+      <span class="bgm-status" id="carpBgmStatus" onclick="event.preventDefault(); event.stopPropagation(); toggleBGM()"></span>
+      <div class="bgm-title-wrap" id="carpBgmTitleWrap">
+        <div class="bgm-title-inner" id="carpBgmTitleInner">
+          <span class="bgm-title" id="carpBgmTitle"></span>
+          <span class="bgm-title" id="carpBgmTitle2"></span>
+        </div>
+      </div>
     </div>
     <div class="album-modal-header-bottom">
       <div class="view-toggle">
