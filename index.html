@@ -142,6 +142,14 @@
     transition: opacity 0.4s;
   }
   .bgm-title-wrap.visible { opacity: 1; }
+  /* 끊김 없는 루프: 두 span을 나란히 배치 */
+  .bgm-title-inner {
+    display: inline-flex;
+    white-space: nowrap;
+  }
+  .bgm-title-inner.scrolling {
+    animation: bgmScroll 12s linear infinite;
+  }
   .bgm-title {
     display: inline-block;
     white-space: nowrap;
@@ -150,16 +158,12 @@
     letter-spacing: 0.12em;
     color: var(--accent);
     text-transform: uppercase;
-    transform: translateX(0);
-  }
-  .bgm-title.scrolling {
-    animation: bgmScroll 12s linear infinite;
-    animation-delay: 0s;
+    padding-right: 48px; /* 반복 사이 간격 */
   }
   @keyframes bgmScroll {
-    0%     { transform: translateX(0); }
-    15%    { transform: translateX(0); }
-    100%   { transform: translateX(-100%); }
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
   .nav-links {
     display: flex;
@@ -1437,7 +1441,10 @@
     <div class="bgm-wrap">
       <span class="bgm-status" id="bgmStatus" onclick="event.preventDefault(); event.stopPropagation(); toggleBGM()"></span>
       <div class="bgm-title-wrap" id="bgmTitleWrap">
-        <span class="bgm-title" id="bgmTitle"></span>
+        <div class="bgm-title-inner" id="bgmTitleInner">
+          <span class="bgm-title" id="bgmTitle"></span>
+          <span class="bgm-title" id="bgmTitle2"></span>
+        </div>
       </div>
     </div>
   </a>
@@ -1747,31 +1754,33 @@ function _bgmGetTitle(src) {
   return file;
 }
 
-// 곡명 슬라이딩 표시 — 처음엔 왼쪽 정렬, 2초 후 슬라이딩
+// 곡명 슬라이딩 표시 — 처음엔 왼쪽 정렬, 2초 후 끊김없는 루프 슬라이딩
 function _bgmShowTitle(title) {
   const wrap = document.getElementById('bgmTitleWrap');
+  const inner = document.getElementById('bgmTitleInner');
   const el = document.getElementById('bgmTitle');
-  if (!wrap || !el) return;
-  // 애니메이션 초기화
-  el.classList.remove('scrolling');
-  el.style.transform = 'translateX(0)';
+  const el2 = document.getElementById('bgmTitle2');
+  if (!wrap || !inner || !el || !el2) return;
+  // 초기화
+  inner.classList.remove('scrolling');
+  inner.style.transform = 'translateX(0)';
   el.textContent = title;
+  el2.textContent = title;
   wrap.classList.add('visible');
-  void el.offsetWidth;
+  void inner.offsetWidth;
   // 2초 후 슬라이딩 시작
-  clearTimeout(el._scrollTimer);
-  el._scrollTimer = setTimeout(() => {
-    el.classList.add('scrolling');
+  clearTimeout(inner._scrollTimer);
+  inner._scrollTimer = setTimeout(() => {
+    inner.classList.add('scrolling');
   }, 2000);
 }
 
 function _bgmHideTitle() {
   const wrap = document.getElementById('bgmTitleWrap');
-  const el = document.getElementById('bgmTitle');
-  if (!wrap || !el) return;
+  const inner = document.getElementById('bgmTitleInner');
+  if (!wrap || !inner) return;
   wrap.classList.remove('visible');
-  el.classList.remove('scrolling');
-  el.textContent = '';
+  inner.classList.remove('scrolling');
 }
 
 // 랜덤 트랙 선택
@@ -1794,7 +1803,7 @@ _bgmAudio.addEventListener('ended', () => {
 function _bgmSetBtn(playing) {
   const status = document.getElementById('bgmStatus');
   if (status) {
-    status.textContent = playing ? '▶ 재생 중' : '⏸ 정지됨';
+    status.textContent = playing ? '▶  재생 중' : '||  정지됨';
     status.classList.toggle('playing', playing);
   }
 }
