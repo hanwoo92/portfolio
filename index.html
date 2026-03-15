@@ -120,23 +120,6 @@
     margin-top: 3px;
     max-width: 280px;
   }
-  .bgm-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    cursor: pointer;
-    text-align: left;
-    transition: color 0.2s;
-    text-transform: uppercase;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .bgm-btn:hover { color: var(--accent); }
-  .bgm-btn.playing { color: var(--accent); }
   /* 재생 상태 텍스트 */
   .bgm-status {
     font-family: 'Josefin Sans', sans-serif;
@@ -147,7 +130,9 @@
     flex-shrink: 0;
     transition: color 0.2s;
     min-width: 62px;
+    cursor: pointer;
   }
+  .bgm-status:hover { color: var(--accent); }
   .bgm-status.playing { color: var(--accent); }
   /* 슬라이딩 곡명 */
   .bgm-title-wrap {
@@ -1450,11 +1435,10 @@
     <span class="logo">HAN<span>WOO</span>95</span>
     <span class="logo-meta" id="logoMeta"></span>
     <div class="bgm-wrap">
-      <span class="bgm-status" id="bgmStatus"></span>
+      <span class="bgm-status" id="bgmStatus" onclick="event.preventDefault(); event.stopPropagation(); toggleBGM()"></span>
       <div class="bgm-title-wrap" id="bgmTitleWrap">
         <span class="bgm-title" id="bgmTitle"></span>
       </div>
-      <button class="bgm-btn" id="bgmBtn" onclick="event.preventDefault(); event.stopPropagation(); toggleBGM()">♫ OFF</button>
     </div>
   </a>
   <audio id="bgmAudio" preload="auto" style="display:none;"></audio>
@@ -1808,12 +1792,7 @@ _bgmAudio.addEventListener('ended', () => {
 });
 
 function _bgmSetBtn(playing) {
-  const btn = document.getElementById('bgmBtn');
   const status = document.getElementById('bgmStatus');
-  if (btn) {
-    btn.textContent = playing ? '♫ ON' : '♫ OFF';
-    btn.classList.toggle('playing', playing);
-  }
   if (status) {
     status.textContent = playing ? '▶ 재생 중' : '⏸ 정지됨';
     status.classList.toggle('playing', playing);
@@ -1825,18 +1804,15 @@ function toggleBGM() {
     _bgmAudio.pause();
     _bgmPlaying = false;
     _bgmSetBtn(false);
-    // 곡명 애니메이션 그대로 유지 — 버튼/상태만 OFF
   } else {
-    let src;
     if (!_bgmAudio.src || _bgmAudio.src === window.location.href) {
-      src = _bgmPickRandom();
+      const src = _bgmPickRandom();
       _bgmAudio.play().then(() => {
         _bgmPlaying = true;
         _bgmSetBtn(true);
         _bgmShowTitle(_bgmGetTitle(src));
       }).catch(() => {});
     } else {
-      // 재개: 곡명/위치 그대로, 상태만 ON
       _bgmAudio.play().then(() => {
         _bgmPlaying = true;
         _bgmSetBtn(true);
@@ -1846,12 +1822,12 @@ function toggleBGM() {
 }
 window.toggleBGM = toggleBGM;
 
-// 자동재생 시도
+// 자동재생 시도 — 차단돼도 곡명은 항상 표시
 const _initSrc = _bgmPickRandom();
+_bgmShowTitle(_bgmGetTitle(_initSrc));
 _bgmAudio.play().then(() => {
   _bgmPlaying = true;
   _bgmSetBtn(true);
-  _bgmShowTitle(_bgmGetTitle(_initSrc));
 }).catch(() => {
   _bgmSetBtn(false);
 });
