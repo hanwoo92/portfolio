@@ -1852,28 +1852,43 @@ function toggleBGM() {
 }
 window.toggleBGM = toggleBGM;
 
+
 // 자동재생 시도 — 차단돼도 곡명은 항상 표시
 const _initSrc = _bgmPickRandom();
 _bgmShowTitle(_bgmGetTitle(_initSrc));
+
+// 첫 인터랙션(클릭/터치/스크롤) 시 재생 — 항상 리스너 등록
+function _bgmAutoStart() {
+  if (_bgmPlaying) {
+    _cleanup();
+    return;
+  }
+  _bgmAudio.play().then(() => {
+    _bgmPlaying = true;
+    _bgmSetBtn(true);
+    _cleanup();
+  }).catch(() => {});
+}
+function _cleanup() {
+  document.removeEventListener('click',      _bgmAutoStart, true);
+  document.removeEventListener('touchstart', _bgmAutoStart, true);
+  document.removeEventListener('touchend',   _bgmAutoStart, true);
+  document.removeEventListener('scroll',     _bgmAutoStart, true);
+  document.removeEventListener('keydown',    _bgmAutoStart, true);
+}
+document.addEventListener('click',      _bgmAutoStart, true);
+document.addEventListener('touchstart', _bgmAutoStart, true);
+document.addEventListener('touchend',   _bgmAutoStart, true);
+document.addEventListener('scroll',     _bgmAutoStart, true);
+document.addEventListener('keydown',    _bgmAutoStart, true);
+
+// 즉시 재생도 시도 (허용된 경우 바로 재생)
 _bgmAudio.play().then(() => {
   _bgmPlaying = true;
   _bgmSetBtn(true);
+  _cleanup();
 }).catch(() => {
   _bgmSetBtn(false);
-  // 자동재생 차단 시 첫 인터랙션(클릭/스크롤)에 재생 시작
-  function _bgmAutoStart() {
-    if (_bgmPlaying) return;
-    _bgmAudio.play().then(() => {
-      _bgmPlaying = true;
-      _bgmSetBtn(true);
-    }).catch(() => {});
-    document.removeEventListener('click', _bgmAutoStart);
-    document.removeEventListener('scroll', _bgmAutoStart);
-    document.removeEventListener('touchstart', _bgmAutoStart);
-  }
-  document.addEventListener('click', _bgmAutoStart);
-  document.addEventListener('scroll', _bgmAutoStart);
-  document.addEventListener('touchstart', _bgmAutoStart);
 });
 
 // Nav scroll
