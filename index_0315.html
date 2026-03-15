@@ -112,23 +112,6 @@
     font-family: 'Josefin Sans', sans-serif;
     font-weight: 300;
   }
-  /* BGM 버튼 */
-  .bgm-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    margin-top: 3px;
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    cursor: pointer;
-    text-align: left;
-    transition: color 0.2s;
-    text-transform: uppercase;
-  }
-  .bgm-btn:hover { color: var(--accent); }
-  .bgm-btn.playing { color: var(--accent); }
   .nav-links {
     display: flex;
     gap: 40px;
@@ -1402,9 +1385,7 @@
   <a href="#home" class="logo-wrap">
     <span class="logo">HAN<span>WOO</span>95</span>
     <span class="logo-meta" id="logoMeta"></span>
-    <button class="bgm-btn" id="bgmBtn" onclick="event.preventDefault(); event.stopPropagation(); toggleBGM()">♫ OFF</button>
   </a>
-  <audio id="bgmAudio" preload="auto" style="display:none;"></audio>
   <ul class="nav-links">
     <li><a href="#home">HOME</a></li>
     <li><a href="#gallery">ALBUM</a></li>
@@ -1687,68 +1668,6 @@ if (!isMobile) {
   const el = document.getElementById('logoMeta');
   if (el) el.textContent = `${y}.${m}.${d}  ${REV}`;
 })();
-
-// ── BGM ──────────────────────────────────────────────────────────────────
-const BGM_TRACKS = [
-  'bgm/AL_BEI_-_Stay_Here.mp3',
-  'bgm/AL_BEI_-_Stay_On_You.mp3',
-  'bgm/ZOE_LEELA_-_Silence.mp3',
-  'bgm/Tadz_-_Conditional.mp3',
-  'bgm/SUPERARE_-_9_to_5.mp3',
-  'bgm/Maestro_One_-_Down_in_the_Basement.mp3',
-  'bgm/Maestro_One_-_Next_Time_Around.mp3',
-  'bgm/Maestro_One_-_Sell_All_Your_Sorrows.mp3',
-  'bgm/Pierce_Murphy_-_Devil_In_A_Falling_Sky.mp3',
-];
-
-let _bgmPlaying = false;
-const _bgmAudio = document.getElementById('bgmAudio');
-
-// 랜덤 트랙 선택
-function _bgmPickRandom() {
-  const idx = Math.floor(Math.random() * BGM_TRACKS.length);
-  _bgmAudio.src = BGM_TRACKS[idx];
-  _bgmAudio.volume = 0.4;
-  _bgmAudio.loop = false;
-}
-
-// 트랙 끝나면 다음 랜덤 트랙 재생
-_bgmAudio.addEventListener('ended', () => {
-  _bgmPickRandom();
-  _bgmAudio.play().catch(() => {});
-});
-
-function _bgmSetBtn(playing) {
-  const btn = document.getElementById('bgmBtn');
-  if (!btn) return;
-  btn.textContent = playing ? '♫ ON' : '♫ OFF';
-  btn.classList.toggle('playing', playing);
-}
-
-function toggleBGM() {
-  if (_bgmPlaying) {
-    _bgmAudio.pause();
-    _bgmPlaying = false;
-    _bgmSetBtn(false);
-  } else {
-    if (!_bgmAudio.src || _bgmAudio.src === window.location.href) _bgmPickRandom();
-    _bgmAudio.play().then(() => {
-      _bgmPlaying = true;
-      _bgmSetBtn(true);
-    }).catch(() => {});
-  }
-}
-window.toggleBGM = toggleBGM;
-
-// 자동재생 시도 (브라우저 정책상 사용자 인터랙션 전엔 막힐 수 있음)
-_bgmPickRandom();
-_bgmAudio.play().then(() => {
-  _bgmPlaying = true;
-  _bgmSetBtn(true);
-}).catch(() => {
-  // 자동재생 차단 시 버튼으로만 재생 가능
-  _bgmSetBtn(false);
-});
 
 // Nav scroll
 window.addEventListener('scroll', () => {
